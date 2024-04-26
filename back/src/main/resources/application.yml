@@ -1,0 +1,126 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /api
+
+
+spring:
+  # DataBase Settings : hikariCP : https://github.com/brettwooldridge/HikariCP
+  datasource:
+    #    url: 추가
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      # 암호화 필요
+      username: bloomi
+      password: bloomi
+      # hikariCP property setting
+      pool-name: Hikari Connection Pool
+      maximum-pool-size: 10
+      connection-timeout: 5000
+      connection-init-sql: SELECT 1
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      auto-commit: true
+  security:
+    user:
+      name: admin
+      password: admin
+    # OAuth 설정
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: hex 추가
+            client-secret: hex 추가
+            redirect-uri: http://localhost:3000/login-callback/kakao
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            client_name: kakao
+          google:
+            client-id: hex 추가.apps.googleusercontent.com
+            client-secret: hex 추가
+            redirect-uri: http://localhost:3000/login-callback/google
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+  jpa:
+    open-in-view: false
+
+
+jwt:
+  token:
+    secret-key: cd6e92a4d0170740628945053d4bdf29d8bd71901a685715fbfd0e12e18775c8
+  access-token:
+    expire-length: 1800000
+  refresh-token:
+    expire-length: 1209600000
+  redis:
+    host: localhost
+    port: 6379
+    password: hex 추가
+
+
+# Multipart File Upload Setting
+file:
+  multipart:
+    maxUploadSize: 1000000
+    maxUploadSizePerFile: 1000000
+
+
+# Swagger setting
+springdoc:
+  packages-to-scan: com.bloomi.bloomi.api.controller
+  swagger-ui:
+    path: /api-docs
+    groups-order: DESC
+    tags:sorter: alpha
+    operations-sorter: alpha
+    disabled-swagger-default-url: true
+    display-request-duration: true
+  api-docs:
+    path: /api-docs/json
+    groups:
+      enabled: true
+  show-actuator: true
+  cache:
+    disabled: true
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+
+
+  # log level Setting
+  logging:
+    level:
+      root: info
+      org:
+        springframework:
+          root: debug
+          web: debug
+      com:
+        bloomi: debug
+      zaxxer:
+        hikari:
+          pool:
+            HikariPool: debug
+
+
+# S3 Bucket
+cloud:
+  aws:
+    s3:
+      # 수정 필요
+      bucket: bloomi-bloomi
+    region:
+      static: ap-northeast-2
+    credentials:
+      access-key: 추가
+      secret-key: 추가
+    stack:
+      auto: false
