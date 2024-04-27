@@ -35,7 +35,21 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    public TokenDto refreshToken(String refreshToken) {
+        if (!jwtTokenProvider.validateToken(refreshToken)) {
+            throw new RuntimeException("Invalid refresh token");
+        }
 
+        String phoneNum = jwtTokenProvider.getPayload(refreshToken);
+
+        String newAccessToken = jwtTokenProvider.createAccessToken(phoneNum);
+
+        return TokenDto.builder()
+                .grantType("Bearer")
+                .accessToken(newAccessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
 
 
 }
