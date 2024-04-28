@@ -8,11 +8,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://k10e105.p.ssafy.io:3306/
-#    url: jdbc:mysql://localhost:3306/
     username: rezero
-#    username: root
     password: qweqwe123!@#
-#    password: ssafy
 
 
 
