@@ -8,6 +8,12 @@ import com.rezero.rotto.repository.RefreshTokenRepository;
 import com.rezero.rotto.repository.UserRepository;
 import com.rezero.rotto.utils.AESUtil;
 import com.rezero.rotto.utils.JwtTokenProvider;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,6 +27,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Auth 컨트롤러", description = "로그인&로그아웃 기능을 위한 API")
 public class AuthController {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -31,6 +38,13 @@ public class AuthController {
     private final BlackListRepository blackListRepository;
 
 
+    @Operation(summary = "로그인",
+            description = "JWT 토큰 발급 과정 및 암호화 과정을 포함한 로그인")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "토큰 제공",
+            content = @Content(schema = @Schema(implementation = TokenResponse.class))),
+            @ApiResponse(responseCode = "401", description = "로그인 실패")
+    })
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
         String phoneNum = loginData.get("phoneNum");
@@ -66,6 +80,12 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "로그아웃",
+            description = "JWT 토큰 삭제 후 로그아웃")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestParam("accessToken") String accessToken,
                                     @RequestParam("refreshToken") String refreshToken) {
@@ -97,7 +117,13 @@ public class AuthController {
         }
     }
 
-
+    @Operation(summary = "토큰 재발급",
+            description = "액세스 토큰 만료 시 리프레시 토큰 재발급")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "토큰 재발급",
+                    content = @Content(schema = @Schema(implementation = TokenResponse.class))),
+            @ApiResponse(responseCode = "401", description = "만료된 리프레시 토큰")
+    })
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
