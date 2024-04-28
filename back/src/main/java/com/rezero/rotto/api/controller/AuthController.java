@@ -98,4 +98,32 @@ public class AuthController {
     }
 
 
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        try {
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                throw new RuntimeException("Authorization 헤더가 없거나 Bearer 토큰 형식이 아닙니다.");
+            }
+
+            String refreshToken = authorizationHeader.substring(7);
+
+            // 토큰 유효성 및 블랙리스트 검사
+            if (!jwtTokenProvider.validateToken(refreshToken)) {
+                throw new RuntimeException("리프레시 토큰이 유효하지 않거나 블랙리스트에 등록되어 있습니다.");
+            }
+
+            String userCode = jwtTokenProvider.getPayload(refreshToken);
+            String newAccessToken = jwtTokenProvider.createAccessToken(userCode);
+
+            TokenResponse tokenResponse = TokenResponse.builder()
+                    .grantType("Bearer")
+                    .accessToken(newAccessToken)
+                    .refreshToken(refreshToken)  // 리프레시 토큰은 재발급하지 않음
+                    .build();
+
+            return ResponseEntity.ok(tokenResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("오류 발생: " + e.getMessage());
+        }
+    }
 }
