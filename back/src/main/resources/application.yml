@@ -9,9 +9,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://k10e105.p.ssafy.io:3306/
 #    url: jdbc:mysql://localhost:3306/
-    username: junhyung
+    username: rezero
 #    username: root
-    password: junhyung123!@#
+    password: qweqwe123!@#
 #    password: ssafy
 
 
@@ -119,3 +119,8 @@ cloud:
       secret-key: 추가
     stack:
       auto: false
+
+
+aes:
+  encryption:
+    key: ${AES_KEY}
