@@ -29,7 +29,7 @@ public class User {
     @Column(name = "pin")
     String pin;
 
-    @Column(name = "phone_num")
+    @Column(name = "phone_num", unique = true)
     String phoneNum;
 
     @Column(name = "jumin_no")
