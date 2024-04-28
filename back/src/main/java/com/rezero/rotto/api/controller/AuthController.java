@@ -66,5 +66,36 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestParam("accessToken") String accessToken,
+                                    @RequestParam("refreshToken") String refreshToken) {
+        try {
+            // 먼저 토큰의 유효성을 확인
+            if (!jwtTokenProvider.validateToken(accessToken) || !jwtTokenProvider.validateToken(refreshToken)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 토큰입니다.");
+            }
+
+            // 토큰을 블랙리스트에 추가
+            BlackList access = BlackList.builder()
+                    .token(accessToken)
+                    .expiration(jwtTokenProvider.getExpiration(accessToken))
+                    .build();
+            BlackList refresh = BlackList.builder()
+                    .token(refreshToken)
+                    .expiration(jwtTokenProvider.getExpiration(refreshToken))
+                    .build();
+
+            blackListRepository.save(access);
+            blackListRepository.save(refresh);
+
+            // 토큰을 저장소에서 삭제
+            refreshTokenRepository.deleteById(refreshToken);
+
+            return ResponseEntity.status(HttpStatus.OK).body("로그아웃 성공!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("로그아웃 처리 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
 
 }
