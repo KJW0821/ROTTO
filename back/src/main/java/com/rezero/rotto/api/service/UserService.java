@@ -1,11 +1,11 @@
 package com.rezero.rotto.api.service;
 
-import com.rezero.rotto.dto.dto.TokenDto;
+import com.rezero.rotto.dto.request.SignUpRequest;
+import com.rezero.rotto.dto.response.UserInfoResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface UserService {
 
-    TokenDto login(String phoneNum, String pin);
-
-    TokenDto refreshToken(String refreshToken);
+    ResponseEntity<?> signUp(SignUpRequest request);
 
 }
