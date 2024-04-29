@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReqBoardRepository extends JpaRepository<ReqBoard, Integer> {
 
-
+    ReqBoard findByReqBoardCode(int reqBoardCode);
 
 }
