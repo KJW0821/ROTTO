@@ -2,9 +2,12 @@ package com.rezero.rotto.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Builder
-@Data
+@Getter
+@Setter
 public class TokenResponse {
 
     private String grantType; // Bearer
