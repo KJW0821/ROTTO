@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.service;
 
 import com.rezero.rotto.dto.dto.ReqBoardListDto;
+import com.rezero.rotto.dto.response.ReqBoardDetailResponse;
 import com.rezero.rotto.dto.response.ReqBoardListResponse;
 import com.rezero.rotto.entity.ReqBoard;
 import com.rezero.rotto.entity.User;
@@ -20,8 +21,8 @@ import java.util.List;
 @Transactional
 public class ReqBoardServiceImpl implements ReqBoardService {
 
-    ReqBoardRepository reqBoardRepository;
-    UserRepository userRepository;
+    private final ReqBoardRepository reqBoardRepository;
+    private final UserRepository userRepository;
 
     public ResponseEntity<?> getReqBoardList(int userCode) {
         User user = userRepository.findByUserCode(userCode);
@@ -48,4 +49,21 @@ public class ReqBoardServiceImpl implements ReqBoardService {
         return ResponseEntity.status(HttpStatus.OK).body(reqBoardListResponse);
     }
 
+    public ResponseEntity<?> getReqBoardDetail(int userCode, int reqBoardCode) {
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        ReqBoard reqBoardDetail = reqBoardRepository.findByReqBoardCode(reqBoardCode);
+        ReqBoardDetailResponse reqBoardDetailResponse = ReqBoardDetailResponse.builder()
+                .reqBoardCode(reqBoardDetail.getReqBoardCode())
+                .title(reqBoardDetail.getTitle())
+                .contents(reqBoardDetail.getContent())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(reqBoardDetailResponse);
+    }
+
+
 }
+
