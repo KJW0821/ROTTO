@@ -39,8 +39,7 @@ public class UserController {
     }
     @Operation(summary = "핀번호 등록", description = "회원가입 후 최초에 한하여 핀번호 등록")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "핀번호 등록 성공",
-                    content = @Content(schema = @Schema(implementation = UserInfoResponse.class))),
+            @ApiResponse(responseCode = "200", description = "핀번호 등록 성공"),
             @ApiResponse(responseCode = "400", description = "데이터가 잘못된 입력됨"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
