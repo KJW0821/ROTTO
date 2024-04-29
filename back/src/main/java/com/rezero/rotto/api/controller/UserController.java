@@ -44,7 +44,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "데이터가 잘못된 입력됨"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
-    @PostMapping("/signup")
+    @PostMapping("/pin")
     public ResponseEntity<?> registerPin(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestBody RegisterPinRequest request) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return userService.registerPin(userCode, request);
