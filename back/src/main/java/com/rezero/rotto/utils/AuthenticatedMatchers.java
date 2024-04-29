@@ -6,7 +6,9 @@ public class AuthenticatedMatchers {
 
     public static final String[] matcherArray = {
             "/",
-            "/oauth/reissue",
+            "/user/signup",
+            "/auth/login",
+            "/auth/refresh",
             "/api-docs",
             "/api-docs/json",
             "/api-docs/**",
