@@ -1,21 +1,16 @@
 package com.rezero.rotto.api.service;
 
-import com.rezero.rotto.config.CryptoConfig;
 import com.rezero.rotto.dto.request.SignUpRequest;
 import com.rezero.rotto.dto.response.UserInfoResponse;
 import com.rezero.rotto.entity.User;
-import com.rezero.rotto.repository.BlackListRepository;
 import com.rezero.rotto.repository.UserRepository;
 import com.rezero.rotto.utils.AESUtil;
-import com.rezero.rotto.utils.JwtTokenProvider;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.jasypt.encryption.StringEncryptor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 
@@ -25,9 +20,7 @@ import javax.crypto.SecretKey;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
-    private final BlackListRepository blackListRepository;
     private final SecretKey aesKey;
 
     // 회원가입
@@ -37,14 +30,19 @@ public class UserServiceImpl implements UserService {
             String encryptedJuminNo = AESUtil.encrypt(request.getJuminNo(), aesKey);
             String hashedPin = passwordEncoder.encode(request.getPin());
 
+            // 이미 존재하는 휴대폰 번호로 가입을 시도할 경우 예외 처리
+            if (userRepository.existsByPhoneNum(encryptedPhoneNum)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 존재하는 휴대폰 번호입니다.");
+            }
+            
             // userCode 자동, isDelete 기본값 0, joinDate = CreationTimestamp, deleteTime = null
             User user = User.builder()
-                .name(request.getName())
-                .sex(request.getSex())
-                .pin(hashedPin)
-                .phoneNum(encryptedPhoneNum)
-                .juminNo(encryptedJuminNo)
-                .build();
+                    .name(request.getName())
+                    .sex(request.getSex())
+                    .pin(hashedPin)
+                    .phoneNum(encryptedPhoneNum)
+                    .juminNo(encryptedJuminNo)
+                    .build();
 
             // 저장
             userRepository.save(user);
@@ -56,7 +54,9 @@ public class UserServiceImpl implements UserService {
                     .build();
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 실패");
         }
     }
