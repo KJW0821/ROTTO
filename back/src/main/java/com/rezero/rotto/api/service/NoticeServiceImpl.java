@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.service;
 
 import com.rezero.rotto.dto.dto.NoticeListDto;
+import com.rezero.rotto.dto.response.NoticeDetailResponse;
 import com.rezero.rotto.dto.response.NoticeListResponse;
 import com.rezero.rotto.entity.Notice;
 import com.rezero.rotto.entity.User;
@@ -71,6 +72,24 @@ public class NoticeServiceImpl implements NoticeService {
         NoticeListResponse response = NoticeListResponse.builder()
                 .noticeListDtos(noticeListDtos)
                 .totalPages(totalPages)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    public ResponseEntity<?> getNoticeDetail(int userCode, int noticeCode) {
+        // 해당 유저가 존재하는지 검사
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+        // noticeCode 로 해당 공지사항 가져오기
+        Notice notice = noticeRepository.findByNoticeCode(noticeCode);
+        // 리스폰스 생성
+        NoticeDetailResponse response = NoticeDetailResponse.builder()
+                .title(notice.getTitle())
+                .content(notice.getContent())
+                .createTime(notice.getCreateTime())
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

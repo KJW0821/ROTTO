@@ -2,6 +2,7 @@ package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.NoticeService;
 import com.rezero.rotto.api.service.UserService;
+import com.rezero.rotto.dto.response.NoticeDetailResponse;
 import com.rezero.rotto.dto.response.NoticeListResponse;
 import com.rezero.rotto.dto.response.UserInfoResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
@@ -35,6 +36,19 @@ public class NoticeController {
     public ResponseEntity<?> getNoticeList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestParam(required = false) Integer page) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return noticeService.getNoticeList(userCode, page);
+    }
+
+
+    @Operation(summary = "공지사항 상세 조회", description = "공지사항 상세 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = NoticeDetailResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
+    })
+    @GetMapping("/{noticeCode}")
+    public ResponseEntity<?> getNoticeDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, int noticeCode) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return noticeService.getNoticeDetail(userCode, noticeCode);
     }
 
 }
