@@ -10,6 +10,6 @@ import java.util.List;
 @Getter
 public class ReqBoardListResponse {
 
-    List<ReqBoardListDto> reqBoardListDtos;
+    private List<ReqBoardListDto> reqBoardListDtos;
 
 }

@@ -5,7 +5,7 @@ import lombok.Builder;
 @Builder
 public class ReqBoardListDto {
 
-    int reqBoardCode;
-    String title;
+    private int reqBoardCode;
+    private String title;
 
 }
