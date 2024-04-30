@@ -3,6 +3,8 @@ package com.rezero.rotto.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Setter
 @Getter
@@ -24,6 +26,6 @@ public class Notice {
     private String content;
 
     @Column(name = "create_time")
-    private String createTime;
+    private LocalDateTime createTime;
 
 }
