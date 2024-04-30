@@ -62,6 +62,10 @@ public class AuthController {
             if (!passwordEncoder.matches(pin, user.getPin())) {
                 throw new RuntimeException("로그인에 실패하였습니다.");
             }
+
+            if (user.getIsDelete()) {
+                throw new RuntimeException("존재하지 않는 사용자입니다.");
+            }
             
             // 액세스 토큰, 리프레시 토큰 발급
             String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getUserCode()));

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
+import java.sql.Timestamp;
 
 @Service
 @Transactional
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final SecretKey aesKey;
+
 
     // 회원가입
     public ResponseEntity<?> signUp(SignUpRequest request) {
@@ -61,10 +63,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
     // PIN 번호 등록
     public ResponseEntity<?> registerPin(int userCode, RegisterPinRequest request) {
         User user = userRepository.findByUserCode(userCode);
-        if (user == null) {
+        if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
@@ -75,10 +78,11 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body("PIN 번호 등록 성공!");
     }
 
+
     // 사용자 정보 조회
     public ResponseEntity<?> getUserInfo(int userCode) {
         User user = userRepository.findByUserCode(userCode);
-        if (user == null) {
+        if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
@@ -87,6 +91,23 @@ public class UserServiceImpl implements UserService {
                 .name(user.getName())
                 .build();
 
-        return ResponseEntity.status(HttpStatus.OK).body("조회 성공");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+    // 회원 탈퇴
+    public ResponseEntity<String> deleteUser(int userCode) {
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        // isDelete = true, deleteTime = 현재 시간 으로 수정 후 저장
+        user.setIsDelete(true);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        user.setDeleteTime(timestamp);
+        userRepository.save(user);
+
+        return ResponseEntity.status(HttpStatus.OK).body("탈퇴 성공");
     }
 }
