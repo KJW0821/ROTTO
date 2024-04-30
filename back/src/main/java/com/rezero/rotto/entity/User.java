@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -27,8 +26,8 @@ public class User {
     @Column(name = "sex")
     String sex;
 
-    @Column(name = "pin")
-    String pin;
+    @Column(name = "password")
+    String password;
 
     @Column(name = "phone_num", unique = true)
     String phoneNum;
