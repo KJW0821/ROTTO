@@ -1,5 +1,6 @@
 package com.rezero.rotto.api.controller;
 
+import com.rezero.rotto.dto.request.LoginRequest;
 import com.rezero.rotto.dto.response.TokenResponse;
 import com.rezero.rotto.entity.BlackList;
 import com.rezero.rotto.entity.User;
@@ -46,9 +47,9 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "로그인 실패")
     })
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
-        String phoneNum = loginData.get("phoneNum");
-        String pin = loginData.get("pin");
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        String phoneNum = request.getPhoneNum();
+        String pin = request.getPin();
 
         try {
             // 폰 번호 암호화
@@ -61,6 +62,10 @@ public class AuthController {
             // PIN 해시값 검증
             if (!passwordEncoder.matches(pin, user.getPin())) {
                 throw new RuntimeException("로그인에 실패하였습니다.");
+            }
+
+            if (user.getIsDelete()) {
+                throw new RuntimeException("존재하지 않는 사용자입니다.");
             }
             
             // 액세스 토큰, 리프레시 토큰 발급

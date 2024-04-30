@@ -10,5 +10,8 @@ public interface UserService {
     ResponseEntity<?> signUp(SignUpRequest request);
     ResponseEntity<?> registerPin(int userCode, RegisterPinRequest request);
 //    ResponseEntity<?> registerPin(int userCode, String oldPin, String newPin);
+    ResponseEntity<?> getUserInfo(int userCode);
+
+    ResponseEntity<String> deleteUser(int userCode);
 
 }

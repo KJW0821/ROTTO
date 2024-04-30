@@ -11,17 +11,17 @@ public class SignUpRequest {
     @NotBlank(message = "이름은 필수입니다.")
     @Pattern(regexp = "^[가-힣]+$", message = "이름은 한글만 포함해야 합니다.")
     @Size(min = 2, max = 20, message = "이름은 2자 이상, 20자 이하여야 합니다.")
-    String name;
+    private String name;
     @NotBlank(message = "성별은 필수입니다.")
     @Pattern(regexp = "^[MF]$", message = "성별은 M 또는 F 이어야 합니다.")
-    String sex;
+    private String sex;
     @NotBlank(message = "휴대폰 번호는 필수입니다.")
     @Size(min = 11, max = 11, message = "휴대폰 번호는 11자리여야 합니다.")
     @Pattern(regexp = "\\d{11}", message = "휴대폰 번호는 숫자만을 포함하여야 합니다.")
-    String phoneNum;
+    private String phoneNum;
     @NotBlank(message = "주민등록번호는 필수입니다.")
     @Size(min = 6, max = 6, message = "주민등록번호는 6자리여야 합니다.")
     @Pattern(regexp = "\\d{6}", message = "주민등록번호는 숫자만을 포함하여야 합니다.")
-    String juminNo;
+    private String juminNo;
 
 }

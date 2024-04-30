@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -31,6 +32,6 @@ public class ReqBoard {
 
     @CreationTimestamp
     @Column(name = "createTime")
-    Timestamp createTime;
+    LocalDateTime createTime;
 
 }
