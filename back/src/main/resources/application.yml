@@ -56,7 +56,7 @@ jwt:
   redis:
     host: localhost
     port: 6379
-    password: hex 추가
+    password: rotto123
 
 
 # Multipart File Upload Setting

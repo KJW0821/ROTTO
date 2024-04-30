@@ -2,7 +2,14 @@ package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.S3Service;
 import com.rezero.rotto.dto.dto.S3Dto;
+import com.rezero.rotto.dto.response.UserInfoResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +19,7 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/s3")
+@Tag(name = "S3 컨트롤러", description = "S3 사용을 위한 API")
 public class S3Controller {
 
     private final S3Service s3Service;
@@ -22,6 +30,8 @@ public class S3Controller {
     // 녹음 m4a, mp3, wav
     // 이미지 jpeg, jpg, png
     // 외부모델 pth, index
+    @Operation(summary = "S3에 파일 업로드", description = "Presigned URL 을 사용하여 파일 업로드")
+    @ApiResponse(responseCode = "200", description = "성공")
     @GetMapping("/upload")
     public ResponseEntity<?> getPresignedUrlToUpload(@RequestHeader("Authorization") String token,
                                                      @RequestParam(value = "fileName") String fileName,
