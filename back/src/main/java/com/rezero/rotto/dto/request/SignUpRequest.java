@@ -23,5 +23,10 @@ public class SignUpRequest {
     @Size(min = 6, max = 6, message = "주민등록번호는 6자리여야 합니다.")
     @Pattern(regexp = "\\d{6}", message = "주민등록번호는 숫자만을 포함하여야 합니다.")
     private String juminNo;
+    @NotBlank(message = "비밀번호는 필수입니다.")
+    @Size(min = 8, max = 20, message = "비밀번호는 8~20자 사이여야 합니다.")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=]).*$",
+            message = "비밀번호는 대문자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함해야 합니다.")
+    private String password;
 
 }
