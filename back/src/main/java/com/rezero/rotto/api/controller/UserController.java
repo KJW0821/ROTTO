@@ -65,5 +65,15 @@ public class UserController {
     }
 
 
+    @Operation(summary = "회원 탈퇴", description = "Soft Delete 를 사용해서 회원 탈퇴")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
+    })
+    @PatchMapping("/user")
+    public ResponseEntity<?> deleteUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return userService.deleteUser(userCode);
+    }
 
 }
