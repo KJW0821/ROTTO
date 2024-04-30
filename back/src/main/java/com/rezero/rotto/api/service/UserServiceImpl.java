@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final SecretKey aesKey;
 
 
@@ -72,9 +72,10 @@ public class UserServiceImpl implements UserService {
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
+        String hashedPin = passwordEncoder.encode(request.getPin());
 
         // PIN 번호 변경
-        user.setPin(request.getPin());
+        user.setPin(hashedPin);
         userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.OK).body("PIN 번호 등록 성공!");
