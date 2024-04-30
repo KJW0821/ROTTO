@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
     private final SecretKey aesKey;
 
 
@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserService {
 
     // PIN 번호 등록
     public ResponseEntity<?> registerPin(int userCode, RegisterPinRequest request) {
+        // 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
@@ -82,6 +83,7 @@ public class UserServiceImpl implements UserService {
 
     // 사용자 정보 조회
     public ResponseEntity<?> getUserInfo(int userCode) {
+        // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
@@ -98,6 +100,7 @@ public class UserServiceImpl implements UserService {
 
     // 회원 탈퇴
     public ResponseEntity<String> deleteUser(int userCode) {
+        // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
