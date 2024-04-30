@@ -1,6 +1,6 @@
 package com.rezero.rotto.api.service;
 
-import com.rezero.rotto.dto.request.RegisterPinRequest;
+//import com.rezero.rotto.dto.request.RegisterPinRequest;
 import com.rezero.rotto.dto.request.SignUpRequest;
 import com.rezero.rotto.dto.response.UserInfoResponse;
 import com.rezero.rotto.entity.User;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Service
@@ -32,19 +31,20 @@ public class UserServiceImpl implements UserService {
         try {
             String encryptedPhoneNum = AESUtil.encrypt(request.getPhoneNum(), aesKey);
             String encryptedJuminNo = AESUtil.encrypt(request.getJuminNo(), aesKey);
-//            String hashedPin = passwordEncoder.encode(request.getPin());
+            String hashedPassword = passwordEncoder.encode(request.getPassword());
 
             // 이미 존재하는 휴대폰 번호로 가입을 시도할 경우 예외 처리
             if (userRepository.existsByPhoneNum(encryptedPhoneNum)) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 휴대폰 번호입니다.");
             }
             
-            // userCode 자동, pin 추후에 받을 예정, isDelete 기본값 0, joinDate = CreationTimestamp, deleteTime = null
+            // userCode 자동, isDelete 기본값 0, joinTime = CreationTimestamp, deleteTime = null
             User user = User.builder()
                     .name(request.getName())
                     .sex(request.getSex())
                     .phoneNum(encryptedPhoneNum)
                     .juminNo(encryptedJuminNo)
+                    .password(hashedPassword)
                     .build();
 
             // 저장
@@ -64,22 +64,22 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
-    // PIN 번호 등록
-    public ResponseEntity<?> registerPin(int userCode, RegisterPinRequest request) {
-        // 유저가 존재하는지 검사
-        User user = userRepository.findByUserCode(userCode);
-        if (user == null || user.getIsDelete()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
-        }
-        String hashedPin = passwordEncoder.encode(request.getPin());
-
-        // PIN 번호 변경
-        user.setPin(hashedPin);
-        userRepository.save(user);
-
-        return ResponseEntity.status(HttpStatus.OK).body("PIN 번호 등록 성공!");
-    }
+//
+//    // PIN 번호 등록
+//    public ResponseEntity<?> registerPin(int userCode, RegisterPinRequest request) {
+//        // 유저가 존재하는지 검사
+//        User user = userRepository.findByUserCode(userCode);
+//        if (user == null || user.getIsDelete()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+//        }
+//        String hashedPin = passwordEncoder.encode(request.getPin());
+//
+//        // PIN 번호 변경
+//        user.setPassword(hashedPin);
+//        userRepository.save(user);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body("PIN 번호 등록 성공!");
+//    }
 
 
     // 사용자 정보 조회
