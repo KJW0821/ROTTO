@@ -46,7 +46,7 @@ public class NoticeController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
     @GetMapping("/{noticeCode}")
-    public ResponseEntity<?> getNoticeDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, int noticeCode) {
+    public ResponseEntity<?> getNoticeDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int noticeCode) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return noticeService.getNoticeDetail(userCode, noticeCode);
     }
