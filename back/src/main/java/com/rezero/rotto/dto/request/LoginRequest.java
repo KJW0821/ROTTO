@@ -6,6 +6,6 @@ import lombok.Getter;
 public class LoginRequest {
 
     private String phoneNum;
-    private String pin;
+    private String password;
 
 }

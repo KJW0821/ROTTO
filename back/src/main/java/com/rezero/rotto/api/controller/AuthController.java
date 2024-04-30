@@ -23,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.SecretKey;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -49,7 +48,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         String phoneNum = request.getPhoneNum();
-        String pin = request.getPin();
+        String password = request.getPassword();
 
         try {
             // 폰 번호 암호화
@@ -59,8 +58,8 @@ public class AuthController {
             User user = userRepository.findByPhoneNum(encryptedPhoneNum)
                     .orElseThrow(() -> new RuntimeException("로그인에 실패하였습니다."));
 
-            // PIN 해시값 검증
-            if (!passwordEncoder.matches(pin, user.getPin())) {
+            // password 해시값 검증
+            if (!passwordEncoder.matches(password, user.getPassword())) {
                 throw new RuntimeException("로그인에 실패하였습니다.");
             }
 
