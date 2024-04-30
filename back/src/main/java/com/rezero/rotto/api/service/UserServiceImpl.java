@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -104,8 +105,7 @@ public class UserServiceImpl implements UserService {
 
         // isDelete = true, deleteTime = 현재 시간 으로 수정 후 저장
         user.setIsDelete(true);
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        user.setDeleteTime(timestamp);
+        user.setDeleteTime(LocalDateTime.now());
         userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.OK).body("탈퇴 성공");
