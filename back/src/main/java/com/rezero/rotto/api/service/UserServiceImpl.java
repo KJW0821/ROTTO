@@ -1,6 +1,6 @@
 package com.rezero.rotto.api.service;
 
-//import com.rezero.rotto.dto.request.RegisterPinRequest;
+import com.rezero.rotto.dto.request.RegisterPinRequest;
 import com.rezero.rotto.dto.request.SignUpRequest;
 import com.rezero.rotto.dto.response.UserInfoResponse;
 import com.rezero.rotto.entity.User;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Service
