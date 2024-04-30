@@ -5,4 +5,7 @@ import org.springframework.http.ResponseEntity;
 public interface NoticeService {
 
     ResponseEntity<?> getNoticeList(int userCode, Integer page);
+    ResponseEntity<?> getNoticeDetail(int userCode, int noticeCode);
+
+
 }
