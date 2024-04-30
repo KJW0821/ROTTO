@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -41,10 +42,10 @@ public class User {
 
     @CreationTimestamp
     @Column(name = "join_time")
-    Timestamp joinTime;
+    LocalDateTime joinTime;
 
     @Column(name = "delete_time")
-    Timestamp deleteTime;
+    LocalDateTime deleteTime;
 
 
 }
