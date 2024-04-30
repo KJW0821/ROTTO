@@ -37,6 +37,8 @@ public class UserController {
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest request) {
         return userService.signUp(request);
     }
+
+
     @Operation(summary = "핀번호 등록", description = "회원가입 후 최초에 한하여 핀번호 등록")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "핀번호 등록 성공"),
@@ -48,6 +50,20 @@ public class UserController {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return userService.registerPin(userCode, request);
     }
+
+
+    @Operation(summary = "사용자 정보 조회", description = "사용자 정보를 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = UserInfoResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
+    })
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserInfo(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return userService.getUserInfo(userCode);
+    }
+
 
 
 }

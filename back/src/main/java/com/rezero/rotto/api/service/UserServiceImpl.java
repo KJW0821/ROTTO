@@ -75,5 +75,18 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body("PIN 번호 등록 성공!");
     }
 
+    // 사용자 정보 조회
+    public ResponseEntity<?> getUserInfo(int userCode) {
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
 
+        UserInfoResponse response = UserInfoResponse.builder()
+                .userCode(user.getUserCode())
+                .name(user.getName())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body("조회 성공");
+    }
 }
