@@ -26,7 +26,8 @@ public class LikeController {
     @Operation(summary = "관심 농장 등록", description = "해당 농장을 관심 농장으로 등록")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "등록 성공"),
-            @ApiResponse(responseCode = "404", description = "사용자 혹은 농장이 존재하지 않음")
+            @ApiResponse(responseCode = "404", description = "사용자 혹은 농장이 존재하지 않음"),
+            @ApiResponse(responseCode = "409", description = "이미 관심 농장으로 등록되어 있음")
     })
     @GetMapping
     public ResponseEntity<?> registerInterestFarm(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
