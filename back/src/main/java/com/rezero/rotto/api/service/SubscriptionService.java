@@ -4,6 +4,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface SubscriptionService {
 
-    ResponseEntity<?>  getSupscriptionList(int userCode, Integer page);
+    ResponseEntity<?>  getSubscriptionList(int userCode, Integer page);
 
 }
