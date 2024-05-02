@@ -1,7 +1,7 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 
 function HomeScreen() {
-    return <View></View>
+    return <View><Text>이것은 홈페이지</Text></View>
 }
 
 export default HomeScreen
