@@ -7,6 +7,8 @@ node_modules
 /build
 /public/build
 .env
+.deps
+.states
 
 ### Solidity ###
 # Logs

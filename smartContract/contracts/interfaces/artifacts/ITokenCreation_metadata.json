@@ -1,0 +1,109 @@
+{
+	"compiler": {
+		"version": "0.8.25+commit.b61c2a91"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "code",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "farm_code",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "confirm_price",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "started_time",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "end_time",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "limit_num",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "return_rate",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct Subscription",
+						"name": "subscription",
+						"type": "tuple"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "createToken",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/interfaces/ITokenCreation.sol": "ITokenCreation"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/MyStructs.sol": {
+			"keccak256": "0x216badf2003cc2cc0e266045e4a523a429452a492e5e6c6ca2d551c6c602189e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1e34a839979ceaa781dedf71afd8ec4466508513532aacb1d6b20d020f2d97a2",
+				"dweb:/ipfs/QmdMyUbp81zzs1cyKotarBBYg23Xi58hXipNVGocKMnJCd"
+			]
+		},
+		"contracts/interfaces/ITokenCreation.sol": {
+			"keccak256": "0x74e0340658ea3e50b320025aeff25b19b03d46d5d546eceba86930c7ae603127",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://cecd7af2ed72c69e9429adb877b582c6f00633d33d4d5ac2a7f24aa286323bcb",
+				"dweb:/ipfs/QmPWVQwT6LiNXbdCgkM24vU1mDwL6ixGkPjvPfNsDWyZCD"
+			]
+		}
+	},
+	"version": 1
+}
