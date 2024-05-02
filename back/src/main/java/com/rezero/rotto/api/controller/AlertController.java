@@ -37,4 +37,18 @@ public class AlertController {
         return alertService.getAlertList(userCode);
     }
 
+
+    @Operation(summary = "알림 상세 조회", description = "알림 상세 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = AlertListResponse.class))),
+            @ApiResponse(responseCode = "404", description = "사용자 혹은 알림이 존재하지 않음")
+    })
+    @GetMapping("/{alertCode}")
+    public ResponseEntity<?> getAlertDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+                                            @PathVariable int alertCode) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return alertService.getAlertDetail(userCode, alertCode);
+    }
+
 }
