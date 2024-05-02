@@ -10,5 +10,6 @@ npm install expo-linear-gradient
 npm install expo-font
 npm install expo-app-loading
 npm install @react-navigation/material-bottom-tabs @react-navigation/stack axios expo-constants
-npm install redux react-redux @reduxjs/toolkit 
+npm install redux react-redux @reduxjs/toolkit
+npm install @react-navigation/native
 ```
