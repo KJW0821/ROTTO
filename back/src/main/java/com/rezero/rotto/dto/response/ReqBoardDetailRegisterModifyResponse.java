@@ -9,7 +9,6 @@ import lombok.Setter;
 @Builder
 public class ReqBoardDetailRegisterModifyResponse {
     private int reqBoardCode;
-    private String user;
     private String title;
     private String contents;
 

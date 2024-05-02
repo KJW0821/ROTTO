@@ -1,7 +1,7 @@
 package com.rezero.rotto.api.service;
 
 import com.rezero.rotto.dto.dto.ReqBoardListDto;
-import com.rezero.rotto.dto.request.RegisterReqRequest;
+import com.rezero.rotto.dto.request.ReqRequest;
 import com.rezero.rotto.dto.response.ReqBoardDetailRegisterModifyResponse;
 import com.rezero.rotto.dto.response.ReqBoardListResponse;
 import com.rezero.rotto.entity.ReqBoard;
@@ -25,7 +25,7 @@ public class ReqBoardServiceImpl implements ReqBoardService {
     private final ReqBoardRepository reqBoardRepository;
     private final UserRepository userRepository;
 
-    public ResponseEntity<?> getReqBoardList(int userCode) {
+    public ResponseEntity<?> getReqBoardList(int userCode, Integer page) {
         User user = userRepository.findByUserCode(userCode);
         if (user == null) {
             return ResponseEntity.notFound().build();
@@ -66,7 +66,7 @@ public class ReqBoardServiceImpl implements ReqBoardService {
     }
 
     @Override
-    public ResponseEntity<?> postReqBoard(int userCode, ReqBoardDetailRegisterModifyResponse reqRegisterBoard) {
+    public ResponseEntity<?> postReqBoard(int userCode, ReqRequest reqRegisterBoard) {
         // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
@@ -76,7 +76,7 @@ public class ReqBoardServiceImpl implements ReqBoardService {
         // ReqBoard 엔티티 생성 및 저장
         ReqBoard reqBoard = new ReqBoard();
         reqBoard.setTitle(reqRegisterBoard.getTitle());
-        reqBoard.setContent(reqRegisterBoard.getContents());
+        reqBoard.setContent(reqRegisterBoard.getContent());
         reqBoard.setUserCode(userCode); // User 엔티티 설정
         reqBoardRepository.save(reqBoard);
 
@@ -84,7 +84,7 @@ public class ReqBoardServiceImpl implements ReqBoardService {
     }
 
     public ResponseEntity<?> updateReqBoard(int userCode, int reqBoardCode,
-                                            ReqBoardDetailRegisterModifyResponse updateData) {
+                                            ReqRequest updateData) {
         // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
@@ -104,7 +104,7 @@ public class ReqBoardServiceImpl implements ReqBoardService {
 
         // 게시글 수정
         reqBoard.setTitle(updateData.getTitle());
-        reqBoard.setContent(updateData.getContents());
+        reqBoard.setContent(updateData.getContent());
         reqBoardRepository.save(reqBoard);
 
         return ResponseEntity.ok().body("게시글 수정 완료");
