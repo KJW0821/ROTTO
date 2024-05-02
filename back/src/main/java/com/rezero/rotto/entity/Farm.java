@@ -50,6 +50,6 @@ public class Farm {
     private String farmBeanName;
 
     @Column(name = "farm_bean_grade")
-    private String farmBeanGrade;
+    private int farmBeanGrade;
 
 }
