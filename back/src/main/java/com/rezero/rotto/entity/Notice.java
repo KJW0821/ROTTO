@@ -2,6 +2,7 @@ package com.rezero.rotto.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +26,7 @@ public class Notice {
     @Column(name = "content")
     private String content;
 
+    @CreationTimestamp
     @Column(name = "create_time")
     private LocalDateTime createTime;
 

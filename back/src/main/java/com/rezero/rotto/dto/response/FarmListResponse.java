@@ -1,18 +1,18 @@
 package com.rezero.rotto.dto.response;
 
-import com.rezero.rotto.dto.dto.NoticeListDto;
+import com.rezero.rotto.dto.dto.FarmListDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
+@Builder
 @Getter
 @Setter
-@Builder
-public class NoticeListResponse {
+public class FarmListResponse {
 
-    private List<NoticeListDto> notices;
+    private List<FarmListDto> farms;
     private int totalPages;
 
 }
