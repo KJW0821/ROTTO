@@ -101,6 +101,8 @@ public class FarmServiceImpl implements FarmService {
                 .farmScale(farm.getFarmScale())
                 .farmStartedDate(farm.getFarmStartedTime())
                 .awardHistory(farm.getAwardHistory())
+                .beanName(farm.getFarmBeanName())
+                .beanGrade(farm.getFarmBeanGrade())
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
