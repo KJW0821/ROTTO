@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "rotto",
-    "slug": "rotto",
+    "name": "front",
+    "slug": "front",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
