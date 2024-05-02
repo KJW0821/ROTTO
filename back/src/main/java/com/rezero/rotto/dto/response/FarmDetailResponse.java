@@ -20,6 +20,7 @@ public class FarmDetailResponse {
     private int farmScale;
     private LocalDateTime farmStartedDate;
     private String awardHistory;
-//    private List<BeanInfoDto> beans;
+    private String beanName;
+    private Integer beanGrade;
 //    private Boolean isInterested;
 }
