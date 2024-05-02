@@ -70,7 +70,7 @@ public class NoticeServiceImpl implements NoticeService {
 
         // 리스폰스 생성
         NoticeListResponse response = NoticeListResponse.builder()
-                .noticeListDtos(noticeListDtos)
+                .notices(noticeListDtos)
                 .totalPages(totalPages)
                 .build();
 
