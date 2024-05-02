@@ -64,8 +64,10 @@ public class AlertServiceImpl implements AlertService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 알림이 존재하지 않습니다.");
         }
 
-        // 읽음 처리
-        alert.setIsRead(true);
+        if (!alert.getIsRead()) {
+            // 읽지 않은 알림이면 읽음 처리
+            alert.setIsRead(true);
+        }
 
         // 리스폰스 생성
         AlertDetailResponse response = new AlertDetailResponse(alert.getTitle(), alert.getContent(), alert.getCreateTime());
@@ -92,6 +94,21 @@ public class AlertServiceImpl implements AlertService {
         alertRepository.delete(alert);
 
         return ResponseEntity.status(HttpStatus.OK).body("삭제 성공");
+    }
+
+
+    // 알림 모두 읽음 처리
+    public ResponseEntity<?> readAllAlert(int userCode) {
+        // 해당 유저가 존재하는지 검사
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        // 알림 모두 읽음 처리
+        int updatedCount = alertRepository.markAllAlertAsReadByUserCode(userCode);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updatedCount + "개의 알림이 읽음 처리 되었습니다.");
     }
 
 }
