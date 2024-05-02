@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 public class NoticeListResponse {
 
-    private List<NoticeListDto> noticeListDtos;
+    private List<NoticeListDto> notices;
     private int totalPages;
 
 }
