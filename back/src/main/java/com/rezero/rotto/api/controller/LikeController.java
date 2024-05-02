@@ -1,14 +1,38 @@
 package com.rezero.rotto.api.controller;
 
+import com.rezero.rotto.api.service.LikeService;
+import com.rezero.rotto.dto.response.NoticeListResponse;
+import com.rezero.rotto.utils.JwtTokenProvider;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/like")
 @Tag(name = "Like 컨트롤러", description = "좋아요 기능 관리를 위한 API")
 public class LikeController {
+
+    private final JwtTokenProvider jwtTokenProvider;
+    private final LikeService likeService;
+
+    @Operation(summary = "관심 농장 등록", description = "해당 농장을 관심 농장으로 등록")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "등록 성공"),
+            @ApiResponse(responseCode = "404", description = "사용자 혹은 농장이 존재하지 않음")
+    })
+    @GetMapping
+    public ResponseEntity<?> registerInterestFarm(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+                                           @PathVariable int farmCode) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return likeService.registerInterestFarm(userCode, farmCode);
+    }
 
 }
