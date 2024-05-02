@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.FarmService;
+import com.rezero.rotto.dto.response.NoticeDetailResponse;
 import com.rezero.rotto.dto.response.NoticeListResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,4 +39,16 @@ public class FarmController {
         return farmService.getFarmList(userCode, sort, keyword, page);
     }
 
+
+    @Operation(summary = "농장 상세 조회", description = "농장 상세 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = NoticeDetailResponse.class))),
+            @ApiResponse(responseCode = "404", description = "사용자 혹은 농장이 존재하지 않음")
+    })
+    @GetMapping("/{farmCode}")
+    public ResponseEntity<?> getFarmDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int farmCode) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return farmService.getFarmDetail(userCode, farmCode);
+    }
 }

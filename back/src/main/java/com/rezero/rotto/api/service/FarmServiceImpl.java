@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.service;
 
 import com.rezero.rotto.dto.dto.FarmListDto;
+import com.rezero.rotto.dto.response.FarmDetailResponse;
 import com.rezero.rotto.dto.response.FarmListResponse;
 import com.rezero.rotto.entity.Farm;
 import com.rezero.rotto.entity.User;
@@ -72,6 +73,34 @@ public class FarmServiceImpl implements FarmService {
         FarmListResponse response = FarmListResponse.builder()
                 .farms(farmListDtos)
                 .totalPages(totalPages)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+    // 농장 상세 조회(원두 상세 조회, 관심 농장 여부 추가 필요)
+    public ResponseEntity<?> getFarmDetail(int userCode, int farmCode) {
+        // 해당 유저가 존재하는지 검사
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        Farm farm =  farmRepository.findByFarmCode(farmCode);
+        if (farm == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("농장을 찾을 수 없습니다.");
+        }
+
+        FarmDetailResponse response = FarmDetailResponse.builder()
+                .farmCode(farmCode)
+                .farmName(farm.getFarmName())
+                .farmLogoPath(farm.getFarmLogoPath())
+                .farmImgPath(farm.getFarmImgPath())
+                .farmAddress(farm.getFarmAddress())
+                .farmScale(farm.getFarmScale())
+                .farmStartedDate(farm.getFarmStartedTime())
+                .awardHistory(farm.getAwardHistory())
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
