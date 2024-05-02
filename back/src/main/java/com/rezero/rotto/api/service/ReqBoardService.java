@@ -1,14 +1,15 @@
 package com.rezero.rotto.api.service;
 
-import com.rezero.rotto.dto.request.RegisterReqRequest;
-import com.rezero.rotto.dto.response.ReqBoardDetailModifyResponse;
+import com.rezero.rotto.dto.request.ReqRequest;
+import com.rezero.rotto.dto.response.ReqBoardDetailRegisterModifyResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface ReqBoardService {
 
-    ResponseEntity<?> getReqBoardList(int userCode);
+    ResponseEntity<?> getReqBoardList(int userCode, Integer page);
     ResponseEntity<?> getReqBoardDetail(int userCode, int reqBoardCode);
-    ResponseEntity<?> postReqBoard(int userCode , RegisterReqRequest reqRegisterBoard);
-    ResponseEntity<?> updateReqBoard(int userCode, int reqBoardCode, ReqBoardDetailModifyResponse reqRegisterBoard);
+    // 반환할 타입과 받을 값들
+    ResponseEntity<?> postReqBoard(int userCode , ReqRequest reqRegisterBoard);
+    ResponseEntity<?> updateReqBoard(int userCode, int reqBoardCode, ReqRequest reqUpdateBoard);
     ResponseEntity<?> deleteReqBoard(int userCode, int reqBoardCode);
 }

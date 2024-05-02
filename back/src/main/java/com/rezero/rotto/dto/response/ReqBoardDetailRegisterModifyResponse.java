@@ -7,9 +7,8 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class ReqBoardDetailModifyResponse {
+public class ReqBoardDetailRegisterModifyResponse {
     private int reqBoardCode;
-    private String user;
     private String title;
     private String contents;
 
