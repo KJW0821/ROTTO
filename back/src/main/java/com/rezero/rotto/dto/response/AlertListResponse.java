@@ -12,6 +12,6 @@ import java.util.List;
 @Builder
 public class AlertListResponse {
 
-    private List<AlertListDto> notices;
+    private List<AlertListDto> alerts;
 
 }
