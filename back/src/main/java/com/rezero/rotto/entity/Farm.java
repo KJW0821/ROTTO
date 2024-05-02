@@ -46,4 +46,10 @@ public class Farm {
     @Column(name = "award_history")
     private String awardHistory;
 
+    @Column(name = "farm_bean_name")
+    private String farmBeanName;
+
+    @Column(name = "farm_bean_grade")
+    private String farmBeanGrade;
+
 }
