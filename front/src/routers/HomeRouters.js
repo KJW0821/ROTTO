@@ -5,7 +5,7 @@ const HomeRouters = () => {
   const HomeStack = createStackNavigator();
 
   return (
-    <HomeStack.Navigator>
+    <HomeStack.Navigator screenOptions={{ headerShown: false }} >
       <HomeStack.Screen name="home" component={HomeScreen} />
     </HomeStack.Navigator>
   )

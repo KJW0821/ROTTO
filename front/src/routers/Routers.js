@@ -5,15 +5,10 @@ const Routers = () => {
   const Tab = createMaterialBottomTabNavigator();
 
   return (
-    <Tab.Navigator
-      initialRouteName="HomePage"
-    >
-      <Tab.Screen 
-        name="HomePage"
-        component={HomeRouters} 
-      />
-    </Tab.Navigator>
-  )
-}
+      <Tab.Navigator initialRouteName="HomePage">
+        <Tab.Screen name="HomePage" component={HomeRouters} />
+      </Tab.Navigator>
+  );
+};
 
 export default Routers;

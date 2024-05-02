@@ -8,8 +8,8 @@ const AuthRouters = () => {
 
   return (
     <AuthStack.Navigator screenOptions={{ headerShown: false }} >
-      <AuthStack.Screen name="Onboarding" component={OnboardingScreen} />
-      <AuthStack.Screen name="Signup" component={SignupScreen} />
+      {/* <AuthStack.Screen name="Onboarding" component={OnboardingScreen} /> */}
+      {/* <AuthStack.Screen name="Signup" component={SignupScreen} /> */}
       <AuthStack.Screen name="Routers" component={Routers} />
     </AuthStack.Navigator>
   )
