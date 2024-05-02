@@ -5,4 +5,6 @@ import "../MyStructs.sol";
 
 interface ITokenCreation {
     function createToken(Subscription memory subscription, uint amount) external;
+
+    function mint(uint code, uint amount) external;
 }
