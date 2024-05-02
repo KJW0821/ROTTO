@@ -65,4 +65,16 @@ public class AlertController {
         return alertService.deleteAlert(userCode, alertCode);
     }
 
+
+    @Operation(summary = "알림 모두 읽음 처리", description = "알림 모두 읽음 처리")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "사용자가 존재하지 않음")
+    })
+    @PutMapping("/all-read")
+    public ResponseEntity<?> readAllAlert(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return alertService.readAllAlert(userCode);
+    }
+
 }
