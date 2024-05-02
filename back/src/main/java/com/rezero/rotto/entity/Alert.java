@@ -2,6 +2,9 @@ package com.rezero.rotto.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -28,5 +31,9 @@ public class Alert {
 
     @Column(name = "is_read")
     private Boolean isRead;
+
+    @CreationTimestamp
+    @Column(name = "create_time")
+    private LocalDateTime createTime;
 
 }
