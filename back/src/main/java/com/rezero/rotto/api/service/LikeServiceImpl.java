@@ -29,11 +29,12 @@ public class LikeServiceImpl implements LikeService {
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
+        // 요청 받은 농장이 존재하는지 검사
         Farm farm = farmRepository.findByFarmCode(farmCode);
         if (farm == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("농장을 찾을 수 없습니다.");
         }
-
+        // 요청 받은 농장이 이미 관심 농장으로 등록되어 있는지 검사
         InterestFarm interestFarm = interestFarmRepository.findByFarmCodeAndUserCode(farmCode, userCode);
         if (interestFarm != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 관심 농장으로 등록되어 있습니다.");
@@ -49,20 +50,28 @@ public class LikeServiceImpl implements LikeService {
     }
 
 
-//    // 관심 농장 등록 해제
-//    public ResponseEntity<?> cancelInterestFarm(int userCode, int farmCode) {
-//        // 해당 유저가 존재하는지 검사
-//        User user = userRepository.findByUserCode(userCode);
-//        if (user == null || user.getIsDelete()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
-//        }
-//        Farm farm = farmRepository.findByFarmCode(farmCode);
-//        if (farm == null) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("농장을 찾을 수 없습니다.");
-//        }
-//
-//        // 관심 농장 등록 해제
-//
-//    }
+    // 관심 농장 등록 해제
+    public ResponseEntity<?> cancelInterestFarm(int userCode, int farmCode) {
+        // 해당 유저가 존재하는지 검사
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+        // 요청 받은 농장이 존재하는지 검사
+        Farm farm = farmRepository.findByFarmCode(farmCode);
+        if (farm == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("농장을 찾을 수 없습니다.");
+        }
+        // 요청 받은 농장이 관심 농장인지 검사
+        InterestFarm interestFarm = interestFarmRepository.findByFarmCodeAndUserCode(farmCode, userCode);
+        if (interestFarm == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("관심 농장으로 등록되어 있지 않습니다.");
+        }
+
+        // 관심 농장 등록 해제
+        interestFarmRepository.delete(interestFarm);
+
+        return ResponseEntity.status(HttpStatus.OK).body("관심 등록 해제 성공!");
+    }
 
 }
