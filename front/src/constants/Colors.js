@@ -1,11 +1,8 @@
 const Colors = {
-    primary500: '#72063c',
-    primary600: '#640233',
-    primary700: '#4e0329',
-    primary800: '#3b021f',
-    accent500: '#ddb52f',
-    secondary400: '#305dd8'
-
+  btnBlue: '#3C80D0',
+  bgOrg: '#223A59',
+  iconGray: '#70798C',
+  fontGray: '#888888'
 }
 
-export default Colors
+export default Colors;
