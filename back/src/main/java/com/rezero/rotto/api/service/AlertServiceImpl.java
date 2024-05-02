@@ -73,4 +73,25 @@ public class AlertServiceImpl implements AlertService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+
+    // 알림 삭제
+    public ResponseEntity<?> deleteAlert(int userCode, int alertCode) {
+        // 해당 유저가 존재하는지 검사
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        // 해당 알림이 존재하는지 검사
+        Alert alert = alertRepository.findByAlertCode(alertCode);
+        if (alert == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 알림이 존재하지 않습니다.");
+        }
+
+        // 알림 삭제
+        alertRepository.delete(alert);
+
+        return ResponseEntity.status(HttpStatus.OK).body("삭제 성공");
+    }
+
 }

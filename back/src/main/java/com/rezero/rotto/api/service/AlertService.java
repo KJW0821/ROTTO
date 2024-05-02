@@ -6,5 +6,6 @@ public interface AlertService {
 
     ResponseEntity<?> getAlertList(int userCode);
     ResponseEntity<?> getAlertDetail(int userCode, int alertCode);
+    ResponseEntity<?> deleteAlert(int userCode, int alertCode);
 
 }
