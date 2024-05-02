@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BeanRepository extends JpaRepository<Bean, Integer> {
+
+    Bean findByBeanCode(int beanCode);
+
 }

@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.service;
 
 import com.rezero.rotto.dto.dto.BeanListDto;
+import com.rezero.rotto.dto.response.BeanDetailResponse;
 import com.rezero.rotto.dto.response.BeanListResponse;
 import com.rezero.rotto.entity.Bean;
 import com.rezero.rotto.entity.User;
@@ -47,6 +48,26 @@ public class BeanServiceImpl implements BeanService {
 
         BeanListResponse response = BeanListResponse.builder()
                 .beans(beans)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+    // 원두 상세 조회
+    public ResponseEntity<?> getBeanDetail(int userCode, int beanCode) {
+        // 해당 유저가 존재하는지 검사
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        Bean bean = beanRepository.findByBeanCode(beanCode);
+        BeanDetailResponse response = BeanDetailResponse.builder()
+                .beanCode(beanCode)
+                .beanName(bean.getBeanName())
+                .beanDescription(bean.getBeanDescription())
+                .beanImgPath(bean.getBeanImgPath())
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
