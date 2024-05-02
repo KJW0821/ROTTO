@@ -142,7 +142,7 @@ dist
 
 ### SolidityTruffle ###
 # depedencies
-
+**/artifacts/
 # testing
 
 # production

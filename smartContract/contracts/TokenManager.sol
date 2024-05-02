@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.25;
 
-import "contracts/MyStructs.sol";
-import "contracts/interfaces/ITokenCreation.sol";
-import "contracts/TokenCreation.sol";
+import "./MyStructs.sol";
+import "./interfaces/ITokenCreation.sol";
+import "./TokenCreation.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TokenManager is Ownable {
