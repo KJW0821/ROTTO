@@ -14,7 +14,9 @@ public interface AlertRepository extends JpaRepository<Alert, Integer> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Alert a Set a.isRead = true WHERE a.user.code = :userCode AND a.isRead = false")
+    @Query("UPDATE Alert a Set a.isRead = true WHERE a.userCode = :userCode AND a.isRead = false")
     int markAllAlertAsReadByUserCode(int userCode);
+
+    void deleteByUserCode(int userCode);
 
 }

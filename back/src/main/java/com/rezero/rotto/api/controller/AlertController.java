@@ -55,7 +55,7 @@ public class AlertController {
 
     @Operation(summary = "알림 삭제", description = "알림 삭제")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "200", description = "삭제 성공"),
             @ApiResponse(responseCode = "404", description = "사용자 혹은 알림이 존재하지 않음")
     })
     @DeleteMapping("/{alertCode}")
@@ -68,13 +68,25 @@ public class AlertController {
 
     @Operation(summary = "알림 모두 읽음 처리", description = "알림 모두 읽음 처리")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "200", description = "알림 모두 읽음 처리 성공"),
             @ApiResponse(responseCode = "404", description = "사용자가 존재하지 않음")
     })
     @PutMapping("/all-read")
     public ResponseEntity<?> readAllAlert(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return alertService.readAllAlert(userCode);
+    }
+
+
+    @Operation(summary = "알림 모두 삭제", description = "알림 모두 삭제")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "삭제 성공"),
+            @ApiResponse(responseCode = "404", description = "사용자가 존재하지 않음")
+    })
+    @DeleteMapping("/all-delete")
+    public ResponseEntity<?> deleteAllAlert(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return alertService.deleteAllAlert(userCode);
     }
 
 }
