@@ -1,5 +1,4 @@
-import { View, Text, TextInput, StyleSheet } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { View, Text, StyleSheet } from 'react-native';
 import Colors from '../../constants/Colors';
 
 const InputBox = ({ description, title, children }) => {
@@ -8,10 +7,7 @@ const InputBox = ({ description, title, children }) => {
       <Text style={styles.description}>{ description }</Text>
       <Text style={styles.title}>{ title }</Text>
       <View style={styles.inputContainer}>
-        <View style={styles.textContainer}>
-          {children}
-        </View>
-        <MaterialIcons name="cancel" size={18} color={Colors.iconGray} />
+        {children}
       </View>
     </View>
   )
@@ -38,10 +34,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     height: 28
-  },
-  textContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center'
   }
 });

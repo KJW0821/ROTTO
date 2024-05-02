@@ -1,8 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, SafeAreaView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { store } from './src/stores/store';
-import { Provider } from 'react-redux';
+// import { store } from './src/stores/store';
+// import { Provider } from 'react-redux';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AuthRouters from './src/routers/AuthRouters';
 import Constants from 'expo-constants';

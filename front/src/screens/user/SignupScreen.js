@@ -4,7 +4,7 @@ import Title from '../../components/user/Title';
 import CustomButton from '../../components/common/CustomButton';
 import Colors from '../../constants/Colors';
 import InputBox from '../../components/user/InputBox';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 const SignupScreen = () => {
   const emptyCells = '●●●●●●●';
@@ -50,6 +50,10 @@ const SignupScreen = () => {
                 value={name}
               />
             </Pressable>
+            {
+              name.length ?
+              <MaterialIcons name="cancel" size={18} color={Colors.iconGray} onPress={() => setName('')} /> : <></>
+            }
           </InputBox>
           <InputBox 
             description="주민등록번호를 입력해주세요"
@@ -57,16 +61,17 @@ const SignupScreen = () => {
           >
             <Pressable onPress={setFocus.bind(this, idInputRef)} style={styles.inputContainer}>
               <TextInput 
-                style={[styles.inputText, {width: personId.length ? 'auto' : '0.5%'}]} 
+                style={{width: '0.05%'}} 
                 autoCorrect={false}
-                autoCapitalize="none"
                 underlineColorAndroid="transparent"
                 maxLength={7}
                 keyboardType="number-pad"
                 ref={idInputRef}
                 onChangeText={idInputHandler}
-                value={personId > 6 ? personId.slice(0, 7) + '-' + personId.slice(-1) : personId}
+                value={personId}
+                selectionColor='white'
               />
+              <Text>{personId.replace(/[^0-9]/g, '').replace(/^(\d{0,6})(\d{0,7})$/g, '$1-$2').replace(/-{1,2}$/g, '')}</Text>
               <Text style={styles.emptyCellText}>
                 {
                   personId.length !== 7 &&
@@ -75,6 +80,10 @@ const SignupScreen = () => {
               </Text>
               <Text style={styles.inputText}>●●●●●●</Text>
             </Pressable>
+            {
+              personId.length ?
+              <MaterialIcons name="cancel" size={18} color={Colors.iconGray} onPress={() => setPersonId('')} /> : <></>
+            }
           </InputBox>
         </View>
         <CustomButton>다음</CustomButton>
