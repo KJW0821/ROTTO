@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.AlertService;
+import com.rezero.rotto.dto.response.AlertDetailResponse;
 import com.rezero.rotto.dto.response.AlertListResponse;
 import com.rezero.rotto.dto.response.NoticeListResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
@@ -41,7 +42,7 @@ public class AlertController {
     @Operation(summary = "알림 상세 조회", description = "알림 상세 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
-                    content = @Content(schema = @Schema(implementation = AlertListResponse.class))),
+                    content = @Content(schema = @Schema(implementation = AlertDetailResponse.class))),
             @ApiResponse(responseCode = "404", description = "사용자 혹은 알림이 존재하지 않음")
     })
     @GetMapping("/{alertCode}")
