@@ -1,8 +1,7 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.FarmService;
-import com.rezero.rotto.dto.response.NoticeDetailResponse;
-import com.rezero.rotto.dto.response.NoticeListResponse;
+import com.rezero.rotto.dto.response.*;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,7 +26,7 @@ public class FarmController {
     @Operation(summary = "농장 목록 조회", description = "필터링, 정렬, 검색, 페이지네이션을 포함한 농장 목록 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
-                    content = @Content(schema = @Schema(implementation = NoticeListResponse.class))),
+                    content = @Content(schema = @Schema(implementation = FarmListResponse.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
     @GetMapping
@@ -43,12 +42,25 @@ public class FarmController {
     @Operation(summary = "농장 상세 조회", description = "농장 상세 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
-                    content = @Content(schema = @Schema(implementation = NoticeDetailResponse.class))),
+                    content = @Content(schema = @Schema(implementation = FarmDetailResponse.class))),
             @ApiResponse(responseCode = "404", description = "사용자 혹은 농장이 존재하지 않음")
     })
     @GetMapping("/{farmCode}")
     public ResponseEntity<?> getFarmDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int farmCode) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return farmService.getFarmDetail(userCode, farmCode);
+    }
+
+
+    @Operation(summary = "수익률 Top 10 농장 목록 조회", description = "수익률 Top 10 농장 목록 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = FarmTop10ListResponse.class))),
+            @ApiResponse(responseCode = "404", description = "사용자가 존재하지 않음")
+    })
+    @GetMapping("/top-ten")
+    public ResponseEntity<?> getRateTop10FarmList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return farmService.getRateTop10FarmList(userCode);
     }
 }
