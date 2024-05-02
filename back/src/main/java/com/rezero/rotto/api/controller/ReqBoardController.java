@@ -48,7 +48,7 @@ public class ReqBoardController {
     }
 
 
-    @Operation(summary = "문의게시글 생성",
+    @Operation(summary = "문의게시글 생성(등록)",
             description = "문의게시글을 생성해볼까요?")
     @ApiResponses(value = {
             @ApiResponse(responseCode ="200", description = "게시글 생성 성공",
@@ -60,4 +60,34 @@ public class ReqBoardController {
     public  ResponseEntity<?> postReqBoard(int userCode, ReqBoardDetailRegisterModifyResponse req){
         return reqBoardService.postReqBoard(userCode, req);
     }
+
+
+    @Operation(summary = "문의게시글 수정",
+            description = "문의게시글을 수정해볼까요?")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode ="200", description = "게시글 수정 성공",
+                    content = @Content(schema = @Schema(implementation = ReqBoardDetailRegisterModifyResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않은 게시글")
+    })
+
+    @PatchMapping("/{req-board-code}")
+    public  ResponseEntity<?> deleteReqBoard(int userCode, int reqBoardCode, ReqBoardDetailRegisterModifyResponse req){
+        return reqBoardService.updateReqBoard(userCode, reqBoardCode, req);
+    }
+
+
+    @Operation(summary = "문의게시글 삭제",
+            description = "문의게시글을 삭제해볼까요?")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode ="200", description = "게시글 삭제 성공",
+                    content = @Content(schema = @Schema(implementation = ReqBoardDetailRegisterModifyResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않은 게시글")
+    })
+
+    @DeleteMapping("/{req-board-code}")
+    public  ResponseEntity<?> deleteReqBoard(int userCode, int reqBoardCode){
+        return reqBoardService.deleteReqBoard(userCode, reqBoardCode);
+    }
+
+
 }

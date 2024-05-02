@@ -83,5 +83,59 @@ public class ReqBoardServiceImpl implements ReqBoardService {
         return ResponseEntity.status(HttpStatus.CREATED).body("게시글 생성 완료");
     }
 
+    public ResponseEntity<?> updateReqBoard(int userCode, int reqBoardCode,
+                                            ReqBoardDetailRegisterModifyResponse updateData) {
+        // 해당 유저가 존재하는지 검사
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        // 해당 게시글이 존재하는지 검사
+        ReqBoard reqBoard = reqBoardRepository.findByReqBoardCode(reqBoardCode);
+        if (reqBoard == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // 게시글이 해당 사용자의 것인지 검사
+        if (reqBoard.getUserCode() != userCode) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("수정 권한이 없습니다.");
+        }
+
+        // 게시글 수정
+        reqBoard.setTitle(updateData.getTitle());
+        reqBoard.setContent(updateData.getContents());
+        reqBoardRepository.save(reqBoard);
+
+        return ResponseEntity.ok().body("게시글 수정 완료");
+    }
+
+    public ResponseEntity<?> deleteReqBoard(int userCode, int reqBoardCode) {
+        // 유저가 존재하는지 확인
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        // 게시글이 존재하는지 확인
+        ReqBoard reqBoard = reqBoardRepository.findByReqBoardCode(reqBoardCode);
+        if (reqBoard == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // 게시글이 해당 사용자의 것인지 확인
+        if (reqBoard.getUserCode() != userCode) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("삭제 권한이 없습니다.");
+        }
+
+        // 게시글 실제 삭제
+        reqBoardRepository.delete(reqBoard);
+
+        return ResponseEntity.ok().body("게시글 삭제 완료");
+    }
+
+
+
+
 }
 

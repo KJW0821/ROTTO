@@ -8,4 +8,6 @@ public interface ReqBoardService {
     ResponseEntity<?> getReqBoardList(int userCode);
     ResponseEntity<?> getReqBoardDetail(int userCode, int reqBoardCode);
     ResponseEntity<?> postReqBoard(int userCode , ReqBoardDetailRegisterModifyResponse reqRegisterBoard);
+    ResponseEntity<?> updateReqBoard(int userCode, int reqBoardCode, ReqBoardDetailRegisterModifyResponse reqRegisterBoard);
+    ResponseEntity<?> deleteReqBoard(int userCode, int reqBoardCode);
 }
