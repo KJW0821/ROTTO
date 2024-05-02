@@ -53,14 +53,20 @@ public class SubscriptionServiceImpl {
 
             SubscriptionListDto subscriptionListDto = SubscriptionListDto.builder()
                     .subscriptionCode(subscription.getSubscriptionCode())
-                    .farmCode(subscription.getFarmCode())
-
+                    .farmCode(subscription.getFarm().getFarmCode())
+                    .farmName(subscription.getFarm().getFarmName())
+                    .confirmPrice(subscription.getConfirmPrice())
+                    .applyCount(subscription.getApplyCount())
+                    .endTime(subscription.getEndedTime())
+                    .limitNum(subscription.getLimitNum())
                     .build();
 
             subscriptionListDtos.add(subscriptionListDto);
         }
 
         SubscriptionListResponse response = SubscriptionListResponse.builder()
+                .subscriptions(subscriptionListDtos)
+                .totalPages(totalPages)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
