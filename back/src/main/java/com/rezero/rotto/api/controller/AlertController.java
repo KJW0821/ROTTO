@@ -52,4 +52,17 @@ public class AlertController {
         return alertService.getAlertDetail(userCode, alertCode);
     }
 
+
+    @Operation(summary = "알림 삭제", description = "알림 삭제")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "사용자 혹은 알림이 존재하지 않음")
+    })
+    @DeleteMapping("/{alertCode}")
+    public ResponseEntity<?> deleteAlert(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+                                            @PathVariable int alertCode) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return alertService.deleteAlert(userCode, alertCode);
+    }
+
 }
