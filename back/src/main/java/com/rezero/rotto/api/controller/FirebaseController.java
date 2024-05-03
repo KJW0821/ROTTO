@@ -1,7 +1,7 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.FirebaseService;
-import com.rezero.rotto.config.FirebaseConfig;
+//import com.rezero.rotto.config.FirebaseConfig;
 import com.rezero.rotto.dto.request.FirebaseNotificationRequest;
 import com.rezero.rotto.dto.response.FarmListResponse;
 import io.swagger.v3.oas.annotations.Operation;
