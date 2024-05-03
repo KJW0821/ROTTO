@@ -1,12 +1,19 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import Colors from '../../constants/Colors';
 
-const CustomButton = ({children, onPress}) => {
+const CustomButton = ({children, onPress, style, btnColor, disabled}) => {
   return (
-    <View style={styles.buttonOuterContainer}>
+    <View style={[styles.buttonOuterContainer, style]}>
       <Pressable 
-        style={({pressed}) => pressed ? [styles.buttonInnerContainer, styles.pressed] : styles.buttonInnerContainer} 
+        style={
+          ({pressed}) => 
+            pressed ? 
+            [styles.buttonInnerContainer, { ...styles.pressed, backgroundColor: btnColor ? btnColor : Colors.btnBlue }] 
+            : 
+            [styles.buttonInnerContainer, { backgroundColor: disabled ? '#B3B3B3' : btnColor ? btnColor : Colors.btnBlue }]
+        } 
         onPress={onPress} 
+        disabled={disabled === undefined ? false : disabled }
       >
         <Text style={styles.buttonText}>{children}</Text>
       </Pressable>
