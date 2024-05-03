@@ -1,7 +1,9 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.SubscriptionService;
+import com.rezero.rotto.dto.response.SubscriptionDetailResponse;
 import com.rezero.rotto.dto.response.SubscriptionListResponse;
+import com.rezero.rotto.entity.Subscription;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,4 +36,19 @@ public class SubscriptionController {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return subscriptionService.getSubscriptionList(userCode, page);
     }
+
+
+    @Operation(summary = "청약 상세 조회", description = "청약을 상세 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = SubscriptionDetailResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
+    })
+    @GetMapping("/{subscription-code}")
+    public ResponseEntity<?> getSubscriptionDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, int subscriptionCode) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return subscriptionService.getSubscriptionDetail(userCode, subscriptionCode);
+    }
+
+
 }
