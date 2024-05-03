@@ -6,6 +6,9 @@ import Colors from '../../constants/Colors';
 import { useState } from 'react';
 import UserTopBar from '../../components/user/UserTopBar';
 import { signIn } from '../../utils/userApi';
+import TokenService from '../../utils/token';
+
+// 나중에 회원가입 진행사항 progress bar로 보여주기
 
 const SignInScreen = ({navigation}) => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -26,6 +29,8 @@ const SignInScreen = ({navigation}) => {
       password
     });
     if (res.status === 200) {
+      const { accessToken, refreshToken } = res.data;
+      await TokenService.setToken('Bearer ' + accessToken, 'Bearer ' + refreshToken);
       navigation.navigate('Routers');
       setErrMsg('');
     } else {
