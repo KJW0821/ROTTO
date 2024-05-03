@@ -3,6 +3,7 @@ pragma solidity ^0.8.25;
 
 import "./MyStructs.sol";
 import "./interfaces/ITokenCreation.sol";
+import "./interfaces/ITokenDistribute.sol";
 import "./TokenCreation.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -18,7 +19,7 @@ contract TokenManager is Ownable {
         return_rate: 5
     });
     address private tokenCreationAddress;
-
+    address private tokenDistributeAddress;
 
 
     constructor() Ownable(msg.sender) {}
@@ -32,6 +33,11 @@ contract TokenManager is Ownable {
         tokenCreationAddress = _addr;
     }
 
+    function setTokenDistributeAddress(address _addr) public {
+        require(_addr != address(0), unicode"올바르지 않은 주소입니다.");
+        tokenDistributeAddress = _addr;
+    }
+
 
     // 토큰 생성
     function createToken(uint amount) external onlyOwner {
@@ -41,8 +47,8 @@ contract TokenManager is Ownable {
     }
 
     // 사용자에게 토큰 발급
-    function A(address _wallet, uint amount) external onlyOwner {
+    function distributeToken(uint code, address _wallet, uint amount) external onlyOwner {
         emit testDistribute("TokenManager.distribute");
-        
+        ITokenDistribute(tokenDistributeAddress).distributeToken(code, _wallet, amount);
     }
 }
