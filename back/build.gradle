@@ -19,6 +19,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	google() // Firebase Admin SDK 를 위해 추가
 }
 
 dependencies {
@@ -78,5 +79,8 @@ dependencies {
 
 	// SCP
 	implementation 'com.jcraft:jsch:0.1.55'
+
+	// Firebase Admin SDK
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
 
 }
