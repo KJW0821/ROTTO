@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/subscription")
-@Tag(name = "Subscription", description = "청약조회를 위한 API")
+@Tag(name = "Subscription 컨트롤러", description = "청약조회를 위한 API")
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
