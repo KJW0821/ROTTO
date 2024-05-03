@@ -38,8 +38,8 @@ const PasswordInputScreen = ({navigation}) => {
     }
   }, [password])
 
-  const pressConfirmHandler = () => {
-    signUp({
+  const pressConfirmHandler = async () => {
+    await signUp({
       name: signupInfo.name,
       juminNo: signupInfo.personId.slice(0, 6),
       phoneNum: signupInfo.phoneNumber,
@@ -121,11 +121,6 @@ const styles = StyleSheet.create({
   inputText: {
     fontFamily: 'pretendard-regular',
     fontSize: 14
-  },
-  emptyCellText: {
-    fontFamily: 'pretendard-regular',
-    fontSize: 14,
-    color: Colors.iconGray
   },
   description: {
     fontFamily: 'pretendard-semiBold',

@@ -41,7 +41,7 @@ const PhoneNumberInputScreen = ({navigation}) => {
               keyboardType="number-pad"
               value={phoneNumber
                 .replace(/[^0-9]/g, '')
-                .replace(/(^02.{0}|^01.{1}|[0-9]{3,4})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")
+                .replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")
               }
             />
             {
@@ -76,10 +76,5 @@ const styles = StyleSheet.create({
   inputText: {
     fontFamily: 'pretendard-regular',
     fontSize: 14
-  },
-  emptyCellText: {
-    fontFamily: 'pretendard-regular',
-    fontSize: 14,
-    color: Colors.iconGray
   }
 });

@@ -1,11 +1,12 @@
 import API from "./Api";
+import TokenService from "./token";
 
 export const signUp = async (data) => {
   try {
     const res = await API.post('/user/signup', data);
     return res;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -14,7 +15,7 @@ export const signIn = async (data) => {
     const res = await API.post('/auth/login', data);
     return res;
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return err;
   }
 };

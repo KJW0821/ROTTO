@@ -7,7 +7,7 @@ const OnboardingScreen = () => {
   return (
     <View>
       <Button title="회원가입" onPress={() => navigation.navigate('NameIdInput')} />
-      <Button title="로그인" />
+      <Button title="로그인" onPress={() => navigation.navigate('SignIn')} />
     </View>
   )
 }
