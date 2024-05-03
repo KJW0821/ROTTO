@@ -1,8 +1,8 @@
-// import { configureStore } from "@reduxjs/toolkit";
-// import { userSlice } from "./user";
+import { configureStore } from "@reduxjs/toolkit";
+import signUpSlice from "./signUpSlice";
 
-// export const store = configureStore({
-//   reducer: {
-//     userInfo: userSlice
-//   }
-// });
+export const store = configureStore({
+  reducer: {
+    signupInfo: signUpSlice
+  }
+});
