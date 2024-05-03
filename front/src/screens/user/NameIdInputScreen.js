@@ -13,7 +13,6 @@ const NameIdInputScreen = ({navigation}) => {
   const emptyCells = '●●●●●●●';
   const [name, setName] = useState('');
   const [personId, setPersonId] = useState('');
-  const nameInputRef = useRef();
   const idInputRef = useRef();
   const dispatch = useDispatch();
 
