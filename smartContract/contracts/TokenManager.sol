@@ -17,16 +17,21 @@ contract TokenManager is Ownable {
         limit_num: 10,
         return_rate: 5
     });
-    address tokenCreationAddress;
+    address private tokenCreationAddress;
 
 
-    constructor(address _addr) Ownable(msg.sender) {
-        tokenCreationAddress = _addr;
-    }
+
+    constructor() Ownable(msg.sender) {}
 
     event testCreateToken(string message);
     event testDistribute(string message);
     event CheckMsgSender(address addr);
+
+    function setTokenCreationAddress(address _addr) public {
+        require(_addr != address(0), unicode"올바르지 않은 주소입니다.");
+        tokenCreationAddress = _addr;
+    }
+
 
     // 토큰 생성
     function createToken(uint amount) external onlyOwner {
