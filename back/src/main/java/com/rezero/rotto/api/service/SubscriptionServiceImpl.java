@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.service;
 
 import com.rezero.rotto.dto.dto.SubscriptionListDto;
+import com.rezero.rotto.dto.response.SubscriptionDetailResponse;
 import com.rezero.rotto.dto.response.SubscriptionListResponse;
 import com.rezero.rotto.entity.Subscription;
 import com.rezero.rotto.entity.User;
@@ -70,5 +71,28 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+    public ResponseEntity<?> getSubscriptionDetail(int userCode, int subscriptionCode){
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        Subscription subscriptionDetail = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
+        SubscriptionDetailResponse subscriptionDetailResponse = SubscriptionDetailResponse.builder()
+                .subscriptionCode(subscriptionDetail.getSubscriptionCode())
+                .farmCode(subscriptionDetail.getFarm().getFarmCode())
+                .farmName(subscriptionDetail.getFarm().getFarmName())
+                .confirmPrice(subscriptionDetail.getConfirmPrice())
+                .startedTime(subscriptionDetail.getStartedTime())
+                .endTime(subscriptionDetail.getEndedTime())
+                .returnRate(subscriptionDetail.getReturnRate())
+                .limitNum(subscriptionDetail.getLimitNum())
+                .applyCount(subscriptionDetail.getApplyCount())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(subscriptionDetailResponse);
     }
 }
