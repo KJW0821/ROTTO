@@ -19,6 +19,10 @@ contract TokenStorage is ERC20, Ownable, AccessControl {
         _grantRole(DISTRIBUTOR_ROLE, _distributor);
     }
 
+    function decimals() public pure override returns(uint8) {
+        return 0;
+    }
+
     event testEvent(string message);
     event testAddress(address addr);
     
