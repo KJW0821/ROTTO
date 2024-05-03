@@ -73,6 +73,11 @@ public class ReqBoardServiceImpl implements ReqBoardService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
+        // 'content' 필드에 대한 데이터 유효성 검사
+        if (reqRegisterBoard.getContent() == null || reqRegisterBoard.getContent().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Content cannot be null or empty");
+        }
+
         // ReqBoard 엔티티 생성 및 저장
         ReqBoard reqBoard = new ReqBoard();
         reqBoard.setTitle(reqRegisterBoard.getTitle());
@@ -80,7 +85,7 @@ public class ReqBoardServiceImpl implements ReqBoardService {
         reqBoard.setUserCode(userCode); // User 엔티티 설정
         reqBoardRepository.save(reqBoard);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("게시글 생성 완료");
+        return ResponseEntity.status(HttpStatus.CREATED).body(reqBoard);
     }
 
     public ResponseEntity<?> updateReqBoard(int userCode, int reqBoardCode,
@@ -102,12 +107,17 @@ public class ReqBoardServiceImpl implements ReqBoardService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("수정 권한이 없습니다.");
         }
 
+        // 'content' 필드에 대한 데이터 유효성 검사
+        if (reqBoard.getContent() == null || reqBoard.getContent().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Content cannot be null or empty");
+        }
+
         // 게시글 수정
         reqBoard.setTitle(updateData.getTitle());
         reqBoard.setContent(updateData.getContent());
         reqBoardRepository.save(reqBoard);
 
-        return ResponseEntity.ok().body("게시글 수정 완료");
+        return ResponseEntity.ok().body(reqBoard);
     }
 
     public ResponseEntity<?> deleteReqBoard(int userCode, int reqBoardCode) {

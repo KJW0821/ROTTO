@@ -1,6 +1,8 @@
 package com.rezero.rotto.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -27,7 +29,10 @@ public class ReqBoard {
     @Column(name = "title")
     String title;
 
-    @Column(name = "content")
+
+    @NotNull(message = "Content cannot be null")
+    @NotEmpty(message = "Content cannot be empty")
+    @Column(nullable = false, columnDefinition = "TEXT DEFAULT ''", name = "content")
     String content;
 
     @CreationTimestamp
