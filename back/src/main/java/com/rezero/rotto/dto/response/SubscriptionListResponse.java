@@ -10,5 +10,6 @@ import java.util.List;
 @Getter
 public class SubscriptionListResponse {
 
-    private List<SubscriptionListDto> supscriptionListDtos;
+    private List<SubscriptionListDto> subscriptions;
+    private int totalPages;
 }

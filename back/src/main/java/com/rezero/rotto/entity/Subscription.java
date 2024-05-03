@@ -19,8 +19,9 @@ public class Subscription {
     @Column(name = "subscription_code")
     int subscriptionCode;
 
-    @Column(name = "farm_code")
-    int farmCode;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "farm_code")
+    private Farm farm;
 
     @Column(name = "confirm_price")
     int confirmPrice;
@@ -39,5 +40,6 @@ public class Subscription {
 
     @Column(name = "apply_count")
     int applyCount;
+
 
 }
