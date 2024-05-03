@@ -3,8 +3,10 @@ package com.rezero.rotto.api.service;
 import com.rezero.rotto.dto.dto.SubscriptionListDto;
 import com.rezero.rotto.dto.response.SubscriptionDetailResponse;
 import com.rezero.rotto.dto.response.SubscriptionListResponse;
+import com.rezero.rotto.entity.Farm;
 import com.rezero.rotto.entity.Subscription;
 import com.rezero.rotto.entity.User;
+import com.rezero.rotto.repository.FarmRepository;
 import com.rezero.rotto.repository.SubscriptionRepository;
 import com.rezero.rotto.repository.UserRepository;
 import com.rezero.rotto.utils.Pagination;
@@ -24,6 +26,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
     private final SubscriptionRepository subscriptionRepository;
     private final UserRepository userRepository;
+    private final FarmRepository farmRepository;
     private final Pagination pagination;
 
     public ResponseEntity<?> getSubscriptionList(int userCode, Integer page){
@@ -51,11 +54,12 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         List<Subscription> pageSubscriptions = subscriptions.subList(startIdx, endIdx);
 
         for (Subscription subscription : pageSubscriptions) {
+            Farm farm = farmRepository.findByFarmCode(subscription.getFarmCode());
 
             SubscriptionListDto subscriptionListDto = SubscriptionListDto.builder()
                     .subscriptionCode(subscription.getSubscriptionCode())
-                    .farmCode(subscription.getFarm().getFarmCode())
-                    .farmName(subscription.getFarm().getFarmName())
+                    .farmCode(subscription.getFarmCode())
+                    .farmName(farm.getFarmName())
                     .confirmPrice(subscription.getConfirmPrice())
                     .applyCount(subscription.getApplyCount())
                     .endTime(subscription.getEndedTime())
@@ -81,10 +85,12 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         }
 
         Subscription subscriptionDetail = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
+        Farm farm = farmRepository.findByFarmCode(subscriptionDetail.getFarmCode());
+
         SubscriptionDetailResponse subscriptionDetailResponse = SubscriptionDetailResponse.builder()
                 .subscriptionCode(subscriptionDetail.getSubscriptionCode())
-                .farmCode(subscriptionDetail.getFarm().getFarmCode())
-                .farmName(subscriptionDetail.getFarm().getFarmName())
+                .farmCode(farm.getFarmCode())
+                .farmName(farm.getFarmName())
                 .confirmPrice(subscriptionDetail.getConfirmPrice())
                 .startedTime(subscriptionDetail.getStartedTime())
                 .endTime(subscriptionDetail.getEndedTime())
