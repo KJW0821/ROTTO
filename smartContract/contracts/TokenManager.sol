@@ -19,10 +19,6 @@ contract TokenManager is Ownable {
     });
     address private tokenCreationAddress;
 
-
-
-    constructor() Ownable(msg.sender) {}
-
     event testCreateToken(string message);
     event CheckMsgSender(address addr);
 
