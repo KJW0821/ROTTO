@@ -27,3 +27,11 @@ npm install @react-navigation/native
     - stores
     - utils
 
+### 24.05.03
+
+1. 알림 기능 구현
+- FCM
+```bash
+npx expo install @react-native-firebase/app
+npx expo install @react-native-firebase/messaging
+```
