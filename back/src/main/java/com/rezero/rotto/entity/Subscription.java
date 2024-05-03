@@ -29,7 +29,7 @@ public class Subscription {
     @Column(name = "started_time")
     LocalDateTime startedTime;
 
-    @Column(name = "ended_time")
+    @Column(name = "end_time")
     LocalDateTime endedTime;
 
     @Column(name = "limit_num")
