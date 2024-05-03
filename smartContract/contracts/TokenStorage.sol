@@ -56,4 +56,14 @@ contract TokenStorage is ERC20, Ownable, AccessControl {
         tokenSupplies[code] -= amount;
         ownToken[_wallet][code] = amount;
     }
+
+    // 기존 ERC20의 transfer 함수를 override 하여 사용자들 간의 거래를 막음
+    function transfer(address _wallet, uint256 amount) public override returns(bool) {
+        revert(unicode"잘못된 접근입니다.");
+    }
+
+    // 기존 ERC20의 transferFrom 함수를 override 하여 사용자들 간의 거래를 막음
+    function transferFrom(address from, address to, uint amount) public override returns(bool) {
+        revert(unicode"잘못된 접근입니다.");
+    }
 }
