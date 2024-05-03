@@ -25,6 +25,7 @@ contract TokenManager is Ownable {
     }
 
     event testCreateToken(string message);
+    event testDistribute(string message);
     event CheckMsgSender(address addr);
 
     // 토큰 생성
@@ -32,5 +33,11 @@ contract TokenManager is Ownable {
         emit CheckMsgSender(msg.sender);
         emit testCreateToken("TokenManager.createToken");
         ITokenCreation(tokenCreationAddress).createToken(testSubscription, amount);
+    }
+
+    // 사용자에게 토큰 발급
+    function A(address _wallet, uint amount) external onlyOwner {
+        emit testDistribute("TokenManager.distribute");
+        
     }
 }
