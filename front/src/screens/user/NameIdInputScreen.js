@@ -1,21 +1,21 @@
 import { View, Pressable, TextInput, Text, StyleSheet } from 'react-native';
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import Title from '../../components/user/Title';
 import CustomButton from '../../components/common/CustomButton';
 import Colors from '../../constants/Colors';
 import InputBox from '../../components/user/InputBox';
 import { useRef, useState } from 'react';
+import UserTopBar from '../../components/user/UserTopBar';
+import { useDispatch } from 'react-redux';
+import { inputName, inputPersonId } from '../../stores/signUpSlice';
 
-const SignupScreen = () => {
+const NameIdInputScreen = ({navigation}) => {
   const emptyCells = '●●●●●●●';
   const [name, setName] = useState('');
   const [personId, setPersonId] = useState('');
   const nameInputRef = useRef();
   const idInputRef = useRef();
-
-  const setFocus = (target) => {
-    target.current.focus();
-  };
+  const dispatch = useDispatch();
 
   const nameInputHandler = (enteredText) => {
     setName(enteredText);
@@ -25,13 +25,15 @@ const SignupScreen = () => {
     setPersonId(enteredText);
   };
 
+  const pressNextHandler = () => {
+    dispatch(inputName(name));
+    dispatch(inputPersonId(personId));
+    navigation.navigate('PhoneNumberInput');
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.topBar}>
-        <Pressable style={styles.backButton}>
-          <AntDesign name="left" size={24} />
-        </Pressable>
-      </View>
+      <UserTopBar navigation={navigation} />
       <View style={styles.dataContainer}>
         <Title>회원가입</Title>
         <View style={styles.inputsContainer}>
@@ -39,17 +41,14 @@ const SignupScreen = () => {
             description="이름을 입력해주세요"
             title="이름"
           >
-            <Pressable style={styles.inputContainer} onPress={setFocus.bind(this, nameInputRef)}>
-              <TextInput 
-                style={styles.inputText} 
-                autoCorrect={false}
-                autoCapitalize="none"
-                underlineColorAndroid="transparent"
-                ref={nameInputRef}
-                onChangeText={nameInputHandler}
-                value={name}
-              />
-            </Pressable>
+            <TextInput 
+              style={[styles.inputText, {flex: 1}]} 
+              autoCorrect={false}
+              autoCapitalize="none"
+              underlineColorAndroid="transparent"
+              onChangeText={nameInputHandler}
+              value={name}
+            />
             {
               name.length ?
               <MaterialIcons name="cancel" size={18} color={Colors.iconGray} onPress={() => setName('')} /> : <></>
@@ -59,7 +58,7 @@ const SignupScreen = () => {
             description="주민등록번호를 입력해주세요"
             title="주민등록번호"
           >
-            <Pressable onPress={setFocus.bind(this, idInputRef)} style={styles.inputContainer}>
+            <Pressable style={styles.inputContainer} onPress={() => idInputRef.current.focus()}>
               <TextInput 
                 style={{width: '0.05%'}} 
                 autoCorrect={false}
@@ -69,7 +68,7 @@ const SignupScreen = () => {
                 ref={idInputRef}
                 onChangeText={idInputHandler}
                 value={personId}
-                selectionColor='white'
+                selectionColor="white"
               />
               <Text>{personId.replace(/[^0-9]/g, '').replace(/^(\d{0,6})(\d{0,7})$/g, '$1-$2').replace(/-{1,2}$/g, '')}</Text>
               <Text style={styles.emptyCellText}>
@@ -86,27 +85,19 @@ const SignupScreen = () => {
             }
           </InputBox>
         </View>
-        <CustomButton>다음</CustomButton>
+        <CustomButton disabled={!name || !personId} onPress={pressNextHandler}>다음</CustomButton>
       </View>
     </View>
   )
 }
 
-export default SignupScreen;
+export default NameIdInputScreen;
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     flex: 1,
     alignItems: 'center'
-  },
-  topBar: {
-    width: '100%',
-    backgroundColor: 'white'
-  },
-  backButton: {
-    marginLeft: 24,
-    marginVertical: 16
   },
   dataContainer: {
     width: '80%'
