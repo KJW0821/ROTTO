@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.25;
+pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -14,7 +14,7 @@ contract TokenStorage is ERC20, Ownable, AccessControl {
     mapping(uint => uint) public tokenSupplies; // 청약 코드에 맞는 token이 현재 몇개 소유중인지 확인.
     mapping(address => mapping(uint => uint)) ownToken;
 
-    constructor (address _minter, address _distributor) ERC20("RoastingToken", "ROTTO") Ownable(msg.sender) {
+    constructor (address _minter, address _distributor) ERC20("RoastingToken", "ROTTO") {
         _grantRole(MINTER_ROLE, _minter); // TokenCreation contract에 토큰 생성 역할 부여
         _grantRole(DISTRIBUTOR_ROLE, _distributor);
     }

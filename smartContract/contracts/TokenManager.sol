@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.25;
+pragma solidity ^0.8.19;
 
 import "./MyStructs.sol";
 import "./interfaces/ITokenCreation.sol";
@@ -20,9 +20,6 @@ contract TokenManager is Ownable {
     });
     address private tokenCreationAddress;
     address private tokenDistributeAddress;
-
-
-    constructor() Ownable(msg.sender) {}
 
     event testCreateToken(string message);
     event testDistribute(string message);
