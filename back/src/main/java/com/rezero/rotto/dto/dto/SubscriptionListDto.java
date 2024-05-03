@@ -13,6 +13,7 @@ public class SubscriptionListDto {
 
     private int subscriptionCode;
     private int farmCode;
+    private String farmName;
     private int confirmPrice;
     private LocalDateTime startedTime;
     private LocalDateTime endTime;
