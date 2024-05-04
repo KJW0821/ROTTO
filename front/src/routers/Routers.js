@@ -1,5 +1,6 @@
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import HomeRouters from "./HomeRouters";
+import SettingRouters from "./SettingRouters";
 
 const Routers = () => {
   const Tab = createMaterialBottomTabNavigator();
@@ -11,6 +12,10 @@ const Routers = () => {
       <Tab.Screen 
         name="HomePage"
         component={HomeRouters} 
+      />
+      <Tab.Screen
+        name="SettingPage"
+        component={SettingRouters}
       />
     </Tab.Navigator>
   )
