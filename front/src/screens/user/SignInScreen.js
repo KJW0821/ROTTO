@@ -29,8 +29,7 @@ const SignInScreen = ({navigation}) => {
       password
     });
     if (res.status === 200) {
-      const { accessToken, refreshToken } = res.data;
-      await TokenService.setToken('Bearer ' + accessToken, 'Bearer ' + refreshToken);
+      await TokenService.setToken(res.data.accessToken, res.data.refreshToken);
       navigation.navigate('Routers');
       setErrMsg('');
     } else {

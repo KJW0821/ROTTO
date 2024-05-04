@@ -1,8 +1,8 @@
 import * as SecureStore from 'expo-secure-store'
 
 const StorageKeys = {
-  AccessToken: null,
-  RefreshToken: null
+  AccessToken: 'accessToken',
+  RefreshToken: 'refreshToken'
 };
 
 const TokenService = {

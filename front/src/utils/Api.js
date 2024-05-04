@@ -18,7 +18,7 @@ API.interceptors.request.use(
   async (config) => {
     const accessToken = await TokenService.getAccessToken();
     if (accessToken) {
-      config.headers['Authorization'] = accessToken;
+      config.headers['Authorization'] = 'Bearer' + accessToken;
     }
     return config;
   },
@@ -39,13 +39,13 @@ API.interceptors.response.use(
       if (!isRefreshing) {
         isRefreshing = true;
         const refreshToken = await TokenService.getRefreshToken();
-        const headers = { Authorization: refreshToken };
+        const headers = { Authorization: 'Bearer' + refreshToken };
 
         refreshPromise = await reissueAPI.get('/auth/refresh', { headers })
           .then(async (res) => {
             const access = res.data.accessToken;
             const refresh = res.data.refreshToken;
-            await TokenService.setToken('Bearer ' + access, 'Bearer ' + refresh);
+            await TokenService.setToken(access, refresh);
             return Promise.resolve();
           })
           .catch(async (err) => {
