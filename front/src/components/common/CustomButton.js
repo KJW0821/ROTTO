@@ -1,7 +1,7 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import Colors from '../../constants/Colors';
 
-const CustomButton = ({children, onPress, style, btnColor, disabled}) => {
+const CustomButton = ({children, onPress, style, btnColor, disabled, fontFamily}) => {
   return (
     <View style={[styles.buttonOuterContainer, style]}>
       <Pressable 
@@ -15,7 +15,7 @@ const CustomButton = ({children, onPress, style, btnColor, disabled}) => {
         onPress={onPress} 
         disabled={disabled === undefined ? false : disabled }
       >
-        <Text style={styles.buttonText}>{children}</Text>
+        <Text style={[styles.buttonText, { fontFamily: fontFamily ? fontFamily : 'pretendard-bold' }]}>{children}</Text>
       </Pressable>
     </View>
   )
@@ -40,8 +40,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     marginBottom: 2,
-    fontSize: 12,
-    fontFamily: 'pretendard-bold'
+    fontSize: 12
   },
   pressed: {
     opacity: 0.75
