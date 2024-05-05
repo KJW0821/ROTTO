@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import ToggleButton from '../../components/common/ToggleButton';
 import SettingService from '../../utils/setting';
 
-const SettingScreen = () => {
+const SettingScreen = ({navigation}) => {
   const [isCheckedBio, setIsCheckedBio] = useState(false);
   const [isCheckedPush, setIsCheckedPush] = useState(false);
   
@@ -41,8 +41,6 @@ const SettingScreen = () => {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>{isCheckedBio.toString()}</Text>
-      <Text style={styles.title}>{isCheckedPush.toString()}</Text>
       <View style={styles.topBar}>
         <Text style={styles.title}>설정</Text>
       </View>
@@ -74,7 +72,7 @@ const SettingScreen = () => {
           />
         </View>
         <View style={styles.line} />
-        <Pressable style={styles.menuContainer}>
+        <Pressable style={styles.menuContainer} onPress={() => navigation.navigate('inquiry')}>
           <Text style={styles.menuText}>문의하기</Text>
         </Pressable>
         <Pressable style={styles.menuContainer}>
