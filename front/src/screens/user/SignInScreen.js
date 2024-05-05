@@ -5,7 +5,7 @@ import CustomButton from '../../components/common/CustomButton';
 import Colors from '../../constants/Colors';
 import { useState } from 'react';
 import UserTopBar from '../../components/user/UserTopBar';
-import { signIn } from '../../utils/userApi';
+import { getUserInfo, signIn } from '../../utils/userApi';
 import TokenService from '../../utils/token';
 
 // 나중에 회원가입 진행사항 progress bar로 보여주기
@@ -30,6 +30,8 @@ const SignInScreen = ({navigation}) => {
     });
     if (res.status === 200) {
       await TokenService.setToken(res.data.accessToken, res.data.refreshToken);
+      // const userInfoRes = await getUserInfo();
+      // await TokenService.setUserCode(userInfoRes.data.userCode);
       navigation.navigate('Routers');
       setErrMsg('');
     } else {

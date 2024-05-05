@@ -2,7 +2,8 @@ import * as SecureStore from 'expo-secure-store'
 
 const StorageKeys = {
   AccessToken: 'accessToken',
-  RefreshToken: 'refreshToken'
+  RefreshToken: 'refreshToken',
+  UserCode: 'userCode'
 };
 
 const TokenService = {
@@ -13,6 +14,15 @@ const TokenService = {
       await SecureStore.setItemAsync(StorageKeys.RefreshToken, refreshToken);
     } catch (error) {
       console.error('토큰 저장 실패', error);
+    }
+  },
+
+  // 유저코드 저장
+  setUserCode: async (userCode) => {
+    try {
+      await SecureStore.setItemAsync(StorageKeys.UserCode, userCode);
+    } catch (error) {
+      console.error('유저코드 저장 실패', error);
     }
   },
 
@@ -32,6 +42,16 @@ const TokenService = {
       return await SecureStore.getItemAsync(StorageKeys.RefreshToken);
     } catch (error) {
       console.error('refreshToken 조회 실패', error);
+      return null;
+    }
+  },
+
+  // 유저코드 조회
+  getUserCode: async () => {
+    try {
+      return await SecureStore.getItemAsync(StorageKeys.UserCode);
+    } catch (error) {
+      console.error('userCode 조회 실패', error);
       return null;
     }
   },
