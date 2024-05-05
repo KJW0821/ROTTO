@@ -28,3 +28,12 @@ export const getUserInfo = async () => {
     return err;
   }
 };
+
+export const logout = async () => {
+  try {
+    await API.post('/auth/logout')
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};

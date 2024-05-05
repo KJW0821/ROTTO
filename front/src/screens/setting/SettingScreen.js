@@ -3,6 +3,8 @@ import Colors from '../../constants/Colors';
 import { useEffect, useState } from 'react';
 import ToggleButton from '../../components/common/ToggleButton';
 import SettingService from '../../utils/setting';
+import { logout } from '../../utils/userApi';
+import TokenService from '../../utils/token';
 
 const SettingScreen = ({navigation}) => {
   const [isCheckedBio, setIsCheckedBio] = useState(false);
@@ -38,6 +40,15 @@ const SettingScreen = ({navigation}) => {
 
     loadInitialData();
   }, []);
+
+  const logoutHandler = async () => {
+    await logout();
+    await TokenService.clearAllData();
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Onboarding" }],
+    });
+  };
 
   return (
     <View style={styles.screen}>
@@ -79,7 +90,7 @@ const SettingScreen = ({navigation}) => {
           <Text style={styles.menuText}>이용약관</Text>
         </Pressable>
         <View style={styles.line} />
-        <Pressable style={styles.menuContainer}>
+        <Pressable onPress={logoutHandler} style={styles.menuContainer}>
           <Text style={[styles.menuText, { color: 'red' }]}>로그아웃</Text>
         </Pressable>
         <Pressable style={styles.menuContainer}>
