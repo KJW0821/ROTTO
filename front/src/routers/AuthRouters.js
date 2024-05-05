@@ -5,12 +5,14 @@ import NameIdInputScreen from "../screens/user/NameIdInputScreen";
 import PhoneNumberInputScreen from "../screens/user/PhoneNumberInputScreen";
 import PasswordInputScreen from "../screens/user/PasswordInputScreen";
 import SignInScreen from "../screens/user/SignInScreen";
+import SplashScreen from "../screens/loading/SplashScreen";
 
 const AuthRouters = () => {
   const AuthStack = createStackNavigator();
 
   return (
     <AuthStack.Navigator screenOptions={{ headerShown: false }} >
+      <AuthStack.Screen name="Splash" component={SplashScreen} />
       <AuthStack.Screen name="Onboarding" component={OnboardingScreen} />
       <AuthStack.Screen name="NameIdInput" component={NameIdInputScreen} />
       <AuthStack.Screen name="PhoneNumberInput" component={PhoneNumberInputScreen} />
