@@ -154,14 +154,21 @@ public class AuthController {
             }
 
             String refreshToken = authorizationHeader.substring(7);
+            RefreshToken token = refreshTokenRepository.findById(refreshToken).orElse(null);
 
             // 토큰 유효성 및 블랙리스트 검사
-            if (!jwtTokenProvider.validateToken(refreshToken)) {
+            if (!jwtTokenProvider.validateToken(refreshToken) || token == null) {
                 throw new RuntimeException("리프레시 토큰이 유효하지 않거나 블랙리스트에 등록되어 있습니다.");
             }
 
-            String userCode = jwtTokenProvider.getPayload(refreshToken);
-            String newAccessToken = jwtTokenProvider.createAccessToken(userCode);
+            int userCode = token.getUserCode();
+
+            refreshTokenRepository.deleteById(refreshToken);
+
+            BlackList blackList = new BlackList(jwtTokenProvider.getExpiration(refreshToken), refreshToken);
+            blackListRepository.save(blackList);
+
+            String newAccessToken = jwtTokenProvider.createAccessToken(String.valueOf(userCode));
 
             TokenResponse tokenResponse = TokenResponse.builder()
                     .grantType("Bearer")
