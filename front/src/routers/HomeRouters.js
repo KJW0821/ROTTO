@@ -1,8 +1,9 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "../screens/home/HomeScreen";
 import AnnouncementScreen from "../screens/home/AnnouncementScreen";
-import NotificationScreen from "../screens/home/NotificationScreen";
 import NoticeScreen from "../screens/home/NoticeScreen";
+import AlertScreen from "../screens/home/AlertScreen";
+import AlertListScreen from "../screens/home/AlertListScreen";
 
 const HomeRouters = () => {
   const HomeStack = createStackNavigator();
@@ -12,7 +13,8 @@ const HomeRouters = () => {
       <HomeStack.Screen name="home" component={HomeScreen} />
       <HomeStack.Screen name="announcement" component={AnnouncementScreen} />
       <HomeStack.Screen name="notice" component={NoticeScreen} />
-      <HomeStack.Screen name="notification" component={NotificationScreen} />
+      <HomeStack.Screen name="alertList" component={AlertListScreen} />
+      <HomeStack.Screen name="alert" component={AlertScreen} />
     </HomeStack.Navigator>
   );
 };

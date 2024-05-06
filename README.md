@@ -35,3 +35,14 @@ npm install @react-navigation/native
 npx expo install @react-native-firebase/app
 npx expo install @react-native-firebase/messaging
 ```
+
+### 오류 및 수정
+
+1. login 시 아이디 하이픈 들어감 ( 헤결 )
+    - SignInScreen.js
+    - phoneNum: phoneNumber
+    => phoneNum: phoneNumber.replace(/-/g,'')
+
+2. login 아이디 입력 시
+    - 01012345678 치고 실수로 하나 더 입력하면 하나 더 들어가있음
+    - 01012345678a 하면 로그인 오류발생

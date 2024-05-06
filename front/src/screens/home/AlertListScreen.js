@@ -1,27 +1,25 @@
-import { useEffect, useState } from "react";
-import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
-import { getNoticeList } from "../../utils/noticeAPi";
-import { Ionicons } from "@expo/vector-icons";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { getAlertList } from "../../utils/AlertApi";
 
 import StackHeader from "../../components/common/StackHeader";
 import Colors from "../../constants/Colors";
 
-
-
-const AnnouncementScreen = () => {
+const AlertListScreen = () => {
   const Navigation = useNavigation();
-  const [announcements, setAnnouncements] = useState([]);
+  const [alerts, setalerts] = useState([]);
 
   useEffect(() => {
     const getList = async () => {
-      const res = await getNoticeList();
-      setAnnouncements(res.notices); // 상태 업데이트
+      const res = await getAlertList();
+      setalerts(res.alerts); // 상태 업데이트
     };
     getList();
   }, []);
 
-  const renderAnnouncementList = (itemData) => {
+  const renderAlertList = (itemData) => {
     const date = itemData.item.createTime.split("T")[0];
   
     return (
@@ -38,8 +36,8 @@ const AnnouncementScreen = () => {
             size={24}
             color="black"
             onPress={() =>
-              Navigation.navigate("notice", {
-                noticeCode: itemData.item.noticeCode,
+              Navigation.navigate("alert", {
+                alertCode: itemData.item.alertCode,
               })
             }
           />
@@ -52,20 +50,20 @@ const AnnouncementScreen = () => {
     <>
       <StackHeader screenName="home" />
       <View style={styles.screen}>
-        <Text style={styles.header}>공지사항</Text>
+        <Text style={styles.header}>알림</Text>
         <FlatList
-          data={announcements}
+          data={alerts}
           keyExtractor={(item) => {
-            item.noticeCode;
+            item.alertCode;
           }}
-          renderItem={renderAnnouncementList}
+          renderItem={renderAlertList}
         />
       </View>
     </>
   );
 };
 
-export default AnnouncementScreen;
+export default AlertListScreen;
 
 const styles = StyleSheet.create({
   screen: {

@@ -21,7 +21,7 @@ const NoticeScreen = ({ route }) => {
 
   return (
     <>
-      <StackHeader />
+      <StackHeader screenName="announcement" />
       <View style={styles.screen}>
         <Text style={styles.title}>{notice.title}</Text>
         <Text style={styles.date}>
