@@ -7,9 +7,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://k10e105.p.ssafy.io:3306/rotto?serverTimezone=Asia/Seoul&useUniCode=yes&characterEncoding=UTF-8
-    username: rezero
-    password: qweqwe123!@#
+    url: ENC(XFl0Kt80CSouAOd3u0Q8kyjQMHuJb0izBE8pH/KJzzZyMZlNIJWCpwCBGNEoTkL25445VkNqXdBscRlM2hkluBlS8em0PrnC3BFWqCADXzOTUqZJlGCmjW7SbgxLiCDZ1yJBmSNVFQYwWZUAKnCh/ghbPcksQVVqglRPO+Uebrtzq5qwMYQ5g6omJhMeYcs4)
+    username: ENC(27xTCeTSZsIf1cTtHXRLuM8yJeFCDiHW2T3uf3D3F/2JvBVDQptDP23jD+0bDBK+)
+    password: qweqwe123!@# # 암호화 필요
 
 
 
@@ -48,7 +48,7 @@ spring:
 
 jwt:
   token:
-    secret-key: cd6e92a4d0170740628945053d4bdf29d8bd71901a685715fbfd0e12e18775c8
+    secret-key: ENC(HFgq9BQv+A2rNULnmfkEvD1BXVAiUZQt58MniHjoyfqYjqbthDpR0bJ82Xb6tuJAAP6xtpUHCL+SM9W+U5jSE6EkOww2LotYyOC36qwPF5hZunKnEdzjorKuWDZmHM7nL0vi2rboU6KIZIjoYOh+cQ==)
   access-token:
     expire-length: 1800000
   refresh-token:
@@ -56,7 +56,7 @@ jwt:
   redis:
     host: redis
     port: 6379
-    password: rotto123
+    password: rotto123 # 암호화 필요
 
 
 # Multipart File Upload Setting
@@ -110,7 +110,7 @@ cloud:
       # 수정 필요
       bucket: rotto-rotto
     region:
-      static: ap-northeast-2
+      static: ENC(Lr5TujExoZ6kj+9RAOqLk17l/K7x3Wle6T8oHXJ1Cdbn4F2rennKK3R1WAjBgJSx)
     credentials:
       access-key: 추가
       secret-key: 추가
@@ -121,3 +121,7 @@ cloud:
 aes:
   encryption:
     key: ${AES_KEY}
+
+jasypt:
+  encryptor:
+    key: ${jasypt-key}

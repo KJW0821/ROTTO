@@ -21,7 +21,7 @@ public class KeyGeneratorUtil {
     public static void main(String[] args) throws Exception {
         // 현재 프로젝트 경로를 기준으로 상대 경로 설정
         String projectPath = System.getProperty("user.dir");
-        String relativePath = "/src/main/resources/aes_key.txt";
+        String relativePath = "/src/main/resources/aes_yml.txt";
         generateAndSaveKey(projectPath + relativePath);
     }
 
