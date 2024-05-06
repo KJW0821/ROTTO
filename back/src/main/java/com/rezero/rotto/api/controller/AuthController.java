@@ -94,7 +94,7 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "실패")
     })
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public ResponseEntity<?> logout(@RequestParam("accessToken") String accessToken,
                                     @RequestParam("refreshToken") String refreshToken) {
         try {
