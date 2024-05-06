@@ -21,22 +21,22 @@ public class ReqBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "req_board_code")
-    int reqBoardCode;
+    private int reqBoardCode;
 
     @Column(name = "user_code")
-    int userCode;
+    private int userCode;
 
     @Column(name = "title")
-    String title;
+    private String title;
 
 
     @NotNull(message = "Content cannot be null")
     @NotEmpty(message = "Content cannot be empty")
     @Column(nullable = false, columnDefinition = "TEXT DEFAULT ''", name = "content")
-    String content;
+    private String content;
 
     @CreationTimestamp
     @Column(name = "createTime")
-    LocalDateTime createTime;
+    private LocalDateTime createTime;
 
 }

@@ -49,13 +49,14 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
         Collections.reverse(subscriptions);
         List<Subscription> pageSubscriptions = subscriptions.subList(startIdx, endIdx);
+        
 
         for (Subscription subscription : pageSubscriptions) {
 
             SubscriptionListDto subscriptionListDto = SubscriptionListDto.builder()
                     .subscriptionCode(subscription.getSubscriptionCode())
-                    .farmCode(subscription.getFarm().getFarmCode())
-                    .farmName(subscription.getFarm().getFarmName())
+//                    .farmCode(subscription.getFarm().getFarmCode())
+//                    .farmName(subscription.getFarm().getFarmName())
                     .confirmPrice(subscription.getConfirmPrice())
                     .applyCount(subscription.getApplyCount())
                     .endTime(subscription.getEndedTime())
@@ -83,8 +84,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         Subscription subscriptionDetail = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
         SubscriptionDetailResponse subscriptionDetailResponse = SubscriptionDetailResponse.builder()
                 .subscriptionCode(subscriptionDetail.getSubscriptionCode())
-                .farmCode(subscriptionDetail.getFarm().getFarmCode())
-                .farmName(subscriptionDetail.getFarm().getFarmName())
+//                .farmCode(subscriptionDetail.getFarm().getFarmCode())
+//                .farmName(subscriptionDetail.getFarm().getFarmName())
                 .confirmPrice(subscriptionDetail.getConfirmPrice())
                 .startedTime(subscriptionDetail.getStartedTime())
                 .endTime(subscriptionDetail.getEndedTime())
