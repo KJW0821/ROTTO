@@ -17,28 +17,28 @@ public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "subscription_code")
-    int subscriptionCode;
+    private int subscriptionCode;
 
     @Column(name = "farm_code")
     private int farmCode;
 
     @Column(name = "confirm_price")
-    int confirmPrice;
+    private int confirmPrice;
 
     @Column(name = "started_time")
-    LocalDateTime startedTime;
+    private LocalDateTime startedTime;
 
     @Column(name = "end_time")
-    LocalDateTime endedTime;
+    private LocalDateTime endedTime;
 
     @Column(name = "limit_num")
-    int limitNum;
+    private int limitNum;
 
     @Column(name = "return_rate")
-    int returnRate;
+    private int returnRate;
 
     @Column(name = "apply_count")
-    int applyCount;
+    private int applyCount;
 
 
 }
