@@ -10,7 +10,7 @@ import java.util.Base64;
 @Configuration
 public class CryptoConfig {
 
-    @Value("${aes.encryption.key}")
+    @Value("${AES_KEY}")
     private String base64EncodedKey;
 
     @Bean
