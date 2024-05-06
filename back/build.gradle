@@ -17,6 +17,10 @@ configurations {
 	}
 }
 
+configurations.all {
+	exclude group: 'commons-logging', module: 'commons-logging'
+}
+
 repositories {
 	mavenCentral()
 	google() // Firebase Admin SDK 를 위해 추가
@@ -82,5 +86,7 @@ dependencies {
 
 	// Firebase Admin SDK
 	implementation 'com.google.firebase:firebase-admin:9.2.0'
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
+	implementation 'com.squareup.okio:okio:2.10.0'
 
 }

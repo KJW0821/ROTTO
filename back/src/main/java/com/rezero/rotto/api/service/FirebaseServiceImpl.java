@@ -52,17 +52,17 @@ public class FirebaseServiceImpl implements FirebaseService {
             List<InterestFarm> interestFarms = interestFarmRepository.findAll();
             for (InterestFarm interestFarm : interestFarms) {
                 User user = userRepository.findByUserCode(interestFarm.getUserCode());
-//                if (user != null) {
-//                    if (subscription.getEndedTime() != null && subscription.getEndedTime().toLocalDate().equals(yesterday)) {
-//                        sendMessage(user.getDeviceToken(), "End Time Reminder", "Your interested subscription ended yesterday.");
-//                    }
-//                    if (subscription.getStartedTime() != null && subscriptionStartDate.equals(today)) {
-//                        sendMessage(user.getDeviceToken(), "Start Time Reminder", "Your interested subscription starts today.");
-//                    }
-//                    if (subscription.getStartedTime() != null && subscriptionStartDate.equals(tomorrow)) {
-//                        sendMessage(user.getDeviceToken(), "Upcoming Start Time Reminder", "Your interested subscription starts tomorrow at 9 AM.");
-//                    }
-//                }
+                if (user != null) {
+                    if (subscription.getEndedTime() != null && subscription.getEndedTime().toLocalDate().equals(yesterday)) {
+                        sendMessage(user.getDeviceToken(), "End Time Reminder", "Your interested subscription ended yesterday.");
+                    }
+                    if (subscription.getStartedTime() != null && subscriptionStartDate.equals(today)) {
+                        sendMessage(user.getDeviceToken(), "Start Time Reminder", "Your interested subscription starts today.");
+                    }
+                    if (subscription.getStartedTime() != null && subscriptionStartDate.equals(tomorrow)) {
+                        sendMessage(user.getDeviceToken(), "Upcoming Start Time Reminder", "Your interested subscription starts tomorrow at 9 AM.");
+                    }
+                }
             }
         }
     }
@@ -84,5 +84,36 @@ public class FirebaseServiceImpl implements FirebaseService {
             System.err.println("Error sending message: " + e.getMessage());
         }
     }
+
+
+//    public void sendMessageTo(final Long receiverId, final Notification notification) {
+//
+//        //알림 요청 받는 사람의 FCM Token이 존재하는지 확인
+//        final FcmToken fcmToken = fcmTokenRepository.findByMemberId(receiverId)
+//                .orElseThrow(() -> new NotificationException(NOT_FOUND_FCM_TOKEN));
+//
+//        //메시지 만들기
+//        final String message = makeMessage(fcmToken.getToken(), notification);
+//
+//        final HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+//        //OAuth 2.0 사용
+//        httpHeaders.add(HttpHeaders.AUTHORIZATION, PREFIX_ACCESS_TOKEN + getAccessToken());
+//
+//        final HttpEntity<String> httpEntity = new HttpEntity<>(message, httpHeaders);
+//
+//        final String fcmRequestUrl = PREFIX_FCM_REQUEST_URL + projectId + POSTFIX_FCM_REQUEST_URL;
+//
+//        final ResponseEntity<String> exchange = restTemplate.exchange(
+//                fcmRequestUrl,
+//                HttpMethod.POST,
+//                httpEntity,
+//                String.class
+//        );
+//
+//        if (exchange.getStatusCode().isError()) {
+//            log.error("firebase 접속 에러 = {}", exchange.getBody());
+//        }
+//    }
 
 }
