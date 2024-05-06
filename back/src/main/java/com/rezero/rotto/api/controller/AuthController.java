@@ -3,6 +3,7 @@ package com.rezero.rotto.api.controller;
 import com.rezero.rotto.dto.request.LoginRequest;
 import com.rezero.rotto.dto.response.TokenResponse;
 import com.rezero.rotto.entity.BlackList;
+import com.rezero.rotto.entity.RefreshToken;
 import com.rezero.rotto.entity.User;
 import com.rezero.rotto.repository.BlackListRepository;
 import com.rezero.rotto.repository.RefreshTokenRepository;
@@ -70,6 +71,9 @@ public class AuthController {
             // 액세스 토큰, 리프레시 토큰 발급
             String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getUserCode()));
             String refreshToken = jwtTokenProvider.createRefreshToken();
+
+            RefreshToken ref = new RefreshToken(user.getUserCode(), refreshToken);
+            refreshTokenRepository.save(ref);
 
             TokenResponse tokenResponse = TokenResponse.builder()
                     .grantType("Bearer")

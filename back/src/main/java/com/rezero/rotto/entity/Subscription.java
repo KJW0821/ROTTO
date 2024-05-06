@@ -19,9 +19,8 @@ public class Subscription {
     @Column(name = "subscription_code")
     int subscriptionCode;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "farm_code")
-    private Farm farm;
+    @Column(name = "farm_code")
+    private int farmCode;
 
     @Column(name = "confirm_price")
     int confirmPrice;

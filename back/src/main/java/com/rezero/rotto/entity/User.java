@@ -18,33 +18,36 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_code")
-    int userCode;
+    private int userCode;
 
     @Column(name = "name")
-    String name;
+    private String name;
 
     @Column(name = "sex")
-    String sex;
+    private String sex;
 
     @Column(name = "password")
-    String password;
+    private String password;
 
     @Column(name = "phone_num", unique = true)
-    String phoneNum;
+    private String phoneNum;
 
     @Column(name = "jumin_no")
-    String juminNo;
+    private String juminNo;
 
     @Builder.Default
     @Column(name = "is_delete")
-    Boolean isDelete = false;
+    private Boolean isDelete = false;
 
     @CreationTimestamp
     @Column(name = "join_time")
-    LocalDateTime joinTime;
+    private LocalDateTime joinTime;
 
     @Column(name = "delete_time")
-    LocalDateTime deleteTime;
+    private LocalDateTime deleteTime;
+
+    @Column(name = "device_token")
+    private String deviceToken;
 
 
 }
