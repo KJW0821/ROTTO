@@ -8,6 +8,7 @@ public class AuthenticatedMatchers {
             "/",
             "/user/signup",
             "/auth/login",
+            "/auth/logout",
             "/auth/refresh",
             "/api-docs",
             "/api-docs/json",
