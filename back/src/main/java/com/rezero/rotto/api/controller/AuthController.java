@@ -67,18 +67,30 @@ public class AuthController {
             if (user.getIsDelete()) {
                 throw new RuntimeException("존재하지 않는 사용자입니다.");
             }
-            
+
+            // 유저 코드로 레디스에서 리프레쉬 토큰 가져오기
+            RefreshToken refreshToken = refreshTokenRepository.findByUserCode(user.getUserCode());
+
+            // 리프레쉬 토큰이 이미 존재하는 상황이면 만료시키고 삭제
+            if (refreshToken != null) {
+                String ref = refreshToken.getRefreshToken();
+                BlackList blackList = new BlackList(jwtTokenProvider.getExpiration(ref), ref);
+
+                blackListRepository.save(blackList);
+                refreshTokenRepository.deleteById(ref);
+            }
+
             // 액세스 토큰, 리프레시 토큰 발급
             String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getUserCode()));
-            String refreshToken = jwtTokenProvider.createRefreshToken();
+            String newRefreshToken = jwtTokenProvider.createRefreshToken();
 
-            RefreshToken ref = new RefreshToken(user.getUserCode(), refreshToken);
+            RefreshToken ref = new RefreshToken(user.getUserCode(), newRefreshToken);
             refreshTokenRepository.save(ref);
 
             TokenResponse tokenResponse = TokenResponse.builder()
                     .grantType("Bearer")
                     .accessToken(accessToken)
-                    .refreshToken(refreshToken)
+                    .refreshToken(newRefreshToken)
                     .build();
 
             return ResponseEntity.ok(tokenResponse);
