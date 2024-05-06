@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.dto.request.LoginRequest;
+import com.rezero.rotto.dto.request.LogoutRequest;
 import com.rezero.rotto.dto.response.TokenResponse;
 import com.rezero.rotto.entity.BlackList;
 import com.rezero.rotto.entity.RefreshToken;
@@ -106,11 +107,12 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "실패")
     })
-    @GetMapping("/logout")
-    public ResponseEntity<?> logout(@RequestParam("accessToken") String accessToken,
-                                    @RequestParam("refreshToken") String refreshToken) {
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestBody LogoutRequest request) {
         try {
             // 먼저 토큰의 유효성을 확인
+            String accessToken = request.getAccessToken();
+            String refreshToken = request.getRefreshToken();
             if (!jwtTokenProvider.validateToken(accessToken) || !jwtTokenProvider.validateToken(refreshToken)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 토큰입니다.");
             }
