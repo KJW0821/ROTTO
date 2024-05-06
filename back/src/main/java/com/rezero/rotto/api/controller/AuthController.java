@@ -169,11 +169,12 @@ public class AuthController {
             blackListRepository.save(blackList);
 
             String newAccessToken = jwtTokenProvider.createAccessToken(String.valueOf(userCode));
+            String newRefreshToken = jwtTokenProvider.createRefreshToken();
 
             TokenResponse tokenResponse = TokenResponse.builder()
                     .grantType("Bearer")
                     .accessToken(newAccessToken)
-                    .refreshToken(refreshToken)  // 리프레시 토큰은 재발급하지 않음
+                    .refreshToken(newRefreshToken)
                     .build();
 
             return ResponseEntity.ok(tokenResponse);
