@@ -7,14 +7,14 @@ import {
   Platform,
 } from "react-native";
 
-import MyHeader from "../components/common/MyHeader";
-import MyBanner from "../components/home/MyBanner";
-import MyDeposit from "../components/home/MyDeposit";
+import MyHeader from "../../components/common/MyHeader";
+import MyBanner from "../../components/home/MyBanner";
+import MyDeposit from "../../components/home/MyDeposit";
 
 import * as Notifications from "expo-notifications";
 import { createRef, useEffect, useState } from "react";
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -51,7 +51,7 @@ const HomeScreen = () => {
         });
       }
       const { granted } = await Notifications.getPermissionsAsync();
-      console.log(granted)
+      console.log(granted);
       if (granted) {
         const { data } = await Notifications.getExpoPushTokenAsync();
         setState({ pushToken: data });

@@ -1,9 +1,12 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 import Colors from "../../constants/Colors";
 
 const MyHeader = ({ children }) => {
+  const Navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
@@ -12,7 +15,12 @@ const MyHeader = ({ children }) => {
           source={require("../../../assets/images/RottoLogo.png")}
         />
         <View style={styles.iconContainer}>
-          <Ionicons name="notifications-outline" size={26} color="white" />
+          <Ionicons
+            name="notifications-outline"
+            size={26}
+            color="white"
+            onPress={() => Navigation.navigate("notification")}
+          />
           <Ionicons name="person-outline" size={26} color="white" />
         </View>
       </View>
@@ -40,7 +48,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   text: {
     color: "white",

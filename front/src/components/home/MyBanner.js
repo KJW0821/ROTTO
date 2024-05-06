@@ -1,9 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const MyBanner = () => {
+  const Navigation = useNavigation()
+  
   return (
-    <View style={styles.container}>
-      <Text>원두 투자 시작해볼까요?</Text>
+    <View style={styles.container} >
+      <Text  onPress={() => Navigation.navigate("announcement")}>원두 투자 시작해볼까요?</Text>
     </View>
   );
 };
