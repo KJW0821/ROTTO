@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -35,6 +36,7 @@ public class BeanServiceImpl implements BeanService {
 
         List<Bean> beanList = beanRepository.findAll();
         List<BeanListDto> beans = new ArrayList<>();
+        Collections.reverse(beanList);
 
         for (Bean bean : beanList) {
             BeanListDto beanListDto = BeanListDto.builder()
