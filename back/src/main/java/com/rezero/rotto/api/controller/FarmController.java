@@ -24,7 +24,7 @@ public class FarmController {
     private final JwtTokenProvider jwtTokenProvider;
     private final FarmService farmService;
 
-    @Operation(summary = "농장 목록 조회", description = "필터링, 정렬, 검색, 페이지네이션을 포함한 농장 목록 조회")
+    @Operation(summary = "농장 목록 조회", description = "필터링, 정렬, 검색을 포함한 농장 목록 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(schema = @Schema(implementation = FarmListResponse.class))),
