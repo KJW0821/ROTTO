@@ -44,31 +44,18 @@ public class FarmServiceImpl implements FarmService {
         List<Farm> farms = farmRepository.findAll();
         List<FarmListDto> farmListDtos = new ArrayList<>();
 
-        // 인덱스 선언
-        int startIdx = 0;
-        int endIdx = 0;
-        // 총 페이지 수 선언
-        int totalPages = 1;
-
-        // 페이지네이션
-        List<Integer> indexes = pagination.pagination(page, 10, farms.size());
-        startIdx = indexes.get(0);
-        endIdx = indexes.get(1);
-        totalPages = indexes.get(2);
-
         // 최신것부터 보여주기 위해 리스트 뒤집기
         Collections.reverse(farms);
-        // Farm 리스트 페이지네이션
-        List<Farm> pageFarms = farms.subList(startIdx, endIdx);
         // Farm 리스트를 순회
-        for (Farm farm : pageFarms) {
+        for (Farm farm : farms) {
             // Dto 에 담기
             FarmListDto farmListDto = FarmListDto.builder()
                     .farmCode(farm.getFarmCode())
                     .farmName(farm.getFarmName())
                     .farmLogoPath(farm.getFarmLogoPath())
-//                    .beanName()
+                    .beanName(farm.getFarmBeanName())
                     .build();
+
             // farmListDtos 에 담기
             farmListDtos.add(farmListDto);
         }
@@ -76,7 +63,6 @@ public class FarmServiceImpl implements FarmService {
         // 리스폰스 생성
         FarmListResponse response = FarmListResponse.builder()
                 .farms(farmListDtos)
-                .totalPages(totalPages)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -107,6 +93,7 @@ public class FarmServiceImpl implements FarmService {
                 .awardHistory(farm.getAwardHistory())
                 .beanName(farm.getFarmBeanName())
                 .beanGrade(farm.getFarmBeanGrade())
+                .isInterested(true)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
