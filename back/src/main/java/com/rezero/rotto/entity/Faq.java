@@ -2,6 +2,7 @@ package com.rezero.rotto.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.checkerframework.checker.units.qual.C;
 
 @Entity
 @Builder
@@ -15,7 +16,12 @@ public class Faq {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "faq_code")
-    int faqCode;
+    private int faqCode;
 
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "content")
+    private String content;
 
 }

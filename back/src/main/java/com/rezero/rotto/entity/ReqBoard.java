@@ -39,4 +39,8 @@ public class ReqBoard {
     @Column(name = "createTime")
     private LocalDateTime createTime;
 
+    public void setCreateTime() {
+        this.createTime = LocalDateTime.now();
+    }
+
 }

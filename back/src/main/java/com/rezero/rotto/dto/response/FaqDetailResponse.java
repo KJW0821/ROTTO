@@ -4,14 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Setter
 @Getter
 @Builder
-public class ReqBoardDetailRegisterModifyResponse {
-    private int reqBoardCode;
+public class FaqDetailResponse {
+
+    private int faqCode;
     private String title;
     private String contents;
-    private LocalDateTime createTime;
 }
