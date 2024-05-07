@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.service;
 
 import com.rezero.rotto.dto.dto.FarmListDto;
+import com.rezero.rotto.dto.request.FarmListRequest;
 import com.rezero.rotto.dto.response.FarmDetailResponse;
 import com.rezero.rotto.dto.response.FarmListResponse;
 import com.rezero.rotto.dto.response.FarmTop10ListResponse;
@@ -12,7 +13,6 @@ import com.rezero.rotto.repository.FarmRepository;
 import com.rezero.rotto.repository.FarmTop10Repository;
 import com.rezero.rotto.repository.InterestFarmRepository;
 import com.rezero.rotto.repository.UserRepository;
-import com.rezero.rotto.utils.Pagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +35,7 @@ public class FarmServiceImpl implements FarmService {
 
 
     // 농장 목록 조회
-    public ResponseEntity<?> getFarmList(int userCode, String sort, String keyword) {
+    public ResponseEntity<?> getFarmList(int userCode, String sort, String keyword, FarmListRequest request) {
         // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
