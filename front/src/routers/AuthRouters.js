@@ -12,16 +12,22 @@ const AuthRouters = () => {
 
   return (
     // <AuthStack.Navigator screenOptions={{ headerShown: false }} >
-    <AuthStack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Splash" >
+    <AuthStack.Navigator
+      screenOptions={{ headerShown: false }}
+      initialRouteName="Splash"
+    >
       <AuthStack.Screen name="Splash" component={SplashScreen} />
       <AuthStack.Screen name="Onboarding" component={OnboardingScreen} />
       <AuthStack.Screen name="NameIdInput" component={NameIdInputScreen} />
-      <AuthStack.Screen name="PhoneNumberInput" component={PhoneNumberInputScreen} />
+      <AuthStack.Screen
+        name="PhoneNumberInput"
+        component={PhoneNumberInputScreen}
+      />
       <AuthStack.Screen name="PasswordInput" component={PasswordInputScreen} />
       <AuthStack.Screen name="SignIn" component={SignInScreen} />
       <AuthStack.Screen name="Routers" component={Routers} />
     </AuthStack.Navigator>
-  )
-}
+  );
+};
 
 export default AuthRouters;

@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import Colors from "../../constants/Colors";
 
-const StackHeader = ({ title }) => {
+const StackHeader = ({ title, screenName }) => {
   const Navigation = useNavigation();
 
   return (
@@ -14,7 +14,7 @@ const StackHeader = ({ title }) => {
           name="chevron-back"
           size={26}
           color="black"
-          onPress={() => Navigation.navigate("home")}
+          onPress={() => Navigation.navigate(screenName)}
         />
       </View>
       <Text>{title}</Text>

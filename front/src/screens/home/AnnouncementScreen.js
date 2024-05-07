@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import { getNoticeList } from "../../utils/noticeAPi";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 import StackHeader from "../../components/common/StackHeader";
 import Colors from "../../constants/Colors";
-import { useNavigation } from "@react-navigation/native";
 
 
 
@@ -17,7 +17,6 @@ const AnnouncementScreen = () => {
     const getList = async () => {
       const res = await getNoticeList();
       setAnnouncements(res.notices); // 상태 업데이트
-      console.log(announcements);
     };
     getList();
   }, []);
@@ -51,7 +50,7 @@ const AnnouncementScreen = () => {
 
   return (
     <>
-      <StackHeader />
+      <StackHeader screenName="home" />
       <View style={styles.screen}>
         <Text style={styles.header}>공지사항</Text>
         <FlatList

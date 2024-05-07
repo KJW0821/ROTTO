@@ -31,6 +31,7 @@ const HomeScreen = ({ navigation }) => {
   });
 
   const schedulePushNotification = async (data) => {
+    console.log("pushToken", state.pushToken)
     await Notifications.scheduleNotificationAsync({
       content: {
         title: "테스트 알림",
@@ -51,17 +52,18 @@ const HomeScreen = ({ navigation }) => {
         });
       }
       const { granted } = await Notifications.getPermissionsAsync();
-      console.log(granted);
+      console.log("granted", granted);
       if (granted) {
         const { data } = await Notifications.getExpoPushTokenAsync();
         setState({ pushToken: data });
+        console.log("data", data)
       } else if (!granted) {
         alert("알림이 거부 되었습니다.");
       } else {
         alert("알림이 지원 되지않습니다.");
       }
       Notifications.addNotificationReceivedListener((notification) => {
-        console.log("NOTIFICATION:", notification);
+        console.log("NOTIFICATION1:", notification);
       });
       notificationListener.current =
         Notifications.addNotificationReceivedListener((notification) => {
@@ -69,7 +71,7 @@ const HomeScreen = ({ navigation }) => {
         });
       responseListener.current =
         Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log(response);
+          console.log("responseRecieved", response);
         });
     }
     fetchData();

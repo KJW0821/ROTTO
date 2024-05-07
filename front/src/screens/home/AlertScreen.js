@@ -1,41 +1,42 @@
 import { StyleSheet, Text, View } from "react-native";
 import StackHeader from "../../components/common/StackHeader";
 import { useEffect, useState } from "react";
-import { getNoticeDetail } from "../../utils/noticeAPi";
 import Colors from "../../constants/Colors";
+import { getAlertDetail } from "../../utils/AlertApi";
 
-const NoticeScreen = ({ route }) => {
-  const [notice, setNotice] = useState({
+const AlertScreen = ({ route }) => {
+  const [alert, setAlert] = useState({
     title: "",
     createTime: "",
     content: "",
+    isRead: false,
   });
 
   useEffect(() => {
     const getDetail = async () => {
-      const res = await getNoticeDetail(route.params.noticeCode);
-      setNotice(res);
+      const res = await getAlertDetail(route.params.alertCode);
+      setAlert(res);
     };
     getDetail();
   }, []);
 
   return (
     <>
-      <StackHeader screenName="announcement" />
+      <StackHeader screenName="alertList" />
       <View style={styles.screen}>
-        <Text style={styles.title}>{notice.title}</Text>
+        <Text style={styles.title}>{alert.title}</Text>
         <Text style={styles.date}>
-          {notice.createTime.split("T")[0].split("-")[0]}년{" "}
-          {notice.createTime.split("T")[0].split("-")[1]}월{" "}
-          {notice.createTime.split("T")[0].split("-")[2]}일
+          {alert.createTime.split("T")[0].split("-")[0]}년{" "}
+          {alert.createTime.split("T")[0].split("-")[1]}월{" "}
+          {alert.createTime.split("T")[0].split("-")[2]}일
         </Text>
-        <Text style={styles.content}>{notice.content}</Text>
+        <Text style={styles.content}>{alert.content}</Text>
       </View>
     </>
   );
 };
 
-export default NoticeScreen;
+export default AlertScreen;
 
 const styles = StyleSheet.create({
   screen: {
@@ -51,11 +52,11 @@ const styles = StyleSheet.create({
     fontFamily: "pretendard-regular",
     fontSize: 13,
     color: Colors.fontGray,
-    marginTop: 10
+    marginTop: 10,
   },
   content: {
     fontFamily: "pretendard-regular",
     fontSize: 15,
-    marginTop: 30
+    marginTop: 30,
   },
 });
