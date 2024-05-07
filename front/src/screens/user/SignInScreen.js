@@ -3,7 +3,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import Title from '../../components/user/Title';
 import CustomButton from '../../components/common/CustomButton';
 import Colors from '../../constants/Colors';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import UserTopBar from '../../components/user/UserTopBar';
 import { getUserInfo, signIn } from '../../utils/userApi';
 import TokenService from '../../utils/token';
@@ -16,7 +16,10 @@ const SignInScreen = ({navigation}) => {
   const [errMsg, setErrMsg] = useState('');
 
   const phoneNumberInputHandler = (enteredText) => {
-    setPhoneNumber(enteredText);
+    setPhoneNumber(enteredText
+      .replace(/[^0-9]/g, '')
+      .replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")  
+    );
   };
 
   const passwordInputHandler = (enteredText) => {
@@ -30,8 +33,8 @@ const SignInScreen = ({navigation}) => {
     });
     if (res.status === 200) {
       await TokenService.setToken(res.data.accessToken, res.data.refreshToken);
-      // const userInfoRes = await getUserInfo();
-      // await TokenService.setUserCode(userInfoRes.data.userCode);
+      const userInfoRes = await getUserInfo();
+      await TokenService.setUserCode(userInfoRes.data.userCode.toString());
       navigation.navigate('Routers');
       setErrMsg('');
     } else {
@@ -55,10 +58,7 @@ const SignInScreen = ({navigation}) => {
                 underlineColorAndroid="transparent"
                 keyboardType="number-pad"
                 onChangeText={phoneNumberInputHandler}
-                value={phoneNumber
-                  .replace(/[^0-9]/g, '')
-                  .replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")
-                }
+                value={phoneNumber}
               />
               {
                 phoneNumber.length ?
