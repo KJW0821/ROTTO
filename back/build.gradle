@@ -89,6 +89,9 @@ dependencies {
 	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
 	implementation 'com.squareup.okio:okio:2.10.0'
 
+	// BlockChain
+	implementation 'org.web3j:core:4.9.6'
+
 }
 
 //test {
