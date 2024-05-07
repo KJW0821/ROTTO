@@ -13,6 +13,5 @@ import java.util.List;
 public class FarmListResponse {
 
     private List<FarmListDto> farms;
-    private int totalPages;
 
 }

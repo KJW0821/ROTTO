@@ -1,17 +1,17 @@
 package com.rezero.rotto.api.service;
 
 import com.rezero.rotto.dto.dto.FarmListDto;
+import com.rezero.rotto.dto.request.FarmListRequest;
 import com.rezero.rotto.dto.response.FarmDetailResponse;
 import com.rezero.rotto.dto.response.FarmListResponse;
 import com.rezero.rotto.dto.response.FarmTop10ListResponse;
 import com.rezero.rotto.entity.Farm;
 import com.rezero.rotto.entity.FarmTop10;
+import com.rezero.rotto.entity.InterestFarm;
 import com.rezero.rotto.entity.User;
-import com.rezero.rotto.repository.FarmRepository;
-import com.rezero.rotto.repository.FarmTop10Repository;
-import com.rezero.rotto.repository.UserRepository;
-import com.rezero.rotto.utils.Pagination;
+import com.rezero.rotto.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,46 +28,49 @@ public class FarmServiceImpl implements FarmService {
 
     private final FarmRepository farmRepository;
     private final UserRepository userRepository;
-    private final Pagination pagination;
+    private final InterestFarmRepository interestFarmRepository;
     private final FarmTop10Repository farmTop10Repository;
 
 
     // 농장 목록 조회
-    public ResponseEntity<?> getFarmList(int userCode, String sort, String keyword, Integer page) {
+    public ResponseEntity<?> getFarmList(int userCode, String sort, String keyword, FarmListRequest request) {
         // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
-        // 농장 목록 모두 불러오기
-        List<Farm> farms = farmRepository.findAll();
+        // 필터링, 정렬을 위해 데이터 선언
+        Integer interest = request.getInterest();
+        Integer subsStatus = request.getSubsStatus();
+        Integer minPrice = request.getMinPrice();
+        Integer maxPrice = request.getMaxPrice();
+        String beanType = request.getBeanType();
+
+        // Specification 을 활용하여 필터링 및 정렬
+        Specification<Farm> spec = Specification.where(null);
+        if (keyword != null) spec = spec.and(FarmSpecification.nameContains(keyword));
+        if (interest != null) spec = spec.and(FarmSpecification.hasInterest(userCode));
+        if (subsStatus != null) spec = spec.and(FarmSpecification.filterBySubscriptionStatus(subsStatus));
+        spec.and(FarmSpecification.priceBetween(minPrice, maxPrice));
+        if (beanType != null) spec = spec.and(FarmSpecification.filterByBeanType(beanType));
+        spec = spec.and(FarmSpecification.applySorting(sort));
+
+        // 농장 목록 불러오기
+        List<Farm> farms = farmRepository.findAll(spec);
         List<FarmListDto> farmListDtos = new ArrayList<>();
-
-        // 인덱스 선언
-        int startIdx = 0;
-        int endIdx = 0;
-        // 총 페이지 수 선언
-        int totalPages = 1;
-
-        // 페이지네이션
-        List<Integer> indexes = pagination.pagination(page, 10, farms.size());
-        startIdx = indexes.get(0);
-        endIdx = indexes.get(1);
-        totalPages = indexes.get(2);
 
         // 최신것부터 보여주기 위해 리스트 뒤집기
         Collections.reverse(farms);
-        // Farm 리스트 페이지네이션
-        List<Farm> pageFarms = farms.subList(startIdx, endIdx);
+
         // Farm 리스트를 순회
-        for (Farm farm : pageFarms) {
+        for (Farm farm : farms) {
             // Dto 에 담기
             FarmListDto farmListDto = FarmListDto.builder()
                     .farmCode(farm.getFarmCode())
                     .farmName(farm.getFarmName())
                     .farmLogoPath(farm.getFarmLogoPath())
-//                    .beanName()
+                    .beanName(farm.getFarmBeanName())
                     .build();
             // farmListDtos 에 담기
             farmListDtos.add(farmListDto);
@@ -76,7 +79,6 @@ public class FarmServiceImpl implements FarmService {
         // 리스폰스 생성
         FarmListResponse response = FarmListResponse.builder()
                 .farms(farmListDtos)
-                .totalPages(totalPages)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -91,10 +93,19 @@ public class FarmServiceImpl implements FarmService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
+        // 농장이 존재하는지 검사
         Farm farm =  farmRepository.findByFarmCode(farmCode);
         if (farm == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("농장을 찾을 수 없습니다.");
         }
+
+        // 관심 농장 여부 검사
+        boolean isInterested = false;
+        InterestFarm interestFarm = interestFarmRepository.findByFarmCodeAndUserCode(farmCode, userCode);
+        if (interestFarm != null) {
+            isInterested = true;
+        }
+
 
         FarmDetailResponse response = FarmDetailResponse.builder()
                 .farmCode(farmCode)
@@ -107,6 +118,7 @@ public class FarmServiceImpl implements FarmService {
                 .awardHistory(farm.getAwardHistory())
                 .beanName(farm.getFarmBeanName())
                 .beanGrade(farm.getFarmBeanGrade())
+                .isInterested(isInterested)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
