@@ -22,5 +22,6 @@ public class FarmDetailResponse {
     private String awardHistory;
     private String beanName;
     private Integer beanGrade;
-//    private Boolean isInterested;
+    private Boolean isInterested;
+
 }
