@@ -67,7 +67,7 @@ public class FarmServiceImpl implements FarmService {
                     .farmCode(farm.getFarmCode())
                     .farmName(farm.getFarmName())
                     .farmLogoPath(farm.getFarmLogoPath())
-//                    .beanName()
+                    .beanName(farm.getFarmBeanName())
                     .build();
             // farmListDtos 에 담기
             farmListDtos.add(farmListDto);
