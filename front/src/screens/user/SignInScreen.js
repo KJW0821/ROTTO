@@ -44,7 +44,7 @@ const SignInScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <UserTopBar navigation={navigation} />
+      <UserTopBar navigation={navigation} destination="Onboarding" />
       <View style={styles.dataContainer}>
         <Title>로그인</Title>
         <View style={styles.inputsContainer}>
