@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.service;
 
 //import com.rezero.rotto.dto.request.RegisterPinRequest;
+import com.rezero.rotto.dto.request.CheckPhoneNumRequest;
 import com.rezero.rotto.dto.request.SignUpRequest;
 import com.rezero.rotto.dto.response.UserInfoResponse;
 import org.springframework.http.ResponseEntity;
@@ -13,5 +14,7 @@ public interface UserService {
     ResponseEntity<?> getUserInfo(int userCode);
 
     ResponseEntity<String> deleteUser(int userCode);
+
+    ResponseEntity<?> checkPhoneNum(CheckPhoneNumRequest request);
 
 }
