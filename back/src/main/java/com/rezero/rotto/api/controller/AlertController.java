@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping
+@RequestMapping("/alert")
 @RequiredArgsConstructor
 @Tag(name = "Alert 컨트롤러", description = "알림 관리를 위한 API")
 public class AlertController {
