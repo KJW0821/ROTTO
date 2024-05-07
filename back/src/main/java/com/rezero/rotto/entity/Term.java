@@ -2,7 +2,6 @@ package com.rezero.rotto.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.checkerframework.checker.units.qual.C;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "terms_tb")
-public class Terms {
+public class Term {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
