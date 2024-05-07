@@ -98,13 +98,13 @@ const AlertListScreen = () => {
                     alertCode: itemData.item.alertCode,
                   });
                   const readCheck = alerts.map((item) => {
-                    console.log
+                    console.log;
                     if (item.alertCode === itemData.item.alertCode) {
                       return { ...item, isRead: true };
                     }
                     return item;
                   });
-                  setalerts(readCheck)
+                  setalerts(readCheck);
                 }}
               />
             </View>
@@ -142,9 +142,7 @@ const AlertListScreen = () => {
         </View>
         <FlatList
           data={alerts}
-          keyExtractor={(item) => {
-            item.alertCode;
-          }}
+          keyExtractor={(item, index) => index.toString()}
           renderItem={renderAlertList}
         />
       </View>

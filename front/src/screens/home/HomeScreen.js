@@ -5,6 +5,7 @@ import {
   ScrollView,
   Button,
   Platform,
+  Image,
 } from "react-native";
 
 import MyHeader from "../../components/common/MyHeader";
@@ -13,6 +14,7 @@ import MyDeposit from "../../components/home/MyDeposit";
 
 import * as Notifications from "expo-notifications";
 import { createRef, useEffect, useState } from "react";
+import FAQScreen from "./FAQScreen";
 
 const HomeScreen = ({ navigation }) => {
   Notifications.setNotificationHandler({
@@ -31,7 +33,7 @@ const HomeScreen = ({ navigation }) => {
   });
 
   const schedulePushNotification = async (data) => {
-    console.log("pushToken", state.pushToken)
+    console.log("pushToken", state.pushToken);
     await Notifications.scheduleNotificationAsync({
       content: {
         title: "테스트 알림",
@@ -56,7 +58,7 @@ const HomeScreen = ({ navigation }) => {
       if (granted) {
         const { data } = await Notifications.getExpoPushTokenAsync();
         setState({ pushToken: data });
-        console.log("data", data)
+        console.log("data", data);
       } else if (!granted) {
         alert("알림이 거부 되었습니다.");
       } else {
@@ -89,9 +91,10 @@ const HomeScreen = ({ navigation }) => {
       </View>
       <ScrollView style={styles.container}>
         <MyBanner />
+        <Image source={require("../../../assets/images/farmfarm.png")} />
         <MyDeposit />
         <View style={styles.infoContainer}>
-          <Text>이것은 홈페이지</Text>
+          <FAQScreen />
         </View>
       </ScrollView>
     </MyHeader>

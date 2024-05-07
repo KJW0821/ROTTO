@@ -7,8 +7,6 @@ import { useNavigation } from "@react-navigation/native";
 import StackHeader from "../../components/common/StackHeader";
 import Colors from "../../constants/Colors";
 
-
-
 const AnnouncementScreen = () => {
   const Navigation = useNavigation();
   const [announcements, setAnnouncements] = useState([]);
@@ -23,7 +21,7 @@ const AnnouncementScreen = () => {
 
   const renderAnnouncementList = (itemData) => {
     const date = itemData.item.createTime.split("T")[0];
-  
+
     return (
       <View style={styles.container}>
         <View>
@@ -55,9 +53,7 @@ const AnnouncementScreen = () => {
         <Text style={styles.header}>공지사항</Text>
         <FlatList
           data={announcements}
-          keyExtractor={(item) => {
-            item.noticeCode;
-          }}
+          keyExtractor={(item, index) => index.toString()}
           renderItem={renderAnnouncementList}
         />
       </View>
