@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.FarmService;
+import com.rezero.rotto.dto.request.FarmListRequest;
 import com.rezero.rotto.dto.response.*;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,11 +31,12 @@ public class FarmController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
     @GetMapping
-    public ResponseEntity<?> getNoticeList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+    public ResponseEntity<?> getFarmList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
                                            @RequestParam(required = false) String sort,
-                                           @RequestParam(required = false) String keyword) {
+                                           @RequestParam(required = false) String keyword,
+                                           @RequestBody FarmListRequest request) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return farmService.getFarmList(userCode, sort, keyword);
+        return farmService.getFarmList(userCode, sort, keyword, request);
     }
 
 
