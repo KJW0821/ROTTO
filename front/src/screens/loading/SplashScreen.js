@@ -14,7 +14,7 @@ const SplashScreen = ({navigation}) => {
         const refreshToken = await TokenService.getRefreshToken();
         
         if (accessToken && accessToken !== 'accessToken' && refreshToken && refreshToken !== 'refreshToken') {
-          navigation.replace('Routers');
+          navigation.replace('PINInput');
         } else {
           navigation.replace('Onboarding');
         }

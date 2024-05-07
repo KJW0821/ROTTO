@@ -7,6 +7,7 @@ import PasswordInputScreen from "../screens/user/PasswordInputScreen";
 import SignInScreen from "../screens/user/SignInScreen";
 import SplashScreen from "../screens/loading/SplashScreen";
 import PINSettingScreen from "../screens/user/PINSettingScreen";
+import PINInputScreen from "../screens/user/PINInputScreen";
 
 const AuthRouters = () => {
   const AuthStack = createStackNavigator();
@@ -21,6 +22,7 @@ const AuthRouters = () => {
       <AuthStack.Screen name="PasswordInput" component={PasswordInputScreen} />
       <AuthStack.Screen name="PINSetting" component={PINSettingScreen} />
       <AuthStack.Screen name="SignIn" component={SignInScreen} />
+      <AuthStack.Screen name="PINInput" component={PINInputScreen} />
       <AuthStack.Screen name="Routers" component={Routers} />
     </AuthStack.Navigator>
   )
