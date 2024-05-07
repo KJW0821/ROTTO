@@ -22,14 +22,18 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.rezero.rotto",
-      "googleServiceFile": "./google-services.json"
+      "package": "com.rezero.rotto"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "eb71a8e0-66f9-4c20-936a-7026fa7b91df"
+      }
+    }
   }
 }

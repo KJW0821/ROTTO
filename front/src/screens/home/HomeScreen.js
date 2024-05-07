@@ -31,6 +31,7 @@ const HomeScreen = ({ navigation }) => {
   });
 
   const schedulePushNotification = async (data) => {
+    console.log("pushToken", state.pushToken)
     await Notifications.scheduleNotificationAsync({
       content: {
         title: "테스트 알림",

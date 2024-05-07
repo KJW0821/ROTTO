@@ -2,7 +2,7 @@ import API from "./Api";
 
 export const getAlertList = async () => {
   try {
-    const res = await API.get("");
+    const res = await API.get("/alert");
     console.log(res.data);
     return res.data;
   } catch (err) {
@@ -12,7 +12,7 @@ export const getAlertList = async () => {
 
 export const getAlertDetail = async (code) => {
   try {
-    const res = await API.get(`${code}`);
+    const res = await API.get(`/alert/${code}`);
     console.log(res.data);
     return res.data;
   } catch (err) {
@@ -22,7 +22,7 @@ export const getAlertDetail = async (code) => {
 
 export const deleteAlert = async (code) => {
   try {
-    const res = await API.delete(`/${code}`);
+    const res = await API.delete(`/alert/${code}`);
     console.log(res.data);
     return res.data;
   } catch (err) {
@@ -32,7 +32,7 @@ export const deleteAlert = async (code) => {
 
 export const readAllAlert = async () => {
   try {
-    const res = await API.put("/all-read");
+    const res = await API.put("/alert/all-read");
     console.log(res.data);
     return res.data;
   } catch (err) {
@@ -42,7 +42,7 @@ export const readAllAlert = async () => {
 
 export const deleteAllAlert = async () => {
     try {
-      const res = await API.delete("/all-delete");
+      const res = await API.delete("/alert/all-delete");
       console.log(res.data);
       return res.data;
     } catch (err) {
