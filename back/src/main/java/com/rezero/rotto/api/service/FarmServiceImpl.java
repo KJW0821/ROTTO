@@ -9,11 +9,9 @@ import com.rezero.rotto.entity.Farm;
 import com.rezero.rotto.entity.FarmTop10;
 import com.rezero.rotto.entity.InterestFarm;
 import com.rezero.rotto.entity.User;
-import com.rezero.rotto.repository.FarmRepository;
-import com.rezero.rotto.repository.FarmTop10Repository;
-import com.rezero.rotto.repository.InterestFarmRepository;
-import com.rezero.rotto.repository.UserRepository;
+import com.rezero.rotto.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -42,8 +40,24 @@ public class FarmServiceImpl implements FarmService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
-        // 농장 목록 모두 불러오기
-        List<Farm> farms = farmRepository.findAll();
+        // 필터링, 정렬을 위해 데이터 선언
+        Integer interest = request.getInterest();
+        Integer subsStatus = request.getSubsStatus();
+        Integer minPrice = request.getMinPrice();
+        Integer maxPrice = request.getMaxPrice();
+        String beanType = request.getBeanType();
+
+        // Specification 을 활용하여 필터링 및 정렬
+        Specification<Farm> spec = Specification.where(null);
+        if (keyword != null) spec = spec.and(FarmSpecification.nameContains(keyword));
+        if (interest != null) spec = spec.and(FarmSpecification.hasInterest(userCode));
+        if (subsStatus != null) spec = spec.and(FarmSpecification.filterBySubscriptionStatus(subsStatus));
+        spec.and(FarmSpecification.priceBetween(minPrice, maxPrice));
+        if (beanType != null) spec = spec.and(FarmSpecification.filterByBeanType(beanType));
+        spec = spec.and(FarmSpecification.applySorting(sort));
+
+        // 농장 목록 불러오기
+        List<Farm> farms = farmRepository.findAll(spec);
         List<FarmListDto> farmListDtos = new ArrayList<>();
 
         // 최신것부터 보여주기 위해 리스트 뒤집기
