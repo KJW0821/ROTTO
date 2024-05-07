@@ -21,3 +21,13 @@ export const getRequestList = async () => {
     return err;
   }
 };
+
+export const getRequestDetail = async (reqBoardCode) => {
+  try {
+    const res = await API.get(URL + `/${reqBoardCode}`);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
