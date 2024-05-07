@@ -15,7 +15,10 @@ const PhoneNumberInputScreen = ({navigation}) => {
   const dispatch = useDispatch();
 
   const phoneNumberInputHandler = (enteredText) => {
-    setPhoneNumber(enteredText);
+    setPhoneNumber(enteredText
+      .replace(/[^0-9]/g, '')
+      .replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")  
+    );
   };
 
   const pressNextHandler = () => {
@@ -39,10 +42,7 @@ const PhoneNumberInputScreen = ({navigation}) => {
               underlineColorAndroid="transparent"
               onChangeText={phoneNumberInputHandler}
               keyboardType="number-pad"
-              value={phoneNumber
-                .replace(/[^0-9]/g, '')
-                .replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")
-              }
+              value={phoneNumber}
             />
             {
               phoneNumber.length ?
