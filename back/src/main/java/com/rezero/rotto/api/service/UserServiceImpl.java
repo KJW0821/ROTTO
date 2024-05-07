@@ -1,7 +1,9 @@
 package com.rezero.rotto.api.service;
 
 //import com.rezero.rotto.dto.request.RegisterPinRequest;
+import com.rezero.rotto.dto.request.CheckPhoneNumRequest;
 import com.rezero.rotto.dto.request.SignUpRequest;
+import com.rezero.rotto.dto.response.CheckPhoneNumResponse;
 import com.rezero.rotto.dto.response.UserInfoResponse;
 import com.rezero.rotto.entity.User;
 import com.rezero.rotto.repository.UserRepository;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -64,22 +67,15 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-//
-//    // PIN 번호 등록
-//    public ResponseEntity<?> registerPin(int userCode, RegisterPinRequest request) {
-//        // 유저가 존재하는지 검사
-//        User user = userRepository.findByUserCode(userCode);
-//        if (user == null || user.getIsDelete()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
-//        }
-//        String hashedPin = passwordEncoder.encode(request.getPin());
-//
-//        // PIN 번호 변경
-//        user.setPassword(hashedPin);
-//        userRepository.save(user);
-//
-//        return ResponseEntity.status(HttpStatus.OK).body("PIN 번호 등록 성공!");
-//    }
+
+    // 폰번호 중복 체크
+    public ResponseEntity<?> checkPhoneNum(CheckPhoneNumRequest request) {
+        // 폰 번호로 유저 조회하여 데이터가 존재하는지를 Bool 형태로 체크
+        Boolean isExist = userRepository.existsByPhoneNum(request.getPhoneNum());
+        // 리스폰스 생성후 반환
+        CheckPhoneNumResponse response = new CheckPhoneNumResponse(isExist);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
 
     // 사용자 정보 조회
