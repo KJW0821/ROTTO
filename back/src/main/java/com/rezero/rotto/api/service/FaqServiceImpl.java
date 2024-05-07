@@ -21,8 +21,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FaqServiceImpl implements FaqService{
 
-    private UserRepository userRepository;
-    private FaqReqository faqReqository;
+    private final UserRepository userRepository;
+    private final FaqReqository faqReqository;
 
     @Override
     public ResponseEntity<?> getFaqList(int userCode, Integer page) {

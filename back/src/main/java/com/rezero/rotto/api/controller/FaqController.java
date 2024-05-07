@@ -3,7 +3,6 @@ package com.rezero.rotto.api.controller;
 import com.rezero.rotto.api.service.FaqService;
 import com.rezero.rotto.dto.response.FaqDetailResponse;
 import com.rezero.rotto.dto.response.FaqListResponse;
-import com.rezero.rotto.dto.response.ReqBoardDetailRegisterModifyResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "FAQ 컨트롤러", description = "FAQ를 위한 API")
 public class FaqController {
+
     private final FaqService faqService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -48,7 +48,8 @@ public class FaqController {
     })
 
     @GetMapping("/{faq-code}")
-    public ResponseEntity<?> getFaqDetail(int userCode, int faqCode) {
+    public ResponseEntity<?> getFaqDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, int faqCode) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return faqService.getFaqDetail(userCode, faqCode);
     }
 
