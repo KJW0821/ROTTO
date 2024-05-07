@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ENC(XFl0Kt80CSouAOd3u0Q8kyjQMHuJb0izBE8pH/KJzzZyMZlNIJWCpwCBGNEoTkL25445VkNqXdBscRlM2hkluBlS8em0PrnC3BFWqCADXzOTUqZJlGCmjW7SbgxLiCDZ1yJBmSNVFQYwWZUAKnCh/ghbPcksQVVqglRPO+Uebrtzq5qwMYQ5g6omJhMeYcs4)
     username: ENC(27xTCeTSZsIf1cTtHXRLuM8yJeFCDiHW2T3uf3D3F/2JvBVDQptDP23jD+0bDBK+)
-    password: qweqwe123!@# # 암호화 필요
+    password: ENC(5BFEeQ86FtklvViD+7KpKMotIVDDkWYzuAyOvHP8V+UN0QpKPFdgG0Dx+u08jamM)
 
 
 
@@ -56,7 +56,7 @@ jwt:
   redis:
     host: redis
     port: 6379
-    password: rotto123 # 암호화 필요
+    password: ENC(0LQhpdG4GOEszoH6I6tf4kh/WXdM0YDEhlsEJ/mP7JCYXc0cktUk66iXUw+PP0GN)
 
 
 # Multipart File Upload Setting
