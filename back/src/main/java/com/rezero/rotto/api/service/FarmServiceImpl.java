@@ -6,9 +6,11 @@ import com.rezero.rotto.dto.response.FarmListResponse;
 import com.rezero.rotto.dto.response.FarmTop10ListResponse;
 import com.rezero.rotto.entity.Farm;
 import com.rezero.rotto.entity.FarmTop10;
+import com.rezero.rotto.entity.InterestFarm;
 import com.rezero.rotto.entity.User;
 import com.rezero.rotto.repository.FarmRepository;
 import com.rezero.rotto.repository.FarmTop10Repository;
+import com.rezero.rotto.repository.InterestFarmRepository;
 import com.rezero.rotto.repository.UserRepository;
 import com.rezero.rotto.utils.Pagination;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +30,7 @@ public class FarmServiceImpl implements FarmService {
 
     private final FarmRepository farmRepository;
     private final UserRepository userRepository;
-    private final Pagination pagination;
+    private final InterestFarmRepository interestFarmRepository;
     private final FarmTop10Repository farmTop10Repository;
 
 
@@ -77,10 +79,19 @@ public class FarmServiceImpl implements FarmService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
+        // 농장이 존재하는지 검사
         Farm farm =  farmRepository.findByFarmCode(farmCode);
         if (farm == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("농장을 찾을 수 없습니다.");
         }
+
+        // 관심 농장 여부 검사
+        boolean isInterested = false;
+        InterestFarm interestFarm = interestFarmRepository.findByFarmCodeAndUserCode(farmCode, userCode);
+        if (interestFarm != null) {
+            isInterested = true;
+        }
+
 
         FarmDetailResponse response = FarmDetailResponse.builder()
                 .farmCode(farmCode)
@@ -93,6 +104,7 @@ public class FarmServiceImpl implements FarmService {
                 .awardHistory(farm.getAwardHistory())
                 .beanName(farm.getFarmBeanName())
                 .beanGrade(farm.getFarmBeanGrade())
+                .isInterested(isInterested)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
