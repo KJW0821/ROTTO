@@ -24,7 +24,7 @@
 //        config.setStringOutputType("base64");
 //        encryptor.setConfig(config);
 //
-//        String originalString = "ap-northeast-2";
+//        String originalString = "바꾸고 싶은 코드";
 //
 //        // 암호화
 //        String encryptedString = encryptor.encrypt(originalString);
