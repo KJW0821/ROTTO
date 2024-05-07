@@ -80,7 +80,7 @@ public class ReqBoardController {
     })
 
     @PatchMapping("/{reqBoardCode}")
-    public  ResponseEntity<?> updateReqBoard(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, int reqBoardCode, ReqRequest request){
+    public  ResponseEntity<?> updateReqBoard(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,@PathVariable int reqBoardCode, ReqRequest request){
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return reqBoardService.updateReqBoard(userCode, reqBoardCode, request);
     }
@@ -95,7 +95,7 @@ public class ReqBoardController {
     })
 
     @DeleteMapping("/{reqBoardCode}")
-    public  ResponseEntity<?> deleteReqBoard(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, int reqBoardCode){
+    public  ResponseEntity<?> deleteReqBoard(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,@PathVariable int reqBoardCode){
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return reqBoardService.deleteReqBoard(userCode, reqBoardCode);
     }
