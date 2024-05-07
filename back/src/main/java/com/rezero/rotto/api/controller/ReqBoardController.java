@@ -64,7 +64,7 @@ public class ReqBoardController {
     })
 
     // 받을값들
-    @PostMapping("/{req-board-code}")
+    @PostMapping
     public  ResponseEntity<?> postReqBoard(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestBody ReqRequest request){
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return reqBoardService.postReqBoard(userCode, request);

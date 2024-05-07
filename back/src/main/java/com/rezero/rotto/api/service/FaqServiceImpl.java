@@ -25,7 +25,7 @@ public class FaqServiceImpl implements FaqService{
     private final FaqReqository faqReqository;
 
     @Override
-    public ResponseEntity<?> getFaqList(int userCode, Integer page) {
+    public ResponseEntity<?> getFaqList(int userCode) {
         User user = userRepository.findByUserCode(userCode);
         if (user == null) {
             return ResponseEntity.notFound().build();
@@ -38,6 +38,7 @@ public class FaqServiceImpl implements FaqService{
             FaqListDto faqListDto = FaqListDto.builder()
                     .faqCode(faqList.get(i).getFaqCode())
                     .title(faqList.get(i).getTitle())
+                    .content(faqList.get(i).getContent())
                     .build();
             faqListDtos.add(faqListDto);
         }
@@ -48,20 +49,4 @@ public class FaqServiceImpl implements FaqService{
         return ResponseEntity.status(HttpStatus.OK).body(faqListResponse);
     }
 
-    @Override
-    public ResponseEntity<?> getFaqDetail(int userCode, int faqCode) {
-        User user = userRepository.findByUserCode(userCode);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Faq faqDetail = faqReqository.findByFaqCode(faqCode);
-        FaqDetailResponse faqDetailResponse = FaqDetailResponse.builder()
-                .faqCode(faqDetail.getFaqCode())
-                .title(faqDetail.getTitle())
-                .contents(faqDetail.getContent())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.OK).body(faqDetailResponse);
-    }
 }
