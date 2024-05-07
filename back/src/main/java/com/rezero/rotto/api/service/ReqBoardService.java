@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface ReqBoardService {
 
-    ResponseEntity<?> getReqBoardList(int userCode, Integer page);
+    ResponseEntity<?> getReqBoardList(int userCode);
     ResponseEntity<?> getReqBoardDetail(int userCode, int reqBoardCode);
     // 반환할 타입과 받을 값들
     ResponseEntity<?> postReqBoard(int userCode , ReqRequest reqRegisterBoard);

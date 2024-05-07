@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -25,19 +26,21 @@ public class ReqBoardServiceImpl implements ReqBoardService {
     private final ReqBoardRepository reqBoardRepository;
     private final UserRepository userRepository;
 
-    public ResponseEntity<?> getReqBoardList(int userCode, Integer page) {
+    public ResponseEntity<?> getReqBoardList(int userCode) {
         User user = userRepository.findByUserCode(userCode);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
 
-        List<ReqBoard> reqBoardList = reqBoardRepository.findAll();
+        List<ReqBoard> reqBoardList = reqBoardRepository.findByUserCode(user.getUserCode());
+        Collections.reverse(reqBoardList);
         List<ReqBoardListDto> reqBoardListDtos = new ArrayList<>();
 
         for (int i = 0; i < reqBoardList.size(); i++) {
             ReqBoardListDto reqBoardListDto = ReqBoardListDto.builder()
                     .reqBoardCode(reqBoardList.get(i).getReqBoardCode())
                     .title(reqBoardList.get(i).getTitle())
+                    .createTime(reqBoardList.get(i).getCreateTime())
                     .build();
             reqBoardListDtos.add(reqBoardListDto);
 
@@ -55,11 +58,12 @@ public class ReqBoardServiceImpl implements ReqBoardService {
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        ReqBoard reqBoardDetail = reqBoardRepository.findByReqBoardCode(reqBoardCode);
+        ReqBoard reqBoardDetail = reqBoardRepository.findByUserCodeAndReqBoardCode(user.getUserCode(), reqBoardCode);
         ReqBoardDetailRegisterModifyResponse reqBoardDetailResponse = ReqBoardDetailRegisterModifyResponse.builder()
                 .reqBoardCode(reqBoardDetail.getReqBoardCode())
                 .title(reqBoardDetail.getTitle())
                 .contents(reqBoardDetail.getContent())
+                .createTime(reqBoardDetail.getCreateTime())
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(reqBoardDetailResponse);
@@ -83,6 +87,7 @@ public class ReqBoardServiceImpl implements ReqBoardService {
         reqBoard.setTitle(reqRegisterBoard.getTitle());
         reqBoard.setContent(reqRegisterBoard.getContent());
         reqBoard.setUserCode(userCode); // User 엔티티 설정
+        reqBoard.setCreateTime();
         reqBoardRepository.save(reqBoard);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(reqBoard);
@@ -97,7 +102,7 @@ public class ReqBoardServiceImpl implements ReqBoardService {
         }
 
         // 해당 게시글이 존재하는지 검사
-        ReqBoard reqBoard = reqBoardRepository.findByReqBoardCode(reqBoardCode);
+        ReqBoard reqBoard = reqBoardRepository.findByUserCodeAndReqBoardCode(user.getUserCode(), reqBoardCode);
         if (reqBoard == null) {
             return ResponseEntity.notFound().build();
         }
@@ -115,6 +120,7 @@ public class ReqBoardServiceImpl implements ReqBoardService {
         // 게시글 수정
         reqBoard.setTitle(updateData.getTitle());
         reqBoard.setContent(updateData.getContent());
+        reqBoard.setCreateTime();
         reqBoardRepository.save(reqBoard);
 
         return ResponseEntity.ok().body(reqBoard);
@@ -128,7 +134,7 @@ public class ReqBoardServiceImpl implements ReqBoardService {
         }
 
         // 게시글이 존재하는지 확인
-        ReqBoard reqBoard = reqBoardRepository.findByReqBoardCode(reqBoardCode);
+        ReqBoard reqBoard = reqBoardRepository.findByUserCodeAndReqBoardCode(user.getUserCode(), reqBoardCode);
         if (reqBoard == null) {
             return ResponseEntity.notFound().build();
         }
