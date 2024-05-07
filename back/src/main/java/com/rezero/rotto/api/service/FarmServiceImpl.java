@@ -35,7 +35,7 @@ public class FarmServiceImpl implements FarmService {
 
 
     // 농장 목록 조회
-    public ResponseEntity<?> getFarmList(int userCode, String sort, String keyword, Integer page) {
+    public ResponseEntity<?> getFarmList(int userCode, String sort, String keyword) {
         // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {

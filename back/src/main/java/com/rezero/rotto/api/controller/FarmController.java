@@ -32,10 +32,9 @@ public class FarmController {
     @GetMapping
     public ResponseEntity<?> getNoticeList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
                                            @RequestParam(required = false) String sort,
-                                           @RequestParam(required = false) String keyword,
-                                           @RequestParam(required = false) Integer page) {
+                                           @RequestParam(required = false) String keyword) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return farmService.getFarmList(userCode, sort, keyword, page);
+        return farmService.getFarmList(userCode, sort, keyword);
     }
 
 
