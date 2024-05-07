@@ -61,6 +61,7 @@ const TokenService = {
     try {
       await SecureStore.deleteItemAsync(StorageKeys.AccessToken);
       await SecureStore.deleteItemAsync(StorageKeys.RefreshToken);
+      await SecureStore.deleteItemAsync(StorageKeys.UserCode);
     } catch (error) {
       console.error(error);
     }

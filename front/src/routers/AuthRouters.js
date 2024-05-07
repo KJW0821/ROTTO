@@ -12,7 +12,7 @@ const AuthRouters = () => {
 
   return (
     // <AuthStack.Navigator screenOptions={{ headerShown: false }} >
-    <AuthStack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Routers" >
+    <AuthStack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Splash" >
       <AuthStack.Screen name="Splash" component={SplashScreen} />
       <AuthStack.Screen name="Onboarding" component={OnboardingScreen} />
       <AuthStack.Screen name="NameIdInput" component={NameIdInputScreen} />
