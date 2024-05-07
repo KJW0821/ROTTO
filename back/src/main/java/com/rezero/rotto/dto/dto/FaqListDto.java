@@ -4,14 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Builder
 @Getter
 @Setter
-public class ReqBoardListDto {
+public class FaqListDto {
 
-    private int reqBoardCode;
+    private int faqCode;
     private String title;
-    private LocalDateTime createTime;
 }

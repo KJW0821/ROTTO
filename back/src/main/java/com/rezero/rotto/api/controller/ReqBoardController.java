@@ -34,9 +34,9 @@ public class ReqBoardController {
     })
 
     @GetMapping
-    public ResponseEntity<?> getReqBoardList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestParam(required = false) Integer page) {
+    public ResponseEntity<?> getReqBoardList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return reqBoardService.getReqBoardList(userCode, page);
+        return reqBoardService.getReqBoardList(userCode);
     }
 
 
@@ -49,7 +49,8 @@ public class ReqBoardController {
     })
 
     @GetMapping("/{req-board-code}")
-    public ResponseEntity<?> getReqBoardDetail(int userCode, int reqBoardCode) {
+    public ResponseEntity<?> getReqBoardDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, int reqBoardCode) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return reqBoardService.getReqBoardDetail(userCode, reqBoardCode);
     }
 
@@ -64,7 +65,8 @@ public class ReqBoardController {
 
     // 받을값들
     @PostMapping("/{req-board-code}")
-    public  ResponseEntity<?> postReqBoard(int userCode, @RequestBody ReqRequest request){
+    public  ResponseEntity<?> postReqBoard(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestBody ReqRequest request){
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return reqBoardService.postReqBoard(userCode, request);
     }
 
@@ -78,7 +80,8 @@ public class ReqBoardController {
     })
 
     @PatchMapping("/{req-board-code}")
-    public  ResponseEntity<?> updateReqBoard(int userCode, int reqBoardCode, ReqRequest request){
+    public  ResponseEntity<?> updateReqBoard(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, int reqBoardCode, ReqRequest request){
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return reqBoardService.updateReqBoard(userCode, reqBoardCode, request);
     }
 
@@ -92,7 +95,8 @@ public class ReqBoardController {
     })
 
     @DeleteMapping("/{req-board-code}")
-    public  ResponseEntity<?> deleteReqBoard(int userCode, int reqBoardCode){
+    public  ResponseEntity<?> deleteReqBoard(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, int reqBoardCode){
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return reqBoardService.deleteReqBoard(userCode, reqBoardCode);
     }
 
