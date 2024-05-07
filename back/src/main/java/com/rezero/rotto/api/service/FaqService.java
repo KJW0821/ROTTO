@@ -5,8 +5,6 @@ import org.springframework.http.ResponseEntity;
 public interface FaqService {
 
     // faq list 조회
-    ResponseEntity<?> getFaqList(int userCode, Integer page);
+    ResponseEntity<?> getFaqList(int userCode);
 
-    // 질문상세조회
-    ResponseEntity<?> getFaqDetail(int userCode, int faqCode);
 }

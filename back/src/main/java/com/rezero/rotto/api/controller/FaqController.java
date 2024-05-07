@@ -33,25 +33,11 @@ public class FaqController {
     })
 
     @GetMapping
-    public ResponseEntity<?> getFaqList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestParam(required = false) Integer page) {
+    public ResponseEntity<?> getFaqList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return faqService.getFaqList(userCode, page);
+        return faqService.getFaqList(userCode);
     }
 
-
-    @Operation(summary = "FAQ 상세 조회",
-            description = "FAQ 상세 조회해볼까요?")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "FAQ 상세 조회 성공",
-                    content = @Content(schema = @Schema(implementation = FaqDetailResponse.class))),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
-    })
-
-    @GetMapping("/{faq-code}")
-    public ResponseEntity<?> getFaqDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, int faqCode) {
-        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return faqService.getFaqDetail(userCode, faqCode);
-    }
 
 }
 

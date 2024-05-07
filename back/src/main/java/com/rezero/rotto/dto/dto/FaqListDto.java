@@ -11,4 +11,5 @@ public class FaqListDto {
 
     private int faqCode;
     private String title;
+    private String content;
 }
