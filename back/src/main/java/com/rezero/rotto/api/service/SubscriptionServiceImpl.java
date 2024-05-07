@@ -49,6 +49,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
         Collections.reverse(subscriptions);
         List<Subscription> pageSubscriptions = subscriptions.subList(startIdx, endIdx);
+        
 
         for (Subscription subscription : pageSubscriptions) {
 
