@@ -22,7 +22,7 @@ export const signIn = async (data) => {
 
 export const getUserInfo = async () => {
   try {
-    const res = await API.get('/user/user');
+    const res = await API.get('/user');
     return res;
   } catch (err) {
     console.error('유저 정보 조회 실패' + err);

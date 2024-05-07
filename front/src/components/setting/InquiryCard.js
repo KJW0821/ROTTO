@@ -2,13 +2,14 @@ import { Pressable, View, Text, StyleSheet } from 'react-native';
 import Colors from '../../constants/Colors';
 
 const InquiryCard = ({navigation, data}) => {
+
   return (
-    <Pressable style={styles.container}>
+    <Pressable style={styles.container} onPress={() => navigation.navigate('inquiryDetail', { reqBoardCode: data.reqBoardCode })}>
       <View style={styles.titleContainer}>
         <Text style={styles.mdFont}>Q.</Text>
         <Text style={[styles.mdFont, { flex: 1 }]}>{data.title}</Text>
       </View>
-      <Text style={styles.date}>2024-04-20 19:00</Text>
+      <Text style={styles.date}>{new Date(data.createTime).toLocaleDateString("ko-KR")} {new Date(data.createTime).toLocaleTimeString("ko-KR")}</Text>
     </Pressable>
   )
 }

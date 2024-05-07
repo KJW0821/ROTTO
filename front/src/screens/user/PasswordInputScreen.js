@@ -5,7 +5,7 @@ import CustomButton from '../../components/common/CustomButton';
 import Colors from '../../constants/Colors';
 import { useEffect, useState } from 'react';
 import UserTopBar from '../../components/user/UserTopBar';
-import { signUp } from '../../utils/userApi';
+import { signUp, signIn } from '../../utils/userApi';
 import { useSelector } from 'react-redux';
 
 const PasswordInputScreen = ({navigation}) => {
@@ -46,7 +46,11 @@ const PasswordInputScreen = ({navigation}) => {
       sex: parseInt(signupInfo.personId.slice(-1)) % 2 === 1 ? "M" : "F",
       password
     });
-    navigation.navigate('SignIn');
+    await signIn({
+      phoneNum: signupInfo.phoneNumber,
+      password
+    });
+    navigation.navigate('PINSetting');
   };
 
   return (

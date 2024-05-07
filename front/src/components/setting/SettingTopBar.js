@@ -1,10 +1,16 @@
 import { View, Pressable, Text, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
-const SettingTopBar = ({title, navigation}) => {
+const SettingTopBar = ({title, navigation, destination}) => {
   return (
     <View style={styles.topBar}>
-      <Pressable onPress={() => navigation.goBack()}>
+      <Pressable onPress={() => {
+        if (destination) {
+          navigation.navigate(destination);
+        } else {
+          navigation.goBack();
+        }
+      }}>
         <AntDesign name="left" size={24} />
       </Pressable>
       <Text style={styles.title}>{title}</Text>

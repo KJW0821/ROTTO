@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const StorageKeys = {
-  BIOMETRIC_ENABLED: 'biometric',
-  PUSH_ENABLED: 'push'
+  BIOMETRIC_ENABLED: 'true',
+  PUSH_ENABLED: 'true'
 };
 
 const SettingService = {
