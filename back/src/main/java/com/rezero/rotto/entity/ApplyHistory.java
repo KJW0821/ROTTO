@@ -31,5 +31,4 @@ public class ApplyHistory {
     @Column(name = "is_delete", columnDefinition = "TINYINT(1) DEFAULT 0")
     int isDelete;
 
-    public void setApplyTime() {this.applyTime = LocalDateTime.now();}
 }
