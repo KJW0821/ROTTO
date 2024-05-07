@@ -60,7 +60,7 @@ const SettingScreen = ({navigation}) => {
         <Pressable style={styles.menuContainer}>
           <Text style={styles.menuText}>비밀번호 변경</Text>
         </Pressable>
-        <Pressable style={styles.menuContainer}>
+        <Pressable style={styles.menuContainer} onPress={() => navigation.navigate('pinChange')}>
           <Text style={styles.menuText}>간편 비밀번호 변경</Text>
         </Pressable>
         <View style={styles.menuContainer}>
