@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.ApplyHistoryService;
+import com.rezero.rotto.dto.response.ApplyHistoryListGetResponse;
 import com.rezero.rotto.dto.response.ApplyHistoryResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,6 +53,38 @@ public class ApplyHistoryController {
     public ResponseEntity<?> deleteApply(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int subscriptionCode){
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return applyHistoryService.deleteApply(userCode, subscriptionCode);
+    }
+
+
+    @Operation(summary = "유저가 신청한 청약리스트",
+            description = "유저가 신청한 청약리스트")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode ="200", description = "유저의 청약리스트 조회 성공",
+                    content = @Content(schema = @Schema(implementation = ApplyHistoryListGetResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않은 청약리스트")
+    })
+
+
+    @GetMapping
+    public ResponseEntity<?> getApply(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader){
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return applyHistoryService.getApply(userCode);
+    }
+
+
+    @Operation(summary = "유저가 신청취소한 청약리스트",
+            description = "유저가 신청취소한 청약리스트")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode ="200", description = "유저의 청약취소 리스트 조회 성공",
+                    content = @Content(schema = @Schema(implementation = ApplyHistoryListGetResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않은 청약리스트")
+    })
+
+
+    @GetMapping("/terminated")
+    public ResponseEntity<?> getApplyTerminated(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader){
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return applyHistoryService.getApplyTerminated(userCode);
     }
 
 }
