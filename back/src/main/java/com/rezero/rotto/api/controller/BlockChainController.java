@@ -1,11 +1,18 @@
 package com.rezero.rotto.api.controller;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.EthSyncing;
+import org.web3j.protocol.http.HttpService;
 
 import com.rezero.rotto.api.service.BlockChainService;
 
@@ -23,10 +30,11 @@ public class BlockChainController {
 
 	@PostMapping("/create/{Subscription_code}")
 	public ResponseEntity<?> createToken(@PathVariable int Subscription_code) {
-		try{
+		try {
 			blockChainService.createToken(Subscription_code);
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.badRequest().build();
 		}
 	}
