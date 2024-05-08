@@ -433,6 +433,8 @@ render.experimental.xml
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
+rotto-front-e8d8dc09d306.json
+rotto-front-firebase-adminsdk-lfsam-6427055313.json
 
 # Android Profiling
 *.hprof
