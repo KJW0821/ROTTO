@@ -2,7 +2,9 @@ package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.FarmService;
 import com.rezero.rotto.dto.request.FarmListRequest;
-import com.rezero.rotto.dto.response.*;
+import com.rezero.rotto.dto.response.FarmDetailResponse;
+import com.rezero.rotto.dto.response.FarmListResponse;
+import com.rezero.rotto.dto.response.FarmTop10ListResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

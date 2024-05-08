@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.service;
 
 //import com.rezero.rotto.dto.request.RegisterPinRequest;
+
 import com.rezero.rotto.dto.request.CheckPhoneNumRequest;
 import com.rezero.rotto.dto.request.SignUpRequest;
 import com.rezero.rotto.dto.response.CheckPhoneNumResponse;
@@ -17,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @Transactional

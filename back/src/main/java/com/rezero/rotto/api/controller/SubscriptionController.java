@@ -3,7 +3,6 @@ package com.rezero.rotto.api.controller;
 import com.rezero.rotto.api.service.SubscriptionService;
 import com.rezero.rotto.dto.response.SubscriptionDetailResponse;
 import com.rezero.rotto.dto.response.SubscriptionListResponse;
-import com.rezero.rotto.entity.Subscription;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
