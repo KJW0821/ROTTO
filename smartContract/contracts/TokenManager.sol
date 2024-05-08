@@ -9,22 +9,9 @@ import "./TokenCreation.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TokenManager is Ownable {
-    // 임의의 청약 정보
-    Subscription public testSubscription = Subscription({
-        code: 1,
-        farm_code: 10,
-        confirm_price: 10000,
-        started_time: 0,
-        end_time: 10000,
-        limit_num: 10,
-        return_rate: 5
-    });
     address private tokenCreationAddress;
     address private tokenDistributeAddress;
     address private tokenDeletionAddress;
-
-    event testCreateToken(string message);
-    event CheckMsgSender(address addr);
 
     modifier validAddress(address _addr) {
         require(_addr != address(0), unicode"올바르지 않은 주소입니다.");
@@ -44,10 +31,8 @@ contract TokenManager is Ownable {
     }
 
     // 토큰 생성
-    function createToken(uint amount) external onlyOwner {
-        emit CheckMsgSender(msg.sender);
-        emit testCreateToken("TokenManager.createToken");
-        ITokenCreation(tokenCreationAddress).createToken(testSubscription, amount);
+    function createToken(Subscription memory subscription, uint amount) external onlyOwner {
+        ITokenCreation(tokenCreationAddress).createToken(subscription, amount);
     }
 
     // 토큰 발급
