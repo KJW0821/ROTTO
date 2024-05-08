@@ -4,6 +4,7 @@ import InquiryListScreen from './../screens/setting/InquiryListScreen';
 import InquiryCreateScreen from "../screens/setting/InquiryCreateScreen";
 import PINChangeScreen from "../screens/setting/PINChangeScreen";
 import InquiryDetailScreen from "../screens/setting/InquiryDetailScreen";
+import TermsScreen from "../screens/setting/TermsScreen";
 
 const SettingRouters = () => {
   const SettingStack = createStackNavigator();
@@ -15,6 +16,7 @@ const SettingRouters = () => {
       <SettingStack.Screen name="inquiryCreate" component={InquiryCreateScreen} />
       <SettingStack.Screen name="inquiryDetail" component={InquiryDetailScreen} />
       <SettingStack.Screen name="pinChange" component={PINChangeScreen} />
+      <SettingStack.Screen name="terms" component={TermsScreen} />
     </SettingStack.Navigator>
   )
 }

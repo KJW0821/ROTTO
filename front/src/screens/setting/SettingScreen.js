@@ -39,6 +39,13 @@ const SettingScreen = ({navigation}) => {
       setIsRegisteredPinCode(pinCode !== null);
     };
 
+    const getToken = async () => {
+      const token = await TokenService.getAccessToken();
+      console.log(token);
+    };
+
+    getToken();
+
     const loadInitialData = async () => {
       await Promise.all([
         getBiometricEnabled(),
@@ -107,7 +114,7 @@ const SettingScreen = ({navigation}) => {
           <Pressable style={styles.menuContainer} onPress={() => navigation.navigate('inquiry')}>
             <Text style={styles.menuText}>문의하기</Text>
           </Pressable>
-          <Pressable style={styles.menuContainer}>
+          <Pressable style={styles.menuContainer} onPress={() => navigation.navigate('terms')}>
             <Text style={styles.menuText}>이용약관</Text>
           </Pressable>
           <View style={styles.line} />
