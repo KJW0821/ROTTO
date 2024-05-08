@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +21,6 @@ public class FarmDetailResponse {
     private String awardHistory;
     private String beanName;
     private Integer beanGrade;
-    private Boolean isInterested;
+    private Boolean isLiked;
 
 }

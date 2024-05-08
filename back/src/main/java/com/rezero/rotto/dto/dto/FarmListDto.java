@@ -13,5 +13,6 @@ public class FarmListDto {
     private String farmName;
     private String farmLogoPath;
     private String beanName;
+    private Boolean isLiked;
 
 }

@@ -3,6 +3,7 @@ package com.rezero.rotto.api.service;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 import com.rezero.rotto.entity.InterestFarm;
 import com.rezero.rotto.entity.Subscription;
 import com.rezero.rotto.entity.User;
@@ -14,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.google.firebase.messaging.Notification;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

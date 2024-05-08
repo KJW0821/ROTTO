@@ -1,7 +1,6 @@
 package com.rezero.rotto.api.service;
 
 import com.rezero.rotto.dto.dto.FaqListDto;
-import com.rezero.rotto.dto.response.FaqDetailResponse;
 import com.rezero.rotto.dto.response.FaqListResponse;
 import com.rezero.rotto.entity.Faq;
 import com.rezero.rotto.entity.User;

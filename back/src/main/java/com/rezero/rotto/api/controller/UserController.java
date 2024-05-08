@@ -1,7 +1,6 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.UserService;
-//import com.rezero.rotto.dto.request.RegisterPinRequest;
 import com.rezero.rotto.dto.request.CheckPhoneNumRequest;
 import com.rezero.rotto.dto.request.SignUpRequest;
 import com.rezero.rotto.dto.response.CheckPhoneNumResponse;
