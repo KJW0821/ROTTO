@@ -145,11 +145,18 @@ public class FarmServiceImpl implements FarmService {
         // farmTop10List 순회하며 farmCode 이용하여 정보 불러오고 Dto 에 넣기
         for (FarmTop10 farmTop10 : farmTop10List) {
             Farm farm = farmRepository.findByFarmCode(farmTop10.getFarmCode());
+            // 관심 농장 여부 검사
+            boolean isLiked = false;
+            InterestFarm interestFarm = interestFarmRepository.findByFarmCodeAndUserCode(farm.getFarmCode(), userCode);
+            if (interestFarm != null) {
+                isLiked = true;
+            }
             FarmListDto farmListDto = FarmListDto.builder()
                     .farmCode(farm.getFarmCode())
                     .farmName(farm.getFarmName())
                     .farmLogoPath(farm.getFarmLogoPath())
                     .beanName(farm.getFarmBeanName())
+                    .isLiked(isLiked)
                     .build();
             // farms 에 하나씩 담기
             farms.add(farmListDto);
