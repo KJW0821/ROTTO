@@ -41,7 +41,7 @@ API.interceptors.response.use(
         const refreshToken = await TokenService.getRefreshToken();
         const headers = { Authorization: 'Bearer ' + refreshToken };
 
-        refreshPromise = await reissueAPI.get('/auth/refresh', { headers })
+        refreshPromise = await reissueAPI.post('/auth/refresh', null, { headers })
           .then(async (res) => {
             const access = res.data.accessToken;
             const refresh = res.data.refreshToken;
@@ -50,6 +50,7 @@ API.interceptors.response.use(
           })
           .catch(async (err) => {
             if (err.response.status === 401) {
+              console.log('refresh 토큰이 만료되어 로그아웃');
               const accessToken = await TokenService.getAccessToken();
               const refreshToken = await TokenService.getRefreshToken();
               const params = { accessToken, refreshToken };
@@ -61,6 +62,7 @@ API.interceptors.response.use(
                   console.error(err);
                 })
             }
+            console.log('accessToken 갱신 실패');
             return Promise.reject(err);
           })
           .finally(() => {
