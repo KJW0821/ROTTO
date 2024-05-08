@@ -41,7 +41,9 @@ const SettingScreen = ({navigation}) => {
 
     const getToken = async () => {
       const token = await TokenService.getAccessToken();
+      const refresh = await TokenService.getRefreshToken();
       console.log(token);
+      console.log(refresh);
     };
 
     getToken();
@@ -76,7 +78,10 @@ const SettingScreen = ({navigation}) => {
         isLoaded &&
         <View style={styles.container}>
           <Text style={styles.subTitle}>보안</Text>
-          <Pressable style={styles.menuContainer}>
+          <Pressable 
+            style={styles.menuContainer} 
+            onPress={() => navigation.navigate('bioAuth', { destination: '설정', subDestination: 'passwordChange'})}
+          >
             <Text style={styles.menuText}>비밀번호 변경</Text>
           </Pressable>
           <Pressable 

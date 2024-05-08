@@ -5,6 +5,9 @@ import InquiryCreateScreen from "../screens/setting/InquiryCreateScreen";
 import PINChangeScreen from "../screens/setting/PINChangeScreen";
 import InquiryDetailScreen from "../screens/setting/InquiryDetailScreen";
 import TermsScreen from "../screens/setting/TermsScreen";
+import BioAuthScreen from "../screens/setting/BioAuthScreen";
+import PinAuthScreen from "../screens/setting/PinAuthScreen";
+import PasswordChangeScreen from "../screens/setting/PasswordChangeScreen";
 
 const SettingRouters = () => {
   const SettingStack = createStackNavigator();
@@ -17,6 +20,9 @@ const SettingRouters = () => {
       <SettingStack.Screen name="inquiryDetail" component={InquiryDetailScreen} />
       <SettingStack.Screen name="pinChange" component={PINChangeScreen} />
       <SettingStack.Screen name="terms" component={TermsScreen} />
+      <SettingStack.Screen name="bioAuth" component={BioAuthScreen} />
+      <SettingStack.Screen name="pinAuth" component={PinAuthScreen} />
+      <SettingStack.Screen name="passwordChange" component={PasswordChangeScreen} />
     </SettingStack.Navigator>
   )
 }
