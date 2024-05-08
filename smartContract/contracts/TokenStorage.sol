@@ -4,8 +4,9 @@ pragma solidity ^0.8.19;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract TokenStorage is ERC20, Ownable, AccessControl {
+contract TokenStorage is ERC20, Ownable, AccessControl, ReentrancyGuard {
     bytes32 constant MINTER_ROLE = keccak256("MINTER_ROLE"); // 토큰 생성 role
     bytes32 constant DISTRIBUTOR_ROLE = keccak256("DISTRIBUTOR_ROLE"); // 토큰 발급 role
     bytes32 constant BURNER_ROLE = keccak256("BURNER_ROLE"); // 토큰 burn role
@@ -50,20 +51,21 @@ contract TokenStorage is ERC20, Ownable, AccessControl {
     }
     
     // 사용자 지갑 주소를 이용하여 청약 코드와 일치하는 토큰 발급
-    function transfer(uint code, address _wallet, uint amount) external checkRole(DISTRIBUTOR_ROLE) {
+    function transfer(uint code, address _wallet, uint amount) external checkRole(DISTRIBUTOR_ROLE) nonReentrant {
         require(isExists[code], unicode"해당 코드와 일치하는 토큰이 없습니다.");
 
         uint TokenBalance = leftover(code);
         require(TokenBalance >= amount && TokenBalance > 0, unicode"잘못된 요청입니다.");
 
-        _transfer(owner(), _wallet, amount);
         tokenSupplies[code] -= amount;
         ownToken[_wallet][code] = amount;
         isExistAccount[_wallet] = true;
+
+        _transfer(owner(), _wallet, amount);
     }
 
     // 사용자 지갑 주소 이용하여 청약 코드와 일치하는 토큰 burn
-    function burn(uint code, address _wallet, uint amount) external checkRole(BURNER_ROLE) {
+    function burn(uint code, address _wallet, uint amount) external checkRole(BURNER_ROLE) nonReentrant {
         require(isExists[code], unicode"해당 코드와 일치하는 토큰이 없습니다.");
 
         require(isExistAccount[_wallet], unicode"잘못된 요청입니다.");
