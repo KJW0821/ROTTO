@@ -63,6 +63,11 @@ public class AlertServiceImpl implements AlertService {
         if (alert == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 알림이 존재하지 않습니다.");
         }
+        
+        // 해당 유저의 알림인지 검사
+        if (alert.getUserCode() != userCode) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("타인의 알림에는 접근할 수 없습니다.");
+        }
 
         if (!alert.getIsRead()) {
             // 읽지 않은 알림이면 읽음 처리
@@ -88,6 +93,11 @@ public class AlertServiceImpl implements AlertService {
         Alert alert = alertRepository.findByAlertCode(alertCode);
         if (alert == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 알림이 존재하지 않습니다.");
+        }
+
+        // 해당 유저의 알림인지 검사
+        if (alert.getUserCode() != userCode) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("타인의 알림에는 접근할 수 없습니다.");
         }
 
         // 알림 삭제
