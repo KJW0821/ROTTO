@@ -138,7 +138,17 @@ public class FarmSpecification {
                 query.orderBy(criteriaBuilder.asc(rateSubquery));
             } else if ("deadline".equals(sort)) {
                 // 청약 진행중인 것들 중에서 마감 기한이 가장 빠른 순으로 정렬
-                query.orderBy(criteriaBuilder.asc(subscriptionRoot.get("endedTime")));
+                Subquery<Date> deadlineSubquery = query.subquery(Date.class);
+                Root<Subscription> deadlineRoot = deadlineSubquery.from(Subscription.class);
+                deadlineSubquery.select(deadlineRoot.get("endedTime"));
+                deadlineSubquery.where(
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(deadlineRoot.get("farmCode"), root.get("farmCode")),
+                                criteriaBuilder.lessThanOrEqualTo(deadlineRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
+                                criteriaBuilder.greaterThanOrEqualTo(deadlineRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
+                        )
+                );
+                query.orderBy(criteriaBuilder.asc(deadlineSubquery));
             } else if ("highPrice".equals(sort)) {
                 // 가격 높은 순으로 정렬
                 query.orderBy(criteriaBuilder.desc(priceSubquery));
