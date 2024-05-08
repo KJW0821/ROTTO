@@ -31,3 +31,13 @@ export const getRequestDetail = async (reqBoardCode) => {
     return err;
   }
 };
+
+export const getTerms = async () => {
+  try {
+    const res = await API.get('/terms');
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
