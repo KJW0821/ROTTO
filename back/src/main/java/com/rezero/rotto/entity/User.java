@@ -49,5 +49,8 @@ public class User {
     @Column(name = "device_token")
     private String deviceToken;
 
+    @Column(name = "admin")
+    private String admin;
+
 
 }

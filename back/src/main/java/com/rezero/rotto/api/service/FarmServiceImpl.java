@@ -1,7 +1,6 @@
 package com.rezero.rotto.api.service;
 
 import com.rezero.rotto.dto.dto.FarmListDto;
-import com.rezero.rotto.dto.request.FarmListRequest;
 import com.rezero.rotto.dto.response.FarmDetailResponse;
 import com.rezero.rotto.dto.response.FarmListResponse;
 import com.rezero.rotto.dto.response.FarmTop10ListResponse;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,26 +33,24 @@ public class FarmServiceImpl implements FarmService {
 
 
     // 농장 목록 조회
-    public ResponseEntity<?> getFarmList(int userCode, String sort, String keyword, FarmListRequest request) {
+    public ResponseEntity<?> getFarmList(int userCode, Boolean isLiked, Integer subsStatus, Integer minPrice, Integer maxPrice, String beanType, String sort, String keyword) {
         // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
-        // 필터링, 정렬을 위해 데이터 선언
-        Integer interest = request.getInterest();
-        Integer subsStatus = request.getSubsStatus();
-        Integer minPrice = request.getMinPrice();
-        Integer maxPrice = request.getMaxPrice();
-        String beanType = request.getBeanType();
+        // 입력값 유효성 검사
+        if (!isValidInput(isLiked, subsStatus, minPrice, maxPrice, beanType)) {
+            return ResponseEntity.badRequest().body("잘못된 입력값입니다.");
+        }
 
         // Specification 을 활용하여 필터링 및 정렬
         Specification<Farm> spec = Specification.where(null);
         if (keyword != null) spec = spec.and(FarmSpecification.nameContains(keyword));
-        if (interest != null) spec = spec.and(FarmSpecification.hasInterest(userCode));
+        if (isLiked != null && isLiked) spec = spec.and(FarmSpecification.hasInterest(userCode));
         if (subsStatus != null) spec = spec.and(FarmSpecification.filterBySubscriptionStatus(subsStatus));
-        spec.and(FarmSpecification.priceBetween(minPrice, maxPrice));
+        if (minPrice != null || maxPrice != null) spec = spec.and(FarmSpecification.priceBetween(minPrice, maxPrice));
         if (beanType != null) spec = spec.and(FarmSpecification.filterByBeanType(beanType));
         spec = spec.and(FarmSpecification.applySorting(sort));
 
@@ -66,10 +64,10 @@ public class FarmServiceImpl implements FarmService {
         // Farm 리스트를 순회
         for (Farm farm : farms) {
             // 관심 농장 여부 검사
-            boolean isLiked = false;
+            boolean farmIsLiked = false;
             InterestFarm interestFarm = interestFarmRepository.findByFarmCodeAndUserCode(farm.getFarmCode(), userCode);
             if (interestFarm != null) {
-                isLiked = true;
+                farmIsLiked = true;
             }
             // Dto 에 담기
             FarmListDto farmListDto = FarmListDto.builder()
@@ -77,7 +75,7 @@ public class FarmServiceImpl implements FarmService {
                     .farmName(farm.getFarmName())
                     .farmLogoPath(farm.getFarmLogoPath())
                     .beanName(farm.getFarmBeanName())
-                    .isLiked(isLiked)
+                    .isLiked(farmIsLiked)
                     .build();
             // farmListDtos 에 담기
             farmListDtos.add(farmListDto);
@@ -164,4 +162,24 @@ public class FarmServiceImpl implements FarmService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+
+    // 입력값 오류 검사
+    private boolean isValidInput(Boolean isLiked, Integer subsStatus, Integer minPrice, Integer maxPrice, String beanType) {
+        // isLiked 가 null 이 아니면서 true 도 아니다.
+        if (isLiked != null && !isLiked) {
+            return false;
+        }
+        // subsStatus 가 null 이 아니면서 0 미만이거나 3 초과다.
+        if (subsStatus != null && (subsStatus < 0 || subsStatus > 1)) {
+            return false;
+        }
+        // minPrice 와 maxPrice 가 모두 null 이 아니면서 minPrice 가 maxPrice 보다 크다.
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            return false;
+        }
+        List<String> validBeanTypes = Arrays.asList("브라질 산토스", "콜롬비아 수프리모", "자메이카 블루마운틴", "에티오피아 예가체프", "케냐 AA", "코스타리카 따라주",
+                                                    "탄자니아 AA", "예멘 모카 마타리", "하와이 코나", "과테말라 안티구아", "파나마 게이샤", "엘살바도르");
+        // beanType 이 null 이 아니면서 위의 리스트에 포함되지 않는 값이면 false 처리
+        return beanType == null || validBeanTypes.contains(beanType);
+    }
 }
