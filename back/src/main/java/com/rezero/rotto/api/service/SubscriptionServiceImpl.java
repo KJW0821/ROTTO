@@ -26,10 +26,9 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
     private final SubscriptionRepository subscriptionRepository;
     private final UserRepository userRepository;
-    private final Pagination pagination;
     private final FarmRepository farmRepository;
 
-    public ResponseEntity<?> getSubscriptionList(int userCode, Integer page){
+    public ResponseEntity<?> getSubscriptionList(int userCode){
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
@@ -38,23 +37,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         List<Subscription> subscriptions = subscriptionRepository.findAll();
         List<SubscriptionListDto> subscriptionListDtos = new ArrayList<>();
 
-        // 인덱스 선언
-        int startIdx = 0;
-        int endIdx = 0;
-        // 총 페이지 수 선언
-        int totalPages = 1;
 
-        // 페이지네이션
-        List<Integer> indexes = pagination.pagination(page, 10, subscriptions.size());
-        startIdx = indexes.get(0);
-        endIdx = indexes.get(1);
-        totalPages = indexes.get(2);
-
-        Collections.reverse(subscriptions);
-        List<Subscription> pageSubscriptions = subscriptions.subList(startIdx, endIdx);
-
-
-        for (Subscription subscription : pageSubscriptions) {
+        for (Subscription subscription : subscriptions) {
             Farm farm = farmRepository.findByFarmCode(subscription.getFarmCode());
             SubscriptionListDto subscriptionListDto = SubscriptionListDto.builder()
                     .subscriptionCode(subscription.getSubscriptionCode())
@@ -71,7 +55,6 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
         SubscriptionListResponse response = SubscriptionListResponse.builder()
                 .subscriptions(subscriptionListDtos)
-                .totalPages(totalPages)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
