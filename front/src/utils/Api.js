@@ -39,9 +39,12 @@ API.interceptors.response.use(
       if (!isRefreshing) {
         isRefreshing = true;
         const refreshToken = await TokenService.getRefreshToken();
-        const headers = { Authorization: 'Bearer ' + refreshToken };
 
-        refreshPromise = await reissueAPI.post('/auth/refresh', null, { headers })
+        refreshPromise = await reissueAPI.post('/auth/refresh', null, {
+          headers: {
+            Authorization: 'Bearer ' + refreshToken
+          }
+        })
           .then(async (res) => {
             const access = res.data.accessToken;
             const refresh = res.data.refreshToken;
