@@ -110,7 +110,10 @@ public class FarmSpecification {
             } else if ("deadline".equals(sort)) {
                 rateSubquery.select(subscriptionRoot.get("endedTime"));
                 query.orderBy(criteriaBuilder.asc(rateSubquery));
-            } else if ("confirmPrice".equals(sort)) {
+            } else if ("highPrice".equals(sort)) {
+                rateSubquery.select(subscriptionRoot.get("confirmPrice"));
+                query.orderBy(criteriaBuilder.desc(rateSubquery));
+            } else if ("lowPrice".equals(sort)) {
                 rateSubquery.select(subscriptionRoot.get("confirmPrice"));
                 query.orderBy(criteriaBuilder.asc(rateSubquery));
             } else {
