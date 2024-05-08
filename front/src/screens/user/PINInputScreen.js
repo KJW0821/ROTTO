@@ -1,10 +1,8 @@
-import { View, Text, SafeAreaView, StyleSheet, Alert } from 'react-native';
-import UserTopBar from '../../components/user/UserTopBar';
-import Title from '../../components/user/Title';
+import { View, Text, SafeAreaView, StyleSheet, Alert, Platform, Pressable } from 'react-native';
 import ReactNativePinView from 'react-native-pin-view';
 import { useEffect, useState, useRef } from 'react';
 import KeyService from '../../utils/pinCode';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
 
 const PINInputScreen = ({navigation}) => {
@@ -44,47 +42,46 @@ const PINInputScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <UserTopBar navigation={navigation} destination= 'SignIn' />
-      <View style={styles.container}>
-        <Title>간편 로그인</Title>
-        <View style={styles.pinContainer}>
-          <Text style={styles.description}>간편 비밀번호를 입력해주세요</Text>
-          <ReactNativePinView
-            inputSize={20}
-            ref={pinView}
-            pinLength={6}
-            buttonSize={60}
-            onValueChange={value => setEnteredPin(value)}
-            inputAreaStyle={{
-              marginBottom: '25%',
-            }}
-            inputViewEmptyStyle={{
-              backgroundColor: '#D9D9D9',
-            }}
-            inputViewFilledStyle={{
-              backgroundColor: Colors.btnBlue,
-            }}
-            buttonViewStyle={{
-              borderWidth: 1,
-              borderColor: "black",
-            }}
-            buttonTextStyle={{
-              color: "black"
-            }}
-            onButtonPress={key => {
-              if (key === "custom_left") {
-                pinView.current.clear()
-              }
-              if (key === "custom_right") {
-                checkPinCode();
-              }
-            }}
-            customLeftButton={showRemoveButton ? <Ionicons name={"arrow-back-outline"} size={36} color={"black"} /> : undefined}
-            customRightButton={showCompletedButton ? <Ionicons name={"checkmark-outline"} size={36} color={"black"} /> : undefined}
-          />
-        </View>
+      <View style={styles.pinContainer}>
+        <Text style={styles.description}>간편 비밀번호를 입력해주세요</Text>
+        <ReactNativePinView
+          inputSize={20}
+          ref={pinView}
+          pinLength={6}
+          buttonSize={60}
+          onValueChange={value => setEnteredPin(value)}
+          inputAreaStyle={{
+            marginBottom: '25%',
+          }}
+          inputViewEmptyStyle={{
+            backgroundColor: '#D9D9D9',
+          }}
+          inputViewFilledStyle={{
+            backgroundColor: Colors.btnBlue,
+          }}
+          buttonViewStyle={{
+            borderWidth: 1,
+            borderColor: "black",
+          }}
+          buttonTextStyle={{
+            color: "black"
+          }}
+          onButtonPress={key => {
+            if (key === "custom_left") {
+              pinView.current.clear()
+            }
+            if (key === "custom_right") {
+              checkPinCode();
+            }
+          }}
+          customLeftButton={showRemoveButton ? <Ionicons name={"arrow-back-outline"} size={36} color={"black"} /> : undefined}
+          customRightButton={showCompletedButton ? <Ionicons name={"checkmark-outline"} size={36} color={"black"} /> : undefined}
+        />
+        <Pressable style={styles.bioButton} onPress={() => navigation.navigate('BioAuth')}>
+          <MaterialCommunityIcons name={ Platform.OS === 'android' ? 'fingerprint' : 'face-recognition' } size={12} />
+          <Text style={styles.bioText}>생체 인증</Text>
+        </Pressable>
       </View>
-      
     </SafeAreaView>
   )
 }
@@ -97,19 +94,31 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center'
   },
-  container: {
-    width: '80%',
-    flex: 1
-  },
   pinContainer: {
-    width: '100%',
+    width: '80%',
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   description: {
     fontFamily: 'pretendard-semiBold',
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 32
+  },
+  bioButton: {
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    width: 100,
+    height: 30,
+    borderRadius: 15,
+    marginTop: 16
+  },
+  bioText: {
+    fontFamily: 'pretendard-medium',
+    fontSize: 12
   }
 });
