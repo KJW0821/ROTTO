@@ -1,22 +1,18 @@
-package com.rezero.rotto.dto.dto;
+package com.rezero.rotto.dto.response;
 
-
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Builder
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
-public class AlertListDto {
+public class TermResponse {
 
-    private int alertCode;
     private String title;
+    private String content;
     private LocalDateTime createTime;
-    private Boolean isRead;
-
+    private LocalDateTime updateTime;
 }

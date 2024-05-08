@@ -1,7 +1,7 @@
 package com.rezero.rotto.api.controller;
 
-import com.rezero.rotto.api.service.FaqService;
-import com.rezero.rotto.dto.response.FaqListResponse;
+import com.rezero.rotto.api.service.TermService;
+import com.rezero.rotto.dto.response.TermResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,29 +18,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/faq")
 @RequiredArgsConstructor
-@Tag(name = "FAQ 컨트롤러", description = "FAQ를 위한 API")
-public class FaqController {
+@RequestMapping("/terms")
+@Tag(name = "이용약관 컨트롤러", description = "이용약관 조회를 위한 API")
+public class TermController {
 
-    private final FaqService faqService;
+    private final TermService termService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Operation(summary = "FAQ 목록 조회",
-            description = "FAQ 전체 목록 조회")
+    @Operation(summary = "이용약관 조회", description = "이용약관을 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "FAQ 조회 성공",
-                    content = @Content(schema = @Schema(implementation = FaqListResponse.class))),
-            @ApiResponse(responseCode = "404", description = "조회 실패")
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = TermResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
-
     @GetMapping
-    public ResponseEntity<?> getFaqList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public ResponseEntity<?> getTerms(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return faqService.getFaqList(userCode);
+        return termService.getTerms(userCode);
     }
-
-
 }
-
-

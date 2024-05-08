@@ -5,19 +5,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-
+@Builder
 @Getter
 @Setter
-@Builder
-public class ApplyHistoryListDto {
+public class ApplyHistoryListCancelDto {
 
-    private int applyHistoryCode;
-    private int userCode;
     private int subscriptionCode;
+    private int userCode;
     private int farmCode;
     private String farmName;
     private int confirmPrice;
     private LocalDateTime applyTime;
-
-
+    private LocalDateTime startedTime;
+    private LocalDateTime endedTime;
+    private int isDelete;
 }

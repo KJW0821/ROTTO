@@ -1,17 +1,21 @@
 package com.rezero.rotto.dto.response;
 
-import com.rezero.rotto.dto.dto.ApplyHistoryListDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Builder
 @Getter
 @Setter
 public class ApplyHistoryResponse {
 
-    private List<ApplyHistoryListDto> applyHistory;
-    private int totalPages;
+    private int applyHistoryCode;
+    private int userCode;
+    private int subscriptionCode;
+    private int confirmPrice;
+    private LocalDateTime applyTime;
+    private int isDelete;
+
 }

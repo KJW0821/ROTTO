@@ -1,10 +1,8 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.NoticeService;
-import com.rezero.rotto.api.service.UserService;
 import com.rezero.rotto.dto.response.NoticeDetailResponse;
 import com.rezero.rotto.dto.response.NoticeListResponse;
-import com.rezero.rotto.dto.response.UserInfoResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
