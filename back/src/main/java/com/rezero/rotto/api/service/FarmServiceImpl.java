@@ -100,10 +100,10 @@ public class FarmServiceImpl implements FarmService {
         }
 
         // 관심 농장 여부 검사
-        boolean isInterested = false;
+        boolean isLiked = false;
         InterestFarm interestFarm = interestFarmRepository.findByFarmCodeAndUserCode(farmCode, userCode);
         if (interestFarm != null) {
-            isInterested = true;
+            isLiked = true;
         }
 
 
@@ -118,7 +118,7 @@ public class FarmServiceImpl implements FarmService {
                 .awardHistory(farm.getAwardHistory())
                 .beanName(farm.getFarmBeanName())
                 .beanGrade(farm.getFarmBeanGrade())
-                .isInterested(isInterested)
+                .isLiked(isLiked)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
