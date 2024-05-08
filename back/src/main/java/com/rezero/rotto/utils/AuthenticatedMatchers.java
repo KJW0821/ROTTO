@@ -7,6 +7,7 @@ public class AuthenticatedMatchers {
     public static final String[] matcherArray = {
             "/",
             "/user/signup",
+            "/user/phone-num-check",
             "/auth/login",
             "/auth/logout",
             "/auth/refresh",
