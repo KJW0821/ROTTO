@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
                     .phoneNum(encryptedPhoneNum)
                     .juminNo(encryptedJuminNo)
                     .password(hashedPassword)
+                    .email(request.getEmail())
                     .build();
 
             // 저장
