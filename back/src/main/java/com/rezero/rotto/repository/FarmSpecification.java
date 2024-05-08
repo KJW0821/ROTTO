@@ -52,10 +52,10 @@ public class FarmSpecification {
             } else if (subsStatus == 1) { // 청약 진행 중
                 statusPredicate = criteriaBuilder.and(
                         criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
-                        criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("endTime"), criteriaBuilder.currentTimestamp())
+                        criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
                 );
             } else if (subsStatus == 2) { // 청약 종료
-                statusPredicate = criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("endTime"), criteriaBuilder.currentTimestamp());
+                statusPredicate = criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp());
             } else {
                 statusPredicate = null;
             }
@@ -108,7 +108,7 @@ public class FarmSpecification {
             if ("rate".equals(sort)) {
                 query.orderBy(criteriaBuilder.asc(rateSubquery));
             } else if ("deadline".equals(sort)) {
-                rateSubquery.select(subscriptionRoot.get("endTime"));
+                rateSubquery.select(subscriptionRoot.get("endedTime"));
                 query.orderBy(criteriaBuilder.asc(rateSubquery));
             } else if ("confirmPrice".equals(sort)) {
                 rateSubquery.select(subscriptionRoot.get("confirmPrice"));
