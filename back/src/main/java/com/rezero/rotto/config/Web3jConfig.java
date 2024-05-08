@@ -6,13 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.gas.DefaultGasProvider;
-
-import com.rezero.rotto.contracts.TokenCreation;
-import com.rezero.rotto.contracts.TokenDeletion;
-import com.rezero.rotto.contracts.TokenDistribute;
-import com.rezero.rotto.contracts.TokenManager;
-import com.rezero.rotto.contracts.TokenStorage;
 
 @Configuration
 public class Web3jConfig {
