@@ -119,20 +119,20 @@ public class FarmSpecification {
             if ("rate".equals(sort)) {
                 // 가장 최근에 종료된 청약의 returnRate로 정렬
                 Subquery<Double> rateSubquery = query.subquery(Double.class);
+                Root<Subscription> rateRoot = rateSubquery.from(Subscription.class);
+
+                // 가장 최근 종료 시간 찾기
                 Subquery<Date> latestDateSubquery = query.subquery(Date.class);
                 Root<Subscription> latestDateRoot = latestDateSubquery.from(Subscription.class);
-
-                // 가장 최근 종료 시간을 찾는 서브쿼리
                 latestDateSubquery.select(criteriaBuilder.greatest(latestDateRoot.<Date>get("endedTime")))
                         .where(criteriaBuilder.equal(latestDateRoot.get("farmCode"), root.get("farmCode")));
 
-                // RateSubquery 설정
-                rateSubquery.select(subscriptionRoot.get("returnRate"));
+                // rateSubquery 설정
+                rateSubquery.select(rateRoot.get("returnRate"));
                 rateSubquery.where(
                         criteriaBuilder.and(
-                                criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode")),
-                                criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp()),
-                                criteriaBuilder.equal(subscriptionRoot.get("endedTime"), latestDateSubquery.getSelection())
+                                criteriaBuilder.equal(rateRoot.get("farmCode"), root.get("farmCode")),
+                                criteriaBuilder.equal(rateRoot.get("endedTime"), latestDateSubquery.getSelection())
                         )
                 );
                 query.orderBy(criteriaBuilder.asc(rateSubquery));
