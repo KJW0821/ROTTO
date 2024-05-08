@@ -35,7 +35,7 @@ public class BlockChainServiceImpl implements BlockChainService{
 
 	private TokenManager tokenManager = null;
 
-	@Value("${blockchain.CA.tokenManager}")
+	@Value("${tokenManager}")
 	private String tokenManagerAddress;
 
 	private static final BigInteger GAS_LIMIT = BigInteger.valueOf(9_007_199_254_740_991L);
@@ -67,8 +67,10 @@ public class BlockChainServiceImpl implements BlockChainService{
 
 		// 이전에 금융망을 통해 사용자 ssafy 계좌 이체 요청 필요
 
-		BigInteger code = BigInteger.valueOf(subscription.getSubscriptionCode());
+		// BigInteger code = BigInteger.valueOf(subscription.getSubscriptionCode());
+		TokenManager.Subscription requestSubscription = changeVariable(subscription);
 		BigInteger amount = BigInteger.valueOf(request.getAmount());
+
 
 		// CompletableFuture<TransactionReceipt> transactionReceipt = tokenManager.distributeToken(code, request.getAddress(), amount).sendAsync();
 		// transactionReceipt.thenAccept(receipt -> {
@@ -76,7 +78,7 @@ public class BlockChainServiceImpl implements BlockChainService{
 		// }).exceptionally(e -> {
 		// 	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("토큰 발급에 실패하였습니다.");
 		// });
-		TransactionReceipt transactionReceipt = tokenManager.distributeToken(code, request.getAddress(), amount).send();
+		TransactionReceipt transactionReceipt = tokenManager.distributeToken(requestSubscription, request.getAddress(), amount).send();
 		if(!transactionReceipt.isStatusOK())    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("토큰 발급에 실패하였습니다.");
 		return ResponseEntity.ok().build();
 	}
@@ -94,6 +96,8 @@ public class BlockChainServiceImpl implements BlockChainService{
 		if(!transactionReceipt.isStatusOK())    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("환급 실패");
 
 		// 거래 장부에 거래 내역 추가
+
+		// 금융망에 사용자의 계좌에 입금 필요
 
 		return ResponseEntity.ok().build();
 	}
