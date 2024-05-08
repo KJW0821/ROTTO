@@ -1,7 +1,6 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.dto.dto.NewsListDto;
-import com.rezero.rotto.dto.response.AlertListResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +29,7 @@ public class NewsController {
     private final JwtTokenProvider jwtTokenProvider;
 
 
-    @Operation(summary = "뉴스 목록 조회", description = "뉴스 목록을 조회")
+    @Operation(summary = "소식 목록 조회", description = "소식 목록을 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(schema = @Schema(implementation = NewsListDto.class))),
@@ -44,7 +43,7 @@ public class NewsController {
     }
 
 
-    @Operation(summary = "뉴스 상세 조회", description = "뉴스 상세 조회")
+    @Operation(summary = "소식 상세 조회", description = "소식 상세 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(schema = @Schema(implementation = NewsListDto.class))),

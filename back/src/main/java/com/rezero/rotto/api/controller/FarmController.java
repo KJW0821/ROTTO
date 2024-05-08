@@ -1,7 +1,10 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.FarmService;
-import com.rezero.rotto.dto.response.*;
+import com.rezero.rotto.dto.request.FarmListRequest;
+import com.rezero.rotto.dto.response.FarmDetailResponse;
+import com.rezero.rotto.dto.response.FarmListResponse;
+import com.rezero.rotto.dto.response.FarmTop10ListResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,19 +26,19 @@ public class FarmController {
     private final JwtTokenProvider jwtTokenProvider;
     private final FarmService farmService;
 
-    @Operation(summary = "농장 목록 조회", description = "필터링, 정렬, 검색, 페이지네이션을 포함한 농장 목록 조회")
+    @Operation(summary = "농장 목록 조회", description = "필터링, 정렬, 검색을 포함한 농장 목록 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(schema = @Schema(implementation = FarmListResponse.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
     @GetMapping
-    public ResponseEntity<?> getNoticeList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+    public ResponseEntity<?> getFarmList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
                                            @RequestParam(required = false) String sort,
                                            @RequestParam(required = false) String keyword,
-                                           @RequestParam(required = false) Integer page) {
+                                           @RequestBody FarmListRequest request) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return farmService.getFarmList(userCode, sort, keyword, page);
+        return farmService.getFarmList(userCode, sort, keyword, request);
     }
 
 

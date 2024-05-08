@@ -3,7 +3,6 @@ package com.rezero.rotto.api.controller;
 import com.rezero.rotto.api.service.AlertService;
 import com.rezero.rotto.dto.response.AlertDetailResponse;
 import com.rezero.rotto.dto.response.AlertListResponse;
-import com.rezero.rotto.dto.response.NoticeListResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

@@ -5,15 +5,12 @@ import org.springframework.http.ResponseEntity;
 public interface ApplyHistoryService {
 
     // 청약신청
-    ResponseEntity<?> postApply(int userCode, int subscriptCode);
+    ResponseEntity<?> postApply(int userCode, int subscriptionCode);
 
     // 청약 신청 취소
-    ResponseEntity<?> deleteApply(int userCode, int applyHistoryCode);
+    ResponseEntity<?> deleteApply(int userCode, int subscriptionCode);
 
-    // 유저의 청약신청 리스트
-    ResponseEntity<?> getApplyHistoryListByUser(int userCode, Integer page);
+    ResponseEntity<?> getApply(int userCode);
 
-    // 유저의 청약신청 리스트 상세
-    ResponseEntity<?> getApplyDetailByUser(int userCode, int subscriptionCode);
-
+    ResponseEntity<?> getApplyTerminated(int userCode);
 }
