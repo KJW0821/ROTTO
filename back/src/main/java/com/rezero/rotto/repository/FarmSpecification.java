@@ -3,7 +3,9 @@ package com.rezero.rotto.repository;
 import com.rezero.rotto.entity.Farm;
 import com.rezero.rotto.entity.InterestFarm;
 import com.rezero.rotto.entity.Subscription;
-import jakarta.persistence.criteria.*;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 
 public class FarmSpecification {

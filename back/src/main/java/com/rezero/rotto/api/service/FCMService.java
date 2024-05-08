@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import static com.rezero.rotto.config.FirebaseConfig.*;
 
 import java.io.IOException;
 import java.util.Arrays;
+
+import static com.rezero.rotto.config.FirebaseConfig.FIREBASE_ALARM_SEND_API_URI;
+import static com.rezero.rotto.config.FirebaseConfig.FIREBASE_CONFIG_PATH;
 
 @Service
 @Slf4j

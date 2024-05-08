@@ -1,7 +1,6 @@
 package com.rezero.rotto.api.service;
 
 import com.rezero.rotto.dto.request.ReqRequest;
-import com.rezero.rotto.dto.response.ReqBoardDetailRegisterModifyResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface ReqBoardService {
