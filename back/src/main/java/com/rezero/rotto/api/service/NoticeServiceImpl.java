@@ -29,7 +29,7 @@ public class NoticeServiceImpl implements NoticeService {
 
 
     // 공지사항 목록 조회
-    public ResponseEntity<?> getNoticeList(int userCode, Integer page) {
+    public ResponseEntity<?> getNoticeList(int userCode) {
         // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
@@ -40,24 +40,10 @@ public class NoticeServiceImpl implements NoticeService {
         List<Notice> notices = noticeRepository.findAll();
         List<NoticeListDto> noticeListDtos = new ArrayList<>();
 
-        // 인덱스 선언
-        int startIdx = 0;
-        int endIdx = 0;
-        // 총 페이지 수 선언
-        int totalPages = 1;
-
-        // 페이지네이션
-        List<Integer> indexes = pagination.pagination(page, 10, notices.size());
-        startIdx = indexes.get(0);
-        endIdx = indexes.get(1);
-        totalPages = indexes.get(2);
-
         // 최신것부터 보여주기 위해 리스트 뒤집기
         Collections.reverse(notices);
-        // Notice 리스트 페이지네이션
-        List<Notice> pageNotices = notices.subList(startIdx, endIdx);
         // Notice 리스트를 순회
-        for (Notice notice : pageNotices) {
+        for (Notice notice : notices) {
             // Dto 에 담기
             NoticeListDto noticeListDto = NoticeListDto.builder()
                     .noticeCode(notice.getNoticeCode())
@@ -71,7 +57,6 @@ public class NoticeServiceImpl implements NoticeService {
         // 리스폰스 생성
         NoticeListResponse response = NoticeListResponse.builder()
                 .notices(noticeListDtos)
-                .totalPages(totalPages)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

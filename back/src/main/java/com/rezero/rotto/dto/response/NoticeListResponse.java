@@ -13,6 +13,5 @@ import java.util.List;
 public class NoticeListResponse {
 
     private List<NoticeListDto> notices;
-    private int totalPages;
 
 }
