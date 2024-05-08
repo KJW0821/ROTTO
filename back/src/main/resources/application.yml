@@ -88,12 +88,12 @@ cloud:
   aws:
     s3:
       # 수정 필요
-      bucket: rotto-rotto
+      bucket: ENC(DAkgpEnEp7szmh9BYMHAHeVB2+megH6a9RwUjJIXQNLNb/3t55+8j0IIHpUxSXp6)
     region:
       static: ENC(Lr5TujExoZ6kj+9RAOqLk17l/K7x3Wle6T8oHXJ1Cdbn4F2rennKK3R1WAjBgJSx)
     credentials:
-      access-key: 추가
-      secret-key: 추가
+      access-key: ENC(iOpcBO4YJG8mWy1IrkTmqUXpbC6oxjQFhEVFpC5/1z5Fa3yBBjAiGl5fdZYQyrJCyD6lrJy/uz/WULBLvrYGkw==)
+      secret-key: ENC(RXE6XMOTa4uPoGnR9A1h7AwysdvXMrAMChWIOhxuEoeekjHfammZrUDxgVtc5GqGo+aE6celFZQtWmVXQWvuGN62r4fcO/erStuw5DDvYeI=)
     stack:
       auto: false
 
