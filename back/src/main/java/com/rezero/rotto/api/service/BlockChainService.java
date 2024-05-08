@@ -1,5 +1,15 @@
 package com.rezero.rotto.api.service;
 
+import org.springframework.http.ResponseEntity;
+
+import com.rezero.rotto.dto.request.CreateTokenRequest;
+import com.rezero.rotto.dto.request.PayTokensRequest;
+import com.rezero.rotto.dto.request.RefundsTokenRequest;
+
 public interface BlockChainService {
-	void createToken(int subscriptionCode) throws Exception;
+	ResponseEntity<?> createToken(CreateTokenRequest request) throws Exception;
+
+	ResponseEntity<?> distributeToken(PayTokensRequest request) throws Exception;
+
+	ResponseEntity<?> RefundsToken(RefundsTokenRequest request) throws Exception;
 }
