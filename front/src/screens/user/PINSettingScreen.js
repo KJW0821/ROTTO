@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from 'react';
 import KeyService from '../../utils/pinCode';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
+import BioAuthButton from '../../components/common/BioAuthButton';
 
 const PINSettingScreen = ({navigation}) => {
   const pinView = useRef(null)
@@ -52,6 +53,7 @@ const PINSettingScreen = ({navigation}) => {
               '간편 비밀번호를 한번 더 입력해주세요'
             }
           </Text>
+          <BioAuthButton style={{ marginBottom: 16 }} />
           <ReactNativePinView
             inputSize={20}
             ref={pinView}
@@ -59,7 +61,7 @@ const PINSettingScreen = ({navigation}) => {
             buttonSize={60}
             onValueChange={value => setEnteredPin(value)}
             inputAreaStyle={{
-              marginBottom: '25%',
+              marginBottom: '20%',
             }}
             inputViewEmptyStyle={{
               backgroundColor: '#D9D9D9',
@@ -118,12 +120,13 @@ const styles = StyleSheet.create({
   pinContainer: {
     width: '100%',
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   description: {
     fontFamily: 'pretendard-semiBold',
     fontSize: 16,
     textAlign: 'center',
-    marginBottom: 32
+    marginBottom: 16
   }
 });
