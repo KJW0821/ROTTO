@@ -96,27 +96,47 @@ public class FarmSpecification {
 
 
     // 요청된 정렬 기준에 따라 정렬하는 스펙. sort = null: 농장 이름 순, rate: 수익률 높은 순, deadline: 마감 기한 빠른 순,
-    // highPrice: 조각 가격 높은 순, lowPrice: 조각 가격 낮은 순
-    // 요청된 정렬 기준에 따라 정렬하는 스펙
+    // highPrice: 공모가 높은 순으로 정렬, lowPrice: 공모가 낮은 순으로 정렬
     public static Specification<Farm> applySorting(String sort) {
         return (root, query, criteriaBuilder) -> {
-            Subquery<Double> rateSubquery = query.subquery(Double.class);
-            Root<Subscription> subscriptionRoot = rateSubquery.from(Subscription.class);
-            rateSubquery.select(subscriptionRoot.get("returnRate"));
-            rateSubquery.where(criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode")));
+            // 청약 진행중인 청약에 대한 서브쿼리 준비
+            Subquery<Integer> priceSubquery = query.subquery(Integer.class);
+            Root<Subscription> subscriptionRoot = priceSubquery.from(Subscription.class);
+
+            priceSubquery.select(subscriptionRoot.get("confirmPrice"));
+            priceSubquery.where(
+                    criteriaBuilder.and(
+                            criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode")),
+                            criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
+                            criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
+                    )
+            );
 
             if ("rate".equals(sort)) {
+                // 가장 최근에 종료된 청약의 returnRate로 정렬
+                Subquery<Double> rateSubquery = query.subquery(Double.class);
+                rateSubquery.select(subscriptionRoot.get("returnRate"));
+                rateSubquery.where(
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode")),
+                                criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp()),
+                                criteriaBuilder.equal(subscriptionRoot.get("endedTime"), query.subquery(java.util.Date.class)
+                                        .select(criteriaBuilder.greatest(subscriptionRoot.get("endedTime")))
+                                        .where(criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode"))))
+                        )
+                );
                 query.orderBy(criteriaBuilder.asc(rateSubquery));
             } else if ("deadline".equals(sort)) {
-                rateSubquery.select(subscriptionRoot.get("endedTime"));
-                query.orderBy(criteriaBuilder.asc(rateSubquery));
+                // 청약 진행중인 것들 중에서 마감 기한이 가장 빠른 순으로 정렬
+                query.orderBy(criteriaBuilder.asc(subscriptionRoot.get("endedTime")));
             } else if ("highPrice".equals(sort)) {
-                rateSubquery.select(subscriptionRoot.get("confirmPrice"));
-                query.orderBy(criteriaBuilder.desc(rateSubquery));
+                // 가격 높은 순으로 정렬
+                query.orderBy(criteriaBuilder.desc(priceSubquery));
             } else if ("lowPrice".equals(sort)) {
-                rateSubquery.select(subscriptionRoot.get("confirmPrice"));
-                query.orderBy(criteriaBuilder.asc(rateSubquery));
+                // 가격 낮은 순으로 정렬
+                query.orderBy(criteriaBuilder.asc(priceSubquery));
             } else {
+                // 기본 정렬 기준: 농장 이름 순
                 query.orderBy(criteriaBuilder.asc(root.get("farmName")));
             }
             return query.getRestriction();
