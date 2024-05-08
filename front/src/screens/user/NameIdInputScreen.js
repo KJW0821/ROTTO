@@ -59,7 +59,7 @@ const NameIdInputScreen = ({navigation}) => {
           >
             <Pressable style={styles.inputContainer} onPress={() => idInputRef.current.focus()}>
               <TextInput 
-                style={{width: '0.05%'}} 
+                style={{ position: 'absolute', top: -1000, left: -1000 }} 
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
                 maxLength={7}

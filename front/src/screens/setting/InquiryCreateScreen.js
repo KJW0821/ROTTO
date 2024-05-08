@@ -10,15 +10,6 @@ const InquiryCreateScreen = ({navigation}) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
-  useEffect(() => {
-    const getToken = async () => {
-      const token = await TokenService.getAccessToken();
-      console.log(token)
-    }
-  
-    getToken();
-  }, [])
-
   const titleInputHandler = (enteredText) => {
     setTitle(enteredText);
   };

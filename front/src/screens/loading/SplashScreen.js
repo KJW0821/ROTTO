@@ -13,8 +13,8 @@ const SplashScreen = ({navigation}) => {
         const accessToken = await TokenService.getAccessToken();
         const refreshToken = await TokenService.getRefreshToken();
         
-        if (accessToken && accessToken !== 'accessToken' && refreshToken && refreshToken !== 'refreshToken') {
-          navigation.replace('PINInput');
+        if (accessToken && refreshToken) {
+          navigation.replace('BioAuth');
         } else {
           navigation.replace('Onboarding');
         }
