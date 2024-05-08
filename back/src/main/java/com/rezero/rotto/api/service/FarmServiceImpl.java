@@ -65,12 +65,19 @@ public class FarmServiceImpl implements FarmService {
 
         // Farm 리스트를 순회
         for (Farm farm : farms) {
+            // 관심 농장 여부 검사
+            boolean isLiked = false;
+            InterestFarm interestFarm = interestFarmRepository.findByFarmCodeAndUserCode(farm.getFarmCode(), userCode);
+            if (interestFarm != null) {
+                isLiked = true;
+            }
             // Dto 에 담기
             FarmListDto farmListDto = FarmListDto.builder()
                     .farmCode(farm.getFarmCode())
                     .farmName(farm.getFarmName())
                     .farmLogoPath(farm.getFarmLogoPath())
                     .beanName(farm.getFarmBeanName())
+                    .isLiked(isLiked)
                     .build();
             // farmListDtos 에 담기
             farmListDtos.add(farmListDto);
