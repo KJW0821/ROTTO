@@ -1,7 +1,6 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.FarmService;
-import com.rezero.rotto.dto.request.FarmListRequest;
 import com.rezero.rotto.dto.response.FarmDetailResponse;
 import com.rezero.rotto.dto.response.FarmListResponse;
 import com.rezero.rotto.dto.response.FarmTop10ListResponse;
@@ -34,11 +33,15 @@ public class FarmController {
     })
     @GetMapping
     public ResponseEntity<?> getFarmList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
-                                           @RequestParam(required = false) String sort,
-                                           @RequestParam(required = false) String keyword,
-                                           @RequestBody FarmListRequest request) {
+                                         @RequestParam(name = "is-liked", required = false) Boolean isLiked,
+                                         @RequestParam(name = "subs-status", required = false) Integer subsStatus,
+                                         @RequestParam(name = "min-price", required = false) Integer minPrice,
+                                         @RequestParam(name = "max-price", required = false) Integer maxPrice,
+                                         @RequestParam(name = "bean-type", required = false) String beanType,
+                                         @RequestParam(required = false) String sort,
+                                         @RequestParam(required = false) String keyword) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return farmService.getFarmList(userCode, sort, keyword, request);
+        return farmService.getFarmList(userCode, isLiked, subsStatus, minPrice, maxPrice, beanType, sort, keyword);
     }
 
 
