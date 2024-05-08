@@ -5,10 +5,12 @@ import ToggleButton from '../../components/common/ToggleButton';
 import SettingService from '../../utils/setting';
 import { logout } from '../../utils/userApi';
 import TokenService from '../../utils/token';
+import KeyService from '../../utils/pinCode';
 
 const SettingScreen = ({navigation}) => {
   const [isCheckedBio, setIsCheckedBio] = useState(false);
   const [isCheckedPush, setIsCheckedPush] = useState(false);
+  const [isRegisteredPinCode, setIsRegisteredPinCode] = useState(true);
   
   const toggleBio = async () => {
     await SettingService.setBiometricEnabled(!isCheckedBio);
@@ -31,15 +33,21 @@ const SettingScreen = ({navigation}) => {
       setIsCheckedPush(isEnabled);
     };
 
+    const getPinCode = async () => {
+      const pinCode = await KeyService.getPinCode();
+      setIsRegisteredPinCode(pinCode !== null);
+    };
+
     const loadInitialData = async () => {
       await Promise.all([
         getBiometricEnabled(),
-        getPushEnabled()
+        getPushEnabled(),
+        getPinCode()
       ]);
     };
 
     loadInitialData();
-  }, []);
+  }, [navigation]);
 
   const logoutHandler = async () => {
     await logout();
@@ -60,8 +68,17 @@ const SettingScreen = ({navigation}) => {
         <Pressable style={styles.menuContainer}>
           <Text style={styles.menuText}>비밀번호 변경</Text>
         </Pressable>
-        <Pressable style={styles.menuContainer} onPress={() => navigation.navigate('pinChange')}>
-          <Text style={styles.menuText}>간편 비밀번호 변경</Text>
+        <Pressable 
+          style={styles.menuContainer} 
+          onPress={() => {
+            if (isRegisteredPinCode) {
+              navigation.navigate('pinChange');
+            } else {
+              navigation.navigate('PINSetting');
+            }
+          }}
+        >
+          <Text style={styles.menuText}>{ isRegisteredPinCode ? '간편 비밀번호 변경' : '간편 비밀번호 등록' }</Text>
         </Pressable>
         <View style={styles.menuContainer}>
           <Text style={styles.menuText}>생체 인증 등록/해제</Text>
