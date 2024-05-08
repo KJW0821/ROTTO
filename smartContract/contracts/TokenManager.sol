@@ -36,8 +36,8 @@ contract TokenManager is Ownable {
     }
 
     // 토큰 발급
-    function distributeToken(uint code, address _wallet, uint amount) external onlyOwner validAddress(_wallet) {
-        ITokenDistribute(tokenDistributeAddress).distributeToken(code, _wallet, amount);
+    function distributeToken(Subscription memory subscription, address _wallet, uint amount) external onlyOwner validAddress(_wallet) {
+        ITokenDistribute(tokenDistributeAddress).distributeToken(subscription, _wallet, amount);
     }
 
     // 토큰 환급(삭제)

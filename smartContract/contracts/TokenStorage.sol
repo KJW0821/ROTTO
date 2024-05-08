@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
+import "./MyStructs.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
@@ -51,11 +52,12 @@ contract TokenStorage is ERC20, Ownable, AccessControl, ReentrancyGuard {
     }
     
     // 사용자 지갑 주소를 이용하여 청약 코드와 일치하는 토큰 발급
-    function transfer(uint code, address _wallet, uint amount) external checkRole(DISTRIBUTOR_ROLE) nonReentrant {
+    function transfer(Subscription memory subscription, address _wallet, uint amount) external checkRole(DISTRIBUTOR_ROLE) nonReentrant {
+        uint code = subscription.code;
         require(isExists[code], unicode"해당 코드와 일치하는 토큰이 없습니다.");
 
         uint TokenBalance = leftover(code);
-        require(TokenBalance >= amount && TokenBalance > 0, unicode"잘못된 요청입니다.");
+        require(TokenBalance > 0 && TokenBalance >= amount && ownToken[_wallet][code] + amount <= subscription.limit_num, unicode"잘못된 요청입니다.");
 
         tokenSupplies[code] -= amount;
         ownToken[_wallet][code] = amount;
