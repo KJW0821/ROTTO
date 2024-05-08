@@ -150,11 +150,31 @@ public class FarmSpecification {
                 );
                 query.orderBy(criteriaBuilder.asc(deadlineSubquery));
             } else if ("highPrice".equals(sort)) {
-                // 가격 높은 순으로 정렬
-                query.orderBy(criteriaBuilder.desc(priceSubquery));
+                // 청약 진행중인 것들 중에서 공모가 높은 순으로 정렬
+                Subquery<Integer> highPriceSubquery = query.subquery(Integer.class);
+                Root<Subscription> highPriceRoot = highPriceSubquery.from(Subscription.class);
+                highPriceSubquery.select(highPriceRoot.get("confirmPrice"));
+                highPriceSubquery.where(
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(highPriceRoot.get("farmCode"), root.get("farmCode")),
+                                criteriaBuilder.lessThanOrEqualTo(highPriceRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
+                                criteriaBuilder.greaterThanOrEqualTo(highPriceRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
+                        )
+                );
+                query.orderBy(criteriaBuilder.desc(highPriceSubquery));
             } else if ("lowPrice".equals(sort)) {
-                // 가격 낮은 순으로 정렬
-                query.orderBy(criteriaBuilder.asc(priceSubquery));
+                // 청약 진행중인 것들 중에서 공모가 낮은 순으로 정렬
+                Subquery<Integer> lowPriceSubquery = query.subquery(Integer.class);
+                Root<Subscription> lowPriceRoot = lowPriceSubquery.from(Subscription.class);
+                lowPriceSubquery.select(lowPriceRoot.get("confirmPrice"));
+                lowPriceSubquery.where(
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(lowPriceRoot.get("farmCode"), root.get("farmCode")),
+                                criteriaBuilder.lessThanOrEqualTo(lowPriceRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
+                                criteriaBuilder.greaterThanOrEqualTo(lowPriceRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
+                        )
+                );
+                query.orderBy(criteriaBuilder.asc(lowPriceSubquery));
             } else {
                 // 기본 정렬 기준: 농장 이름 순
                 query.orderBy(criteriaBuilder.asc(root.get("farmName")));
