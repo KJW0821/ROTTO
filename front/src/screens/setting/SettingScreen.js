@@ -8,9 +8,10 @@ import TokenService from '../../utils/token';
 import KeyService from '../../utils/pinCode';
 
 const SettingScreen = ({navigation}) => {
-  const [isCheckedBio, setIsCheckedBio] = useState(false);
-  const [isCheckedPush, setIsCheckedPush] = useState(false);
+  const [isCheckedBio, setIsCheckedBio] = useState();
+  const [isCheckedPush, setIsCheckedPush] = useState();
   const [isRegisteredPinCode, setIsRegisteredPinCode] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
   
   const toggleBio = async () => {
     await SettingService.setBiometricEnabled(!isCheckedBio);
@@ -25,12 +26,12 @@ const SettingScreen = ({navigation}) => {
   useEffect(() => {
     const getBiometricEnabled = async () => {
       const isEnabled = await SettingService.getBiometricEnabled();
-      setIsCheckedBio(isEnabled);
+      setIsCheckedBio(() => isEnabled ? isEnabled : false);
     };
 
     const getPushEnabled = async () => {
       const isEnabled = await SettingService.getPushEnabled();
-      setIsCheckedPush(isEnabled);
+      setIsCheckedPush(() => isEnabled ? isEnabled : false);
     };
 
     const getPinCode = async () => {
@@ -44,6 +45,7 @@ const SettingScreen = ({navigation}) => {
         getPushEnabled(),
         getPinCode()
       ]);
+      setIsLoaded(true);
     };
 
     loadInitialData();
@@ -63,57 +65,60 @@ const SettingScreen = ({navigation}) => {
       <View style={styles.topBar}>
         <Text style={styles.title}>설정</Text>
       </View>
-      <View style={styles.container}>
-        <Text style={styles.subTitle}>보안</Text>
-        <Pressable style={styles.menuContainer}>
-          <Text style={styles.menuText}>비밀번호 변경</Text>
-        </Pressable>
-        <Pressable 
-          style={styles.menuContainer} 
-          onPress={() => {
-            if (isRegisteredPinCode) {
-              navigation.navigate('pinChange');
-            } else {
-              navigation.navigate('PINSetting');
-            }
-          }}
-        >
-          <Text style={styles.menuText}>{ isRegisteredPinCode ? '간편 비밀번호 변경' : '간편 비밀번호 등록' }</Text>
-        </Pressable>
-        <View style={styles.menuContainer}>
-          <Text style={styles.menuText}>생체 인증 등록/해제</Text>
-          <ToggleButton 
-            onToggle={toggleBio}
-            isOn={isCheckedBio}
-          />
+      {
+        isLoaded &&
+        <View style={styles.container}>
+          <Text style={styles.subTitle}>보안</Text>
+          <Pressable style={styles.menuContainer}>
+            <Text style={styles.menuText}>비밀번호 변경</Text>
+          </Pressable>
+          <Pressable 
+            style={styles.menuContainer} 
+            onPress={() => {
+              if (isRegisteredPinCode) {
+                navigation.navigate('pinChange');
+              } else {
+                navigation.navigate('PINSetting');
+              }
+            }}
+          >
+            <Text style={styles.menuText}>{ isRegisteredPinCode ? '간편 비밀번호 변경' : '간편 비밀번호 등록' }</Text>
+          </Pressable>
+          <View style={styles.menuContainer}>
+            <Text style={styles.menuText}>생체 인증 등록/해제</Text>
+            <ToggleButton 
+              onToggle={toggleBio}
+              isOn={isCheckedBio}
+            />
+          </View>
+          <View style={styles.line} />
+          <View style={styles.menuContainer}>
+            <Text style={styles.menuText}>버전 정보</Text>
+            <Text style={styles.menuText}>v1.0.0</Text>
+          </View>
+          <View style={styles.menuContainer}>
+            <Text style={styles.menuText}>알림 설정</Text>
+            <ToggleButton 
+              onToggle={togglePush}
+              isOn={isCheckedPush}
+            />
+          </View>
+          <View style={styles.line} />
+          <Pressable style={styles.menuContainer} onPress={() => navigation.navigate('inquiry')}>
+            <Text style={styles.menuText}>문의하기</Text>
+          </Pressable>
+          <Pressable style={styles.menuContainer}>
+            <Text style={styles.menuText}>이용약관</Text>
+          </Pressable>
+          <View style={styles.line} />
+          <Pressable onPress={logoutHandler} style={styles.menuContainer}>
+            <Text style={[styles.menuText, { color: 'red' }]}>로그아웃</Text>
+          </Pressable>
+          <Pressable style={styles.menuContainer}>
+            <Text style={[styles.menuText, { color: '#888888' }]}>탈퇴하기</Text>
+          </Pressable>
         </View>
-        <View style={styles.line} />
-        <View style={styles.menuContainer}>
-          <Text style={styles.menuText}>버전 정보</Text>
-          <Text style={styles.menuText}>v1.0.0</Text>
-        </View>
-        <View style={styles.menuContainer}>
-          <Text style={styles.menuText}>알림 설정</Text>
-          <ToggleButton 
-            onToggle={togglePush}
-            isOn={isCheckedPush}
-          />
-        </View>
-        <View style={styles.line} />
-        <Pressable style={styles.menuContainer} onPress={() => navigation.navigate('inquiry')}>
-          <Text style={styles.menuText}>문의하기</Text>
-        </Pressable>
-        <Pressable style={styles.menuContainer}>
-          <Text style={styles.menuText}>이용약관</Text>
-        </Pressable>
-        <View style={styles.line} />
-        <Pressable onPress={logoutHandler} style={styles.menuContainer}>
-          <Text style={[styles.menuText, { color: 'red' }]}>로그아웃</Text>
-        </Pressable>
-        <Pressable style={styles.menuContainer}>
-          <Text style={[styles.menuText, { color: '#888888' }]}>탈퇴하기</Text>
-        </Pressable>
-      </View>
+      }
     </View>
   )
 }
