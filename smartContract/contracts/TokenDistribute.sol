@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
+import "./MyStructs.sol";
 import "./interfaces/ITokenDistribute.sol";
 
 contract TokenDistribute {
@@ -11,7 +12,7 @@ contract TokenDistribute {
         tokenStorageAddress = _addr;
     }
 
-    function distributeToken(uint code, address _wallet, uint amount) external {
-        ITokenDistribute(tokenStorageAddress).transfer(code, _wallet, amount);
+    function distributeToken(Subscription memory subscription, address _wallet, uint amount) external {
+        ITokenDistribute(tokenStorageAddress).transfer(subscription, _wallet, amount);
     }
 }
