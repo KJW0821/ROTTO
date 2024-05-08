@@ -21,7 +21,7 @@ const NameIdInputScreen = ({navigation}) => {
   };
 
   const idInputHandler = (enteredText) => {
-    setPersonId(enteredText);
+    setPersonId(enteredText.replace(/[^0-9]/g, ''));
   };
 
   const pressNextHandler = () => {

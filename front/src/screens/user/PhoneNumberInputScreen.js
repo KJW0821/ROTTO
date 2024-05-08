@@ -1,4 +1,4 @@
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, Text, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Title from '../../components/user/Title';
 import CustomButton from '../../components/common/CustomButton';
@@ -8,6 +8,7 @@ import { useState } from 'react';
 import UserTopBar from '../../components/user/UserTopBar';
 import { useDispatch } from 'react-redux';
 import { inputPhoneNumber } from '../../stores/signUpSlice';
+import { checkPhoneNumber } from '../../utils/userApi';
 
 const PhoneNumberInputScreen = ({navigation}) => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -21,8 +22,17 @@ const PhoneNumberInputScreen = ({navigation}) => {
     );
   };
 
+  const checkPhoneNumberValidity = async () => {
+    if (phoneNumber) {
+      const isExist = await checkPhoneNumber({
+        phoneNum: phoneNumber.replace(/-/g, '')
+      }) ;
+      setIsChecked(!isExist);
+    }
+  };
+
   const pressNextHandler = () => {
-    dispatch(inputPhoneNumber(phoneNumber));
+    dispatch(inputPhoneNumber(phoneNumber.replace(/-/g, '')));
     navigation.navigate('PasswordInput');
   };
 
@@ -48,9 +58,11 @@ const PhoneNumberInputScreen = ({navigation}) => {
               phoneNumber.length ?
               <MaterialIcons style={{ marginRight: 4 }} name="cancel" size={18} color={Colors.iconGray} onPress={() => setPhoneNumber('')} /> : <></>
             }
-            <CustomButton style={{ backgroundColor: 'black', width: '16%', height: 22 }} btnColor='black'>중복 확인</CustomButton>
+            <CustomButton onPress={checkPhoneNumberValidity} style={{ backgroundColor: 'black', width: '16%', height: 22 }} btnColor='black'>중복 확인</CustomButton>
           </InputBox>
         </View>
+        { isChecked === false && <Text style={[styles.warnText, styles.caution]}>이미 가입된 번호입니다.</Text> }
+        { isChecked === undefined && <Text style={styles.warnText}>중복 확인을 해주세요</Text> }
         <CustomButton onPress={pressNextHandler} disabled={!isChecked}>다음</CustomButton>
       </View>
     </View>
@@ -70,11 +82,19 @@ const styles = StyleSheet.create({
   },
   inputsContainer: {
     gap: 40,
-    marginBottom: 44,
+    marginBottom: 16,
     marginTop: 32
   },
   inputText: {
     fontFamily: 'pretendard-regular',
     fontSize: 14
+  },
+  warnText: {
+    fontSize: 12,
+    textAlign: 'center',
+    marginBottom: 16
+  },
+  caution: {
+    color: 'red'
   }
 });
