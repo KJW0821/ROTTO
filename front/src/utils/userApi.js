@@ -45,3 +45,13 @@ export const logout = async () => {
     return err;
   }
 };
+
+export const checkPhoneNumber = async (data) => {
+  try {
+    const res = await API.post('/user/phone-num-check', data);
+    return res.data.isExist;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
