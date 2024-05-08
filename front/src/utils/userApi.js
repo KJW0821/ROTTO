@@ -6,7 +6,7 @@ export const signUp = async (data) => {
     const res = await API.post('/user/signup', data);
     return res;
   } catch (err) {
-    console.error(err);
+    console.error('회원가입 오류' + err);
   }
 };
 
@@ -15,7 +15,7 @@ export const signIn = async (data) => {
     const res = await API.post('/auth/login', data);
     return res;
   } catch (err) {
-    console.error(err);
+    console.error('로그인 오류' + err);
     return err;
   }
 };
@@ -51,7 +51,11 @@ export const checkPhoneNumber = async (data) => {
     const res = await API.post('/user/phone-num-check', data);
     return res.data.isExist;
   } catch (err) {
-    console.error(err);
-    return err;
+    if (err.response.status === 400) {
+      return true;
+    } else {
+      console.error('전화번호 중복 체크 에러' + err);
+      return err;
+    }
   }
 };

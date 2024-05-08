@@ -12,7 +12,7 @@ import { checkPhoneNumber } from '../../utils/userApi';
 
 const PhoneNumberInputScreen = ({navigation}) => {
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [isChecked, setIsChecked] = useState(true);
+  const [isChecked, setIsChecked] = useState();
   const dispatch = useDispatch();
 
   const phoneNumberInputHandler = (enteredText) => {
@@ -20,6 +20,7 @@ const PhoneNumberInputScreen = ({navigation}) => {
       .replace(/[^0-9]/g, '')
       .replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")  
     );
+    setIsChecked();
   };
 
   const checkPhoneNumberValidity = async () => {
