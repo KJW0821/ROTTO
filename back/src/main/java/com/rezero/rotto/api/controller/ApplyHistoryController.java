@@ -1,9 +1,7 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.ApplyHistoryService;
-import com.rezero.rotto.dto.request.ReqRequest;
 import com.rezero.rotto.dto.response.ApplyHistoryResponse;
-import com.rezero.rotto.dto.response.ReqBoardDetailRegisterModifyResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,6 +36,22 @@ public class ApplyHistoryController {
     public ResponseEntity<?> postApply(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int subscriptionCode){
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return applyHistoryService.postApply(userCode, subscriptionCode);
+    }
+
+
+    @Operation(summary = "청약신청 취소",
+            description = "청약신청 취소")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode ="200", description = "청약신청 취소 성공",
+                    content = @Content(schema = @Schema(implementation = ApplyHistoryResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않은 청약")
+    })
+
+    // 받을값들
+    @PatchMapping("/{subscriptionCode}")
+    public ResponseEntity<?> deleteApply(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int subscriptionCode){
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return applyHistoryService.deleteApply(userCode, subscriptionCode);
     }
 
 }
