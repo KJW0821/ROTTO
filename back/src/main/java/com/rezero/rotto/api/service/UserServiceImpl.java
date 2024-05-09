@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    // 비밀번호 수정
+    // 비밀번호 변경
     public ResponseEntity<?> modifyPassword(int userCode, ModifyPasswordRequest request) {
         // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
         // 저장
         userRepository.save(user);
 
-        return ResponseEntity.status(HttpStatus.OK).body("비밀번호 수정 성공");
+        return ResponseEntity.status(HttpStatus.OK).body("비밀번호 변경 성공");
     }
 
 

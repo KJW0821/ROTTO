@@ -63,7 +63,7 @@ public class UserController {
     }
 
 
-    @Operation(summary = "비밀번호 수정", description = "비밀번호 해쉬화하여 수정")
+    @Operation(summary = "비밀번호 변경", description = "비밀번호 해쉬화하여 변경")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "400", description = "값이 잘못 입력됨"),
