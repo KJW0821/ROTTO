@@ -28,7 +28,7 @@ const SignInScreen = ({navigation}) => {
 
   const signInHandler = async () => {
     const res = await signIn({
-      phoneNum: phoneNumber.replace(/-/g, ''),
+      phoneNum: '010' + phoneNumber.replace(/-/g, ''),
       password
     });
     if (res.status === 200) {
