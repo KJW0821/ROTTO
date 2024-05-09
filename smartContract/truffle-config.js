@@ -42,7 +42,7 @@
  */
 
 require('dotenv').config();
-const { MNEMONIC, rpcUrl, rpcPort } = process.env;
+const { MNEMONIC, rpcUrl, networkId } = process.env;
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 
@@ -71,10 +71,9 @@ module.exports = {
     // },
     development: {
       provider: () => new HDWalletProvider(MNEMONIC, rpcUrl),
-      port: rpcPort,
+      network_id: networkId,
       gas: 0,
       gasPrice: 0,
-      network_id: "*",
     }
     //
     // An additional network, but with some advanced options…
