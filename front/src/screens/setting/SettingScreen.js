@@ -1,9 +1,9 @@
-import { View, Text, Pressable, Switch, StyleSheet } from 'react-native';
+import { View, Text, Pressable, Switch, StyleSheet, Alert } from 'react-native';
 import Colors from '../../constants/Colors';
 import { useEffect, useState } from 'react';
 import ToggleButton from '../../components/common/ToggleButton';
 import SettingService from '../../utils/setting';
-import { logout } from '../../utils/userApi';
+import { logout, resign } from '../../utils/userApi';
 import TokenService from '../../utils/token';
 import KeyService from '../../utils/pinCode';
 
@@ -69,6 +69,27 @@ const SettingScreen = ({navigation}) => {
     });
   };
 
+  const resignHandelr = () => {
+    const resignUser = async () => {
+      await resign();
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Onboarding" }]
+      });
+    };
+
+    Alert.alert('', '탈퇴하시겠습니까?', 
+      [
+        { text: '취소', onPress: () => {}, style: 'cancel' },
+        { text: '삭제', onPress: resignUser, style: 'destructive' }
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => {}
+      }
+    );
+  }
+
   return (
     <View style={styles.screen}>
       <View style={styles.topBar}>
@@ -126,7 +147,7 @@ const SettingScreen = ({navigation}) => {
           <Pressable onPress={logoutHandler} style={styles.menuContainer}>
             <Text style={[styles.menuText, { color: 'red' }]}>로그아웃</Text>
           </Pressable>
-          <Pressable style={styles.menuContainer}>
+          <Pressable style={styles.menuContainer} onPress={resignHandelr}>
             <Text style={[styles.menuText, { color: '#888888' }]}>탈퇴하기</Text>
           </Pressable>
         </View>
