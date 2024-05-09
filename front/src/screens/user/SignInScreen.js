@@ -18,7 +18,7 @@ const SignInScreen = ({navigation}) => {
   const phoneNumberInputHandler = (enteredText) => {
     setPhoneNumber(enteredText
       .replace(/[^0-9]/g, '')
-      .replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")  
+      .replace(/^(\d{0,4})(\d{0,4})$/g, "$1-$2").replace(/(\-{1})$/g, "")
     );
   };
 
@@ -51,6 +51,7 @@ const SignInScreen = ({navigation}) => {
           <View>
             <Text style={styles.title}>전화번호</Text>
             <View style={[styles.inputContainer , { marginBottom: 8 }]}>
+              <Text style={styles.inputText}>010-</Text>
               <TextInput 
                 style={[styles.inputText, {flex: 1}]} 
                 autoCorrect={false}
@@ -59,6 +60,7 @@ const SignInScreen = ({navigation}) => {
                 keyboardType="number-pad"
                 onChangeText={phoneNumberInputHandler}
                 value={phoneNumber}
+                maxLength={9}
               />
               {
                 phoneNumber.length ?

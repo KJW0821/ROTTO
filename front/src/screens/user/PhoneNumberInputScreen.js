@@ -16,24 +16,24 @@ const PhoneNumberInputScreen = ({navigation}) => {
   const dispatch = useDispatch();
 
   const phoneNumberInputHandler = (enteredText) => {
-    setPhoneNumber(enteredText
+    const enteredNum = enteredText
       .replace(/[^0-9]/g, '')
-      .replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")  
-    );
+      .replace(/^(\d{0,4})(\d{0,4})$/g, "$1-$2").replace(/(\-{1})$/g, "");
+    setPhoneNumber(enteredNum);
     setIsChecked();
   };
 
   const checkPhoneNumberValidity = async () => {
     if (phoneNumber) {
       const isExist = await checkPhoneNumber({
-        phoneNum: phoneNumber.replace(/-/g, '')
+        phoneNum: '010' + phoneNumber.replace(/-/g, '')
       }) ;
       setIsChecked(!isExist);
     }
   };
 
   const pressNextHandler = () => {
-    dispatch(inputPhoneNumber(phoneNumber.replace(/-/g, '')));
+    dispatch(inputPhoneNumber('010' + phoneNumber.replace(/-/g, '')));
     navigation.navigate('PasswordInput');
   };
 
@@ -47,6 +47,7 @@ const PhoneNumberInputScreen = ({navigation}) => {
             description="전화번호를 입력해주세요"
             title="전화번호"
           >
+            <Text style={styles.inputText}>010-</Text>
             <TextInput 
               style={[styles.inputText, {flex: 1}]} 
               autoCorrect={false}
@@ -54,17 +55,18 @@ const PhoneNumberInputScreen = ({navigation}) => {
               onChangeText={phoneNumberInputHandler}
               keyboardType="number-pad"
               value={phoneNumber}
+              maxLength={9}
             />
             {
               phoneNumber.length ?
               <MaterialIcons style={{ marginRight: 4 }} name="cancel" size={18} color={Colors.iconGray} onPress={() => setPhoneNumber('')} /> : <></>
             }
-            <CustomButton onPress={checkPhoneNumberValidity} style={{ backgroundColor: 'black', width: '16%', height: 22 }} btnColor='black'>중복 확인</CustomButton>
+            <CustomButton disabled={phoneNumber.length !== 9} onPress={checkPhoneNumberValidity} style={{ backgroundColor: 'black', width: '16%', height: 22 }} btnColor='black'>중복 확인</CustomButton>
           </InputBox>
         </View>
         { isChecked === false && <Text style={[styles.warnText, styles.caution]}>이미 가입된 번호입니다.</Text> }
         { isChecked === undefined && <Text style={styles.warnText}>중복 확인을 해주세요</Text> }
-        <CustomButton onPress={pressNextHandler} disabled={!isChecked}>다음</CustomButton>
+        <CustomButton onPress={pressNextHandler} disabled={!isChecked || phoneNumber.length !== 9}>다음</CustomButton>
       </View>
     </View>
   )
