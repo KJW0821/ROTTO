@@ -4,6 +4,7 @@ import CustomButton from '../../components/common/CustomButton';
 import Colors from '../../constants/Colors';
 import { useEffect, useState } from 'react';
 import SettingTopBar from '../../components/setting/SettingTopBar';
+import { changePassword } from '../../utils/userApi';
 
 const PasswordChangeScreen = ({navigation}) => {
   const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*]).{8,}$/;
@@ -34,7 +35,8 @@ const PasswordChangeScreen = ({navigation}) => {
   }, [password])
 
   const pressConfirmHandler = async () => {
-    
+    await changePassword({ password });
+    navigation.navigate('setting');
   };
 
   return (
