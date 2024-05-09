@@ -2,7 +2,9 @@ package com.rezero.rotto.api.service;
 
 //import com.rezero.rotto.dto.request.RegisterPinRequest;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.rezero.rotto.dto.request.CheckPhoneNumRequest;
+import com.rezero.rotto.dto.request.CreateFinanceAccountRequest;
 import com.rezero.rotto.dto.request.SignUpRequest;
 import com.rezero.rotto.dto.response.CheckPhoneNumResponse;
 import com.rezero.rotto.dto.response.UserInfoResponse;
@@ -15,9 +17,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -40,7 +45,24 @@ public class UserServiceImpl implements UserService {
             if (userRepository.existsByPhoneNum(encryptedPhoneNum)) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 휴대폰 번호입니다.");
             }
-            
+
+            String userEmail = request.getEmail();
+
+            Map<String, Object> headerMap = new HashMap<>();
+            headerMap.put("apiKey", "2afacf41e60a4482b5c4997d194a46f0");
+            headerMap.put("userId", userEmail);
+
+            JsonNode jsonNode = WebClient.create("https://finapi.p.ssafy.io")
+                    .post()
+                    .uri("/ssafy/api/v1/member/")
+                    .bodyValue(new CreateFinanceAccountRequest("2afacf41e60a4482b5c4997d194a46f0", userEmail))
+                    .retrieve()
+                    .bodyToMono(JsonNode.class)
+                    .block();
+
+            // 'userKey' 값을 추출
+            String userKeyOfFinance = jsonNode.path("payload").path("userKey").asText();
+            System.out.println(userKeyOfFinance);
             // userCode 자동, isDelete 기본값 0, joinDate = CreationTimestamp, deleteTime = null
             User user = User.builder()
                     .name(request.getName())
@@ -49,6 +71,7 @@ public class UserServiceImpl implements UserService {
                     .juminNo(encryptedJuminNo)
                     .password(hashedPassword)
                     .email(request.getEmail())
+                    .userKey(userKeyOfFinance)
                     .build();
 
             // 저장
