@@ -5,6 +5,7 @@ package com.rezero.rotto.api.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rezero.rotto.dto.request.CheckPhoneNumRequest;
 import com.rezero.rotto.dto.request.CreateFinanceAccountRequest;
+import com.rezero.rotto.dto.request.ModifyPasswordRequest;
 import com.rezero.rotto.dto.request.SignUpRequest;
 import com.rezero.rotto.dto.response.CheckPhoneNumResponse;
 import com.rezero.rotto.dto.response.UserInfoResponse;
@@ -116,6 +117,24 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 비밀번호 수정
+    public ResponseEntity<?> modifyPassword(int userCode, ModifyPasswordRequest request) {
+        // 해당 유저가 존재하는지 검사
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        // 요청받은 비밀번호를 해쉬화
+        String newHashedPassword = passwordEncoder.encode(request.getPassword());
+        // 수정
+        user.setPassword(newHashedPassword);
+        // 저장
+        userRepository.save(user);
+
+        return ResponseEntity.status(HttpStatus.OK).body("비밀번호 수정 성공");
     }
 
 
