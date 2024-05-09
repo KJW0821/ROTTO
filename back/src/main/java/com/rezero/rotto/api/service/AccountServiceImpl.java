@@ -105,8 +105,11 @@ public class AccountServiceImpl implements AccountService{
                     .block();
 
             System.out.println("API 호출 결과: " + apiResponse);
+
+
+
             // 요청이 성공적으로 완료된 후의 처리를 여기에 작성
-            return ResponseEntity.ok().body("계좌 생성 요청이 성공했습니다.");
+            return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
         } catch (Exception e) {
             // 예외 처리
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("계좌 생성 요청 중 오류가 발생했습니다.");
