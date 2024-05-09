@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import MyHeader from "../../components/common/MyHeader";
 import FarmPreview from "../../components/discovery/FarmPreview";
 import CoffeeInfo from "../../components/discovery/CoffeeInfo";
+import FarmTOP10 from "../../components/discovery/FarmTOP10";
 
 const DiscoveryScreen = () => {
   return (
@@ -11,10 +12,14 @@ const DiscoveryScreen = () => {
           <View style={styles.component}>
             <Text style={styles.title}>농장</Text>
             <FarmPreview />
-            <Text style={styles.title}>원두소개</Text>
           </View>
           <View style={styles.component}>
+            <Text style={styles.title}>원두소개</Text>
             <CoffeeInfo />
+          </View>
+          <View style={styles.component}>
+            <Text style={styles.title}>이전 청약 수익률 TOP10</Text>
+            <FarmTOP10 />
           </View>
         </ScrollView>
       </MyHeader>
@@ -40,5 +45,6 @@ const styles = StyleSheet.create({
   },
   component: {
     flex: 1,
+    marginBottom: 20,
   },
 });

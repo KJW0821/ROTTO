@@ -1,6 +1,7 @@
 import {
   FlatList,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -16,6 +17,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BottomSheet from "../../components/common/MyBottomSheet";
 import MyPicker from "../../components/common/MyPicker";
 import FarmDetail from "../../components/discovery/FarmDetail";
+import FilterButton from "../../components/discovery/FilterButton";
 
 const FarmListScreen = () => {
   const { width, height } = useWindowDimensions();
@@ -80,32 +82,39 @@ const FarmListScreen = () => {
         color={Colors.bgOrg}
         search={true}
       />
-      <View style={styles.filterContainer}>
-        <Pressable
-          style={styles.sortButton}
-          onPress={() => {
-            filterType.current = "sort";
-            setFilters([]);
-            setFilters([
-              { index: 0, name: "기본순", value: null },
-              { index: 1, name: "최근 수익률 높은 순", value: "rate" },
-              { index: 2, name: "마감 기한 빠른 순", value: "deadline" },
-              { index: 3, name: "공모가 높은 순", value: "highPrice" },
-              { index: 4, name: "공모가 낮은 순", value: "lowPrice" },
-            ]);
-          }}
+      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+        <View style={styles.filterContainer}>
+          <Pressable
+            style={styles.sortButton}
+            onPress={() => {
+              filterType.current = "sort";
+              setFilters([]);
+              setFilters([
+                { index: 0, name: "기본순", value: null },
+                { index: 1, name: "최근 수익률 높은 순", value: "rate" },
+                { index: 2, name: "마감 기한 빠른 순", value: "deadline" },
+                { index: 3, name: "공모가 높은 순", value: "highPrice" },
+                { index: 4, name: "공모가 낮은 순", value: "lowPrice" },
+              ]);
+            }}
           >
-          <Ionicons
-            style={styles.filterIcon}
-            name="chevron-expand-outline"
-            size={24}
-            color="black"
+            <Ionicons
+              style={styles.filterIcon}
+              name="chevron-expand-outline"
+              size={24}
+              color="black"
             />
-          <Text style={styles.filterFont}>기본순</Text>
-        </Pressable>
-      </View>
+            <Text style={styles.filterFont}>기본순</Text>
+          </Pressable>
+          <FilterButton filterName={"청약 진행중"} width={120} />
+          <FilterButton filterName={"원두"} width={80} />
+          <FilterButton filterName={"관심 농장"} width={100} />
+        </View>
+      </ScrollView>
+
       <View style={styles.farmsContainer}>
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={farms}
           keyExtractor={(item) => item.farmCode}
           renderItem={renderFarmList}
@@ -136,7 +145,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   filterContainer: {
+    flex:1,
     marginTop: 10,
+    flexDirection: "row",
   },
   filterIcon: {
     marginLeft: 5,
@@ -154,6 +165,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   farmsContainer: {
+    flex:120,
     marginTop: 20,
     alignItems: "center",
     justifyContent: "flex-start",

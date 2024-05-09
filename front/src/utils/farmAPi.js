@@ -23,3 +23,13 @@ export const getFarmDetail = async (code) => {
     console.error(err);
   }
 };
+
+export const getFarmTOP10 = async () => {
+  try {
+    const res = await API.get("/farm/top-ten");
+    console.log(res.data);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+  }
+};
