@@ -50,8 +50,8 @@ public class BlockChainController {
 			int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
 			// userCode 활용해서 관리자인지 확인 필요
 			User user = userRepository.findByUserCode(userCode);
-			if(false)   return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("요청 권한이 없습니다.");
-
+			if(!"1".equals(user.getAdmin()))
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("요청 권한이 없습니다.");
 			return blockChainService.createToken(request);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("알 수 없는 에러가 발생하였습니다.");
@@ -65,6 +65,9 @@ public class BlockChainController {
 		try{
 			int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
 			// userCode 활용해서 관리자인지 확인 필요
+			User user = userRepository.findByUserCode(userCode);
+			if(!"1".equals(user.getAdmin()))
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("요청 권한이 없습니다.");
 			return blockChainService.distributeToken(request);
 		} catch (Exception e){
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("요청 권한이 없습니다.");
@@ -78,6 +81,9 @@ public class BlockChainController {
 		try{
 			int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
 			// userCode 활용해서 관리자인지 확인 필요
+			User user = userRepository.findByUserCode(userCode);
+			if(!"1".equals(user.getAdmin()))
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("요청 권한이 없습니다.");
 			return blockChainService.RefundsToken(request);
 		} catch (Exception e){
 			return ResponseEntity.badRequest().build();
