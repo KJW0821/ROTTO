@@ -38,7 +38,7 @@ public class AlertServiceImpl implements AlertService {
         List<Alert> alertList = alertRepository.findAll();
         // 최신것부터 보여주기 위해 리스트 뒤집기
         Collections.reverse(alertList);
-        // stream 을 통해 alerts 를 순회하며 dto 리스트에 값을 담는다
+        // stream 을 통해 alertList 를 순회하며 dto 리스트에 값을 담는다
         List<AlertListDto> alerts = alertList.stream()
                 .map(alert -> new AlertListDto(alert.getAlertCode(), alert.getTitle(), alert.getCreateTime(), alert.getIsRead()))
                 .toList();

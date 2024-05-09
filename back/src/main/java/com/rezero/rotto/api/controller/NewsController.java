@@ -1,6 +1,9 @@
 package com.rezero.rotto.api.controller;
 
+import com.rezero.rotto.api.service.NewsService;
 import com.rezero.rotto.dto.dto.NewsListDto;
+import com.rezero.rotto.dto.response.NewsDetailResponse;
+import com.rezero.rotto.dto.response.NewsListResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,10 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,34 +26,34 @@ import java.util.List;
 @Tag(name = "News API", description = "서비스 관련 소식 관리를 위한 API")
 public class NewsController {
 
+    private final NewsService newsService;
     private final JwtTokenProvider jwtTokenProvider;
 
 
     @Operation(summary = "소식 목록 조회", description = "소식 목록을 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
-                    content = @Content(schema = @Schema(implementation = NewsListDto.class))),
+                    content = @Content(schema = @Schema(implementation = NewsListResponse.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
     @GetMapping
     public ResponseEntity<?> getNewsList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        List<NewsListDto> response = new ArrayList<>();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return newsService.getNewsList(userCode);
     }
 
 
     @Operation(summary = "소식 상세 조회", description = "소식 상세 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
-                    content = @Content(schema = @Schema(implementation = NewsListDto.class))),
+                    content = @Content(schema = @Schema(implementation = NewsDetailResponse.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
     @GetMapping("/{newsCode}")
-    public ResponseEntity<?> getNewsDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public ResponseEntity<?> getNewsDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+                                           @PathVariable int newsCode) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        List<NewsListDto> response = new ArrayList<>();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return newsService.getNewsDetail(userCode, newsCode);
     }
 
 }
