@@ -58,12 +58,12 @@ contract TokenManager is Ownable {
     }
 
     // 입력받은 지갑 주소를 whitelist에 추가
-    function insertList(address _wallet) public validAddress(_wallet) onlyOwner {
+    function insertList(address _wallet) external validAddress(_wallet) onlyOwner {
         IWhitelist(whitelistAddress).insertList(_wallet);
     }
 
     // 입력받은 지갑 주소를 whitelist에 제거
-    function removeList(address _wallet) public checklist(_wallet) validAddress(_wallet) onlyOwner {
+    function removeList(address _wallet) external checklist(_wallet) validAddress(_wallet) onlyOwner {
         IWhitelist(whitelistAddress).removeList(_wallet);
     }
 }
