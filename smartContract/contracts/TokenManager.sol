@@ -5,7 +5,6 @@ import "./MyStructs.sol";
 import "./interfaces/ITokenCreation.sol";
 import "./interfaces/ITokenDistribute.sol";
 import "./interfaces/ITokenDeletion.sol";
-import "./TokenCreation.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TokenManager is Ownable {
