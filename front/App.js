@@ -8,6 +8,8 @@ import AuthRouters from "./src/routers/AuthRouters";
 import Constants from "expo-constants";
 import { useFonts } from "expo-font";
 import Colors from "./src/constants/Colors";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import BottomSheet from "./src/components/common/MyBottomSheet";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -28,14 +30,17 @@ export default function App() {
     <SafeAreaProvider>
       <Provider store={store}>
         <NavigationContainer>
-          {/* <StatusBar style="auto" /> */}
-          {/* <StatusBar style={styles.statusBar} /> */}
-          <StatusBar backgroundColor={statusBarColor} style={statusBarStyle} />
-          {fontsLoaded && (
-            <SafeAreaView style={styles.safeAreaView}>
-              <AuthRouters />
-            </SafeAreaView>
-          )}
+            {/* <StatusBar style="auto" /> */}
+            {/* <StatusBar style={styles.statusBar} /> */}
+            <StatusBar
+              backgroundColor={statusBarColor}
+              style={statusBarStyle}
+            />
+            {fontsLoaded && (
+              <SafeAreaView style={styles.safeAreaView}>
+                <AuthRouters />
+              </SafeAreaView>
+            )}
         </NavigationContainer>
       </Provider>
     </SafeAreaProvider>
