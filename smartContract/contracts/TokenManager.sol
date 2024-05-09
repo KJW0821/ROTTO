@@ -2,7 +2,6 @@
 pragma solidity ^0.8.19;
 
 import "./MyStructs.sol";
-import "./WalletWhitelist.sol";
 import "./interfaces/ITokenCreation.sol";
 import "./interfaces/ITokenDistribute.sol";
 import "./interfaces/ITokenDeletion.sol";

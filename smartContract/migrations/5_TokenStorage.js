@@ -11,7 +11,7 @@ module.exports = async function (deployer) {
     await deployer.deploy(TokenStorage, CreationInstance.address, DistributeInstance.address, DeletetionInstance.address);
     const StorageInstance = await TokenStorage.deployed();
 
-    CreationInstance.setStorageAddress(StorageInstance.address);
-    DistributeInstance.setStorageAddress(StorageInstance.address);
-    DeletetionInstance.setStorageAddress(StorageInstance.address);
+    await CreationInstance.setStorageAddress(StorageInstance.address);
+    await DistributeInstance.setStorageAddress(StorageInstance.address);
+    await DeletetionInstance.setStorageAddress(StorageInstance.address);
 };

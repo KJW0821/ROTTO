@@ -5,5 +5,5 @@ module.exports = async (deployer) => {
     await deployer.deploy(TokenDeletion);
     const ManagerInstance = await TokenManager.deployed();
     const DeletionInstance = await TokenDeletion.deployed();
-    ManagerInstance.setTokenDistributeAddress(DeletionInstance.address);
+    await ManagerInstance.setTokenDistributeAddress(DeletionInstance.address);
 }

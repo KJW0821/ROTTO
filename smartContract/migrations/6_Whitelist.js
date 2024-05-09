@@ -5,5 +5,5 @@ module.exports = async function (deployer) {
     await deployer.deploy(Whitelist);
     const ManagerInstance = await TokenManager.deployed();
     const WhitelistInstance = await Whitelist.deployed();
-    ManagerInstance.setWhiteList(WhitelistInstance.address);
+    await ManagerInstance.setWhiteList(WhitelistInstance.address);
 }

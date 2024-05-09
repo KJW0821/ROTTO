@@ -5,5 +5,5 @@ module.exports = async function (deployer) {
     await deployer.deploy(TokenCreation);
     const ManagerInstance = await TokenManager.deployed();
     const CreationInstance = await TokenCreation.deployed();
-    ManagerInstance.setTokenCreationAddress(CreationInstance.address);
+    await ManagerInstance.setTokenCreationAddress(CreationInstance.address);
 }
