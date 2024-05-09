@@ -1,4 +1,4 @@
-const TokenCreation = artifacts.require("TokenCreation");
+const TokenStorage = artifacts.require("TokenStorage");
 const TokenManager = artifacts.require("TokenManager")
 
 module.exports = async function (deployer) {
