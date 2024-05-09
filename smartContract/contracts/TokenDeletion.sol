@@ -11,7 +11,7 @@ contract TokenDeletion {
         tokenStorageAddress = _addr;
     }
 
-    function deleteToken(uint code, address _wallet, uint amount) external {
-        ITokenDeletion(tokenStorageAddress).burn(code, _wallet, amount);
+    function deleteToken(uint code, address _wallet) external {
+        ITokenDeletion(tokenStorageAddress).burn(code, _wallet);
     }
 }

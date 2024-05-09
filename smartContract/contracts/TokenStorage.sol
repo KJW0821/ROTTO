@@ -60,22 +60,21 @@ contract TokenStorage is ERC20, Ownable, AccessControl, ReentrancyGuard {
         require(TokenBalance > 0 && TokenBalance >= amount && ownToken[_wallet][code] + amount <= subscription.limit_num, unicode"잘못된 요청입니다.");
 
         tokenSupplies[code] -= amount;
-        ownToken[_wallet][code] = amount;
+        ownToken[_wallet][code] += amount;
         isExistAccount[_wallet] = true;
 
         _transfer(owner(), _wallet, amount);
     }
 
     // 사용자 지갑 주소 이용하여 청약 코드와 일치하는 토큰 burn
-    function burn(uint code, address _wallet, uint amount) external checkRole(BURNER_ROLE) nonReentrant {
+    function burn(uint code, address _wallet) external checkRole(BURNER_ROLE) nonReentrant {
         require(isExists[code], unicode"해당 코드와 일치하는 토큰이 없습니다.");
-
         require(isExistAccount[_wallet], unicode"잘못된 요청입니다.");
-        require(ownToken[_wallet][code] >= amount, unicode"잘못된 요청입니다.");
+
+        uint amount = ownToken[_wallet][code];
+        ownToken[_wallet][code] = 0;
 
         _burn(_wallet, amount);
-
-        ownToken[_wallet][code] -= amount;
     }
 
     // 기존 ERC20의 transfer 함수를 override 하여 사용자들 간의 거래를 막음

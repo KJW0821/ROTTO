@@ -2,6 +2,7 @@
 pragma solidity ^0.8.19;
 
 import "./MyStructs.sol";
+import "./WalletWhitelist.sol";
 import "./interfaces/ITokenCreation.sol";
 import "./interfaces/ITokenDistribute.sol";
 import "./interfaces/ITokenDeletion.sol";
@@ -11,9 +12,15 @@ contract TokenManager is Ownable {
     address private tokenCreationAddress;
     address private tokenDistributeAddress;
     address private tokenDeletionAddress;
+    whiteList private list;
 
     modifier validAddress(address _addr) {
         require(_addr != address(0), unicode"올바르지 않은 주소입니다.");
+        _;
+    }
+
+    modifier checklist(address _wallet) {
+        require(list.checkWhiteList(_wallet), unicode"허용되지 않는 지갑입니다.");
         _;
     }
 
@@ -35,12 +42,22 @@ contract TokenManager is Ownable {
     }
 
     // 토큰 발급
-    function distributeToken(Subscription memory subscription, address _wallet, uint amount) external onlyOwner validAddress(_wallet) {
+    function distributeToken(Subscription memory subscription, address _wallet, uint amount) external checklist(_wallet) validAddress(_wallet) onlyOwner{
         ITokenDistribute(tokenDistributeAddress).distributeToken(subscription, _wallet, amount);
     }
 
     // 토큰 환급(삭제)
-    function deleteToken(uint code, address _wallet, uint amount) external onlyOwner validAddress(_wallet) {
-        ITokenDeletion(tokenDeletionAddress).deleteToken(code, _wallet, amount);
+    function deleteToken(uint code, address _wallet) external checklist(_wallet) validAddress(_wallet) onlyOwner {
+        ITokenDeletion(tokenDeletionAddress).deleteToken(code, _wallet);
+    }
+
+    // 입력받은 지갑 주소를 whitelist에 추가
+    function insertList(address _wallet) public validAddress(_wallet) onlyOwner {
+        list.insertList(_wallet);
+    }
+
+    // 입력받은 지갑 주소를 whitelist에 제거
+    function removeList(address _wallet) public checklist(_wallet) validAddress(_wallet) onlyOwner {
+        list.removeList(_wallet);
     }
 }
