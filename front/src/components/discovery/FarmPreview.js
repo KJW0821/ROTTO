@@ -50,6 +50,7 @@ const FarmPreview = () => {
             name="caret-forward"
             size={40}
             color="white"
+            style={styles.nextButton}
             onPress={() =>
               setSelectImage(selectImage < 2 ? selectImage + 1 : 0)
             }
@@ -93,4 +94,9 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 2, height: 2 }, // 그림자 위치
     textShadowRadius: 5, // 그림자 반경
   },
+  nextButton:{
+    flex: 1,
+    left: 360,
+    top: 60
+  }
 });

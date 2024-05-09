@@ -39,11 +39,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   title: {
-    paddingHorizontal: 25,
+    // paddingHorizontal: 25,
     fontFamily: "pretendard-bold",
     fontSize: 20,
   },
   component: {
+    paddingHorizontal: 25,
     flex: 1,
     marginBottom: 20,
   },

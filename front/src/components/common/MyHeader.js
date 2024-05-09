@@ -21,7 +21,12 @@ const MyHeader = ({ children }) => {
             color="white"
             onPress={() => Navigation.navigate("alertList")}
           />
-          <Ionicons name="person-outline" size={26} color="white" />
+          <Ionicons
+            name="person-outline"
+            size={26}
+            color="white"
+            onPress={() => Navigation.navigate("My")}
+          />
         </View>
       </View>
       {children}
