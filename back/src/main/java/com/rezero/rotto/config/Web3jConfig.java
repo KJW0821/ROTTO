@@ -10,10 +10,10 @@ import org.web3j.protocol.http.HttpService;
 @Configuration
 public class Web3jConfig {
 
-	@Value("${rpcUrl}")
+	@Value("${RPC_URL}")
 	private String rpcUrl;
 
-	@Value("${privateKey}")
+	@Value("${CHAIN_KEY}")
 	private String privateKey;
 	@Bean
 	public Web3j web3j() {

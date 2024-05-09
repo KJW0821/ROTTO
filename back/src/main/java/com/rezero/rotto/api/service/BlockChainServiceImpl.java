@@ -35,7 +35,7 @@ public class BlockChainServiceImpl implements BlockChainService{
 
 	private TokenManager tokenManager = null;
 
-	@Value("${tokenManager}")
+	@Value("${CHAIN_TOKEN_MANAGER}")
 	private String tokenManagerAddress;
 
 	private static final BigInteger GAS_LIMIT = BigInteger.valueOf(9_007_199_254_740_991L);
