@@ -8,7 +8,9 @@ import com.rezero.rotto.dto.request.CreateFinanceAccountRequest;
 import com.rezero.rotto.dto.request.SignUpRequest;
 import com.rezero.rotto.dto.response.CheckPhoneNumResponse;
 import com.rezero.rotto.dto.response.UserInfoResponse;
+import com.rezero.rotto.entity.Account;
 import com.rezero.rotto.entity.User;
+import com.rezero.rotto.repository.AccountRepository;
 import com.rezero.rotto.repository.UserRepository;
 import com.rezero.rotto.utils.AESUtil;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +23,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+
 
 @Service
 @Transactional
@@ -32,7 +37,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final SecretKey aesKey;
-
+    private final AccountRepository accountRepository;
 
     // 회원가입
     public ResponseEntity<?> signUp(SignUpRequest request) {
@@ -51,7 +56,7 @@ public class UserServiceImpl implements UserService {
             JsonNode jsonNode = WebClient.create("https://finapi.p.ssafy.io")
                     .post()
                     .uri("/ssafy/api/v1/member/")
-                    .bodyValue(new CreateFinanceAccountRequest("2afacf41e60a4482b5c4997d194a46f0", userEmail))
+                    .bodyValue( new CreateFinanceAccountRequest("2afacf41e60a4482b5c4997d194a46f0", userEmail))
                     .retrieve()
                     .bodyToMono(JsonNode.class)
                     .block();
@@ -60,6 +65,9 @@ public class UserServiceImpl implements UserService {
 
             // 'userKey' 값을 추출
             String userKeyOfFinance = jsonNode.path("payload").path("userKey").asText();
+
+            // 계정생성
+            financeAccountCreate(userKeyOfFinance);
 
             // userCode 자동, isDelete 기본값 0, joinDate = CreationTimestamp, deleteTime = null
             User user = User.builder()
@@ -132,4 +140,78 @@ public class UserServiceImpl implements UserService {
 
         return ResponseEntity.status(HttpStatus.OK).body("탈퇴 성공");
     }
-}
+
+
+    public void financeAccountCreate(String userKey) {
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
+
+        // 날짜와 시간 포맷
+        String formattedDate = now.format(dateFormatter);
+        String formattedTime = now.format(timeFormatter);
+
+
+        // 랜덤 6자리 일련번호 생성
+        Random random = new Random();
+        int randomNumber = random.nextInt(999999); // 0에서 999999까지의 난수 생성
+        String formattedRandomNumber = String.format("%06d", randomNumber); // 난수를 6자리 문자열로 포맷팅
+
+        // 기관 거래 고유 번호 생성
+        String institutionTransactionUniqueNo = formattedDate + formattedTime + formattedRandomNumber;
+
+        Map<String, Object> headerMap = new HashMap<>();
+        headerMap.put("apiName", "openAccount");
+        // 요청날짜
+        headerMap.put("transmissionDate", now.format(dateFormatter));
+        headerMap.put("transmissionTime", now.format(timeFormatter));
+        // 기관코드 고정
+        headerMap.put("institutionCode", "00100");
+        //핀테크 앱 고정
+        headerMap.put("fintechAppNo", "001");
+        headerMap.put("apiServiceCode", "openAccount");
+        // 기관 거래 고유 번호 : 새로운 번호로 임의 채번 (YYYYMMDD + HHMMSS + 일련번호 6자리) 또는 20자리의 난수
+        headerMap.put("institutionTransactionUniqueNo", institutionTransactionUniqueNo);
+        // 개발자 키
+        headerMap.put("apiKey", "2afacf41e60a4482b5c4997d194a46f0");
+        // 계정생성해야함 -> 회원가입시 이메일을 작성하면 생성됨.(현재는 예시)
+        headerMap.put("userKey", userKey);
+
+
+        Map<String, Object> bodyMap = new HashMap<>();
+        bodyMap.put("Header", headerMap);
+        // 상품 고유번호
+        bodyMap.put("accountTypeUniqueNo", "001-1-81fe2deafd1943"); // 한국은행 입출금 상품
+
+        try {
+            JsonNode jsonNode =  WebClient.create("https://finapi.p.ssafy.io")
+                    .post()
+                    .uri("/ssafy/api/v1/edu/account/openAccount")
+                    .bodyValue(bodyMap) // 구성한 Map을 bodyValue에 전달
+                    .retrieve()
+                    .bodyToMono(JsonNode.class)
+                    .block();
+
+            System.out.println("API 호출 결과: " + jsonNode);
+
+            // 'REC' 필드에 접근
+            JsonNode recNode = jsonNode.get("REC");
+            if (recNode != null) { // 'REC' 필드가 존재하는지 확인
+                // 'bankCode'와 'accountNo'에 접근
+                String bankCode = recNode.get("bankCode").asText();
+                String accountNo = recNode.get("accountNo").asText();
+
+                Account account = new Account();
+                account.setBankName(bankCode);
+                account.setAccountNum(accountNo);
+                account.setBalance(0);
+                accountRepository.save(account);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+
+}}

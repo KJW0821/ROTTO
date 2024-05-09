@@ -75,20 +75,7 @@ public class AccountServiceImpl implements AccountService{
         headerMap.put("apiKey", "2afacf41e60a4482b5c4997d194a46f0");
         // 계정생성해야함 -> 회원가입시 이메일을 작성하면 생성됨.(현재는 예시)
         headerMap.put("userKey", "2c357240-6bb3-484a-bd43-f2b9674263be");
-/**
- {
- "code": "succeed",
- "payload": {
- "userId": "sehun9803@naver.com",
- "userName": "sehun9803",
- "institutionCode": "00100",
- "userKey": "2c357240-6bb3-484a-bd43-f2b9674263be",
- "created": "2024-05-08T17:39:28.892395+09:00",
- "modified": "2024-05-08T17:39:28.892393+09:00"
- },
- "now": "2024-05-08T17:39:28.928175+09:00"
- }
- **/
+
 
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("Header", headerMap);
@@ -96,9 +83,9 @@ public class AccountServiceImpl implements AccountService{
         bodyMap.put("accountTypeUniqueNo", "001-1-81fe2deafd1943"); // 한국은행 입출금 상품
 
         try {
-            String apiResponse =  WebClient.create("https://finapi.p.ssafy.io/ssafy/api/v1/")
+            String apiResponse =  WebClient.create("https://finapi.p.ssafy.io")
                     .post()
-                    .uri("edu/account/openAccount")
+                    .uri("/ssafy/api/v1/edu/account/openAccount")
                     .bodyValue(bodyMap) // 구성한 Map을 bodyValue에 전달
                     .retrieve()
                     .bodyToMono(String.class)
