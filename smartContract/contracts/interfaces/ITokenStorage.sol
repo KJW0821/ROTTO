@@ -3,8 +3,10 @@ pragma solidity ^0.8.19;
 
 import "../MyStructs.sol";
 
-interface ITokenDistribute {
-    function distributeToken(Subscription memory subscription, address _to, uint amount) external;
+interface ITokenStorage {
+    function mint(uint code, uint amount) external;
+
+    function burn(uint code, address _wallet) external;
 
     function transfer(Subscription memory subscription, address _to, uint amount) external;
 }

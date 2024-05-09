@@ -2,16 +2,12 @@
 pragma solidity ^0.8.19;
 
 import "./MyStructs.sol";
-import "./interfaces/ITokenCreation.sol";
-import "./interfaces/ITokenDistribute.sol";
-import "./interfaces/ITokenDeletion.sol";
 import "./interfaces/IWhitelist.sol";
+import "./interfaces/ITokenStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TokenManager is Ownable {
-    address private tokenCreationAddress;
-    address private tokenDistributeAddress;
-    address private tokenDeletionAddress;
+    address private tokenStorageAddress;
     address private whitelistAddress;
 
     modifier validAddress(address _addr) {
@@ -25,16 +21,8 @@ contract TokenManager is Ownable {
         _;
     }
 
-    function setTokenCreationAddress(address _addr) public validAddress(_addr){
-        tokenCreationAddress = _addr;
-    }
-
-    function setTokenDistributeAddress(address _addr) public validAddress(_addr){
-        tokenDistributeAddress = _addr;
-    }
-
-    function setTokenDeletionAddress(address _addr) public validAddress(_addr){
-        tokenDeletionAddress = _addr;
+    function setStorageAddress(address _addr) public validAddress(_addr) onlyOwner {
+        tokenStorageAddress = _addr;
     }
 
     function setWhiteList(address _addr) public validAddress(_addr){
@@ -43,17 +31,17 @@ contract TokenManager is Ownable {
 
     // 토큰 생성
     function createToken(Subscription memory subscription, uint amount) external onlyOwner {
-        ITokenCreation(tokenCreationAddress).createToken(subscription, amount);
+        ITokenStorage(tokenStorageAddress).mint(subscription.code, amount);
     }
 
     // 토큰 발급
     function distributeToken(Subscription memory subscription, address _wallet, uint amount) external checklist(_wallet) validAddress(_wallet) onlyOwner{
-        ITokenDistribute(tokenDistributeAddress).distributeToken(subscription, _wallet, amount);
+        ITokenStorage(tokenStorageAddress).transfer(subscription, _wallet, amount);
     }
 
     // 토큰 환급(삭제)
     function deleteToken(uint code, address _wallet) external checklist(_wallet) validAddress(_wallet) onlyOwner {
-        ITokenDeletion(tokenDeletionAddress).deleteToken(code, _wallet);
+        ITokenStorage(tokenStorageAddress).burn(code, _wallet);
     }
 
     // 입력받은 지갑 주소를 whitelist에 추가

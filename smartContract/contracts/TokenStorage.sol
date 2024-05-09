@@ -8,9 +8,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 contract TokenStorage is ERC20, Ownable, AccessControl, ReentrancyGuard {
-    bytes32 constant MINTER_ROLE = keccak256("MINTER_ROLE"); // 토큰 생성 role
-    bytes32 constant DISTRIBUTOR_ROLE = keccak256("DISTRIBUTOR_ROLE"); // 토큰 발급 role
-    bytes32 constant BURNER_ROLE = keccak256("BURNER_ROLE"); // 토큰 burn role
+    bytes32 constant TOKEN_MANAGER = keccak256("TOKEN_MANAGER"); // tokenmanager role
 
     mapping(uint => bool) isExists; // 청약 코드에 맞는 token이 현재 발급되었는지 유무 확인
     mapping(uint => uint) tokenSupplies; // 청약 코드에 맞는 token이 현재 몇개 소유중인지 확인.
@@ -18,10 +16,8 @@ contract TokenStorage is ERC20, Ownable, AccessControl, ReentrancyGuard {
     mapping(address => mapping(uint => uint)) internal ownToken; // 지갑에서 어떠한 토큰이 몇개를 지니는 지를 저장함.
     mapping(address => bool) internal isExistAccount; // 해당 지갑 주소가 토큰을 가진 적이 있는지에 대한 유무 확인.
 
-    constructor (address _minter, address _distributor, address _burner) ERC20("RoastingToken", "ROTTO") {
-        _grantRole(MINTER_ROLE, _minter); // TokenCreation contract에 토큰 생성 역할 부여
-        _grantRole(DISTRIBUTOR_ROLE, _distributor);
-        _grantRole(BURNER_ROLE, _burner);
+    constructor(address _tokenManager) ERC20("RoastingToken", "ROTTO") {
+        _grantRole(TOKEN_MANAGER, _tokenManager);
     }
 
     function decimals() public pure override returns(uint8) {
@@ -37,7 +33,7 @@ contract TokenStorage is ERC20, Ownable, AccessControl, ReentrancyGuard {
     }
 
     // 토큰 생성
-    function mint(uint code, uint amount) external checkRole(MINTER_ROLE) {
+    function mint(uint code, uint amount) external checkRole(TOKEN_MANAGER) {
         require(isExists[code] != true, unicode"이미 생성된 토큰입니다.");
 
         isExists[code] = true;
@@ -52,7 +48,7 @@ contract TokenStorage is ERC20, Ownable, AccessControl, ReentrancyGuard {
     }
     
     // 사용자 지갑 주소를 이용하여 청약 코드와 일치하는 토큰 발급
-    function transfer(Subscription memory subscription, address _wallet, uint amount) external checkRole(DISTRIBUTOR_ROLE) nonReentrant {
+    function transfer(Subscription memory subscription, address _wallet, uint amount) external checkRole(TOKEN_MANAGER) nonReentrant {
         uint code = subscription.code;
         require(isExists[code], unicode"해당 코드와 일치하는 토큰이 없습니다.");
 
@@ -67,7 +63,7 @@ contract TokenStorage is ERC20, Ownable, AccessControl, ReentrancyGuard {
     }
 
     // 사용자 지갑 주소 이용하여 청약 코드와 일치하는 토큰 burn
-    function burn(uint code, address _wallet) external checkRole(BURNER_ROLE) nonReentrant {
+    function burn(uint code, address _wallet) external checkRole(TOKEN_MANAGER) nonReentrant {    
         require(isExists[code], unicode"해당 코드와 일치하는 토큰이 없습니다.");
         require(isExistAccount[_wallet], unicode"잘못된 요청입니다.");
 
