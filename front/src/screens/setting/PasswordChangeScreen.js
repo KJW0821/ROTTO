@@ -1,13 +1,12 @@
 import { View, TextInput, Text, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import Title from '../../components/user/Title';
 import CustomButton from '../../components/common/CustomButton';
 import Colors from '../../constants/Colors';
 import { useEffect, useState } from 'react';
 import SettingTopBar from '../../components/setting/SettingTopBar';
 
 const PasswordChangeScreen = ({navigation}) => {
-  const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+  const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*]).{8,}$/;
 
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');

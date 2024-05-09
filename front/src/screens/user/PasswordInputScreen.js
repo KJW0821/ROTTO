@@ -1,4 +1,4 @@
-import { View, TextInput, Text, StyleSheet } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Title from '../../components/user/Title';
 import CustomButton from '../../components/common/CustomButton';
@@ -9,7 +9,7 @@ import { signUp, signIn } from '../../utils/userApi';
 import { useSelector } from 'react-redux';
 
 const PasswordInputScreen = ({navigation}) => {
-  const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+  const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*]).{8,}$/;
 
   const signupInfo = useSelector(state => state.signupInfo);
 
@@ -46,10 +46,12 @@ const PasswordInputScreen = ({navigation}) => {
       sex: parseInt(signupInfo.personId.slice(-1)) % 2 === 1 ? "M" : "F",
       password
     });
+
     await signIn({
       phoneNum: signupInfo.phoneNumber,
       password
     });
+
     navigation.navigate('PINSetting');
   };
 
