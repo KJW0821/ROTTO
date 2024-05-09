@@ -46,23 +46,21 @@ public class UserServiceImpl implements UserService {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 휴대폰 번호입니다.");
             }
 
-//            String userEmail = request.getEmail();
-//
-//            Map<String, Object> headerMap = new HashMap<>();
-//            headerMap.put("apiKey", "2afacf41e60a4482b5c4997d194a46f0");
-//            headerMap.put("userId", userEmail);
-//
-//            JsonNode jsonNode = WebClient.create("https://finapi.p.ssafy.io")
-//                    .post()
-//                    .uri("/ssafy/api/v1/member/")
-//                    .bodyValue(new CreateFinanceAccountRequest("2afacf41e60a4482b5c4997d194a46f0", userEmail))
-//                    .retrieve()
-//                    .bodyToMono(JsonNode.class)
-//                    .block();
-//
-//            // 'userKey' 값을 추출
-//            String userKeyOfFinance = jsonNode.path("payload").path("userKey").asText();
-//            System.out.println(userKeyOfFinance);
+            String userEmail = request.getEmail();
+
+            JsonNode jsonNode = WebClient.create("https://finapi.p.ssafy.io")
+                    .post()
+                    .uri("/ssafy/api/v1/member/")
+                    .bodyValue(new CreateFinanceAccountRequest("2afacf41e60a4482b5c4997d194a46f0", userEmail))
+                    .retrieve()
+                    .bodyToMono(JsonNode.class)
+                    .block();
+
+            System.out.println("jsonNode: " + jsonNode.toString());
+
+            // 'userKey' 값을 추출
+            String userKeyOfFinance = jsonNode.path("payload").path("userKey").asText();
+
             // userCode 자동, isDelete 기본값 0, joinDate = CreationTimestamp, deleteTime = null
             User user = User.builder()
                     .name(request.getName())
@@ -71,7 +69,7 @@ public class UserServiceImpl implements UserService {
                     .juminNo(encryptedJuminNo)
                     .password(hashedPassword)
                     .email(request.getEmail())
-//                    .userKey(userKeyOfFinance)
+                    .userKey(userKeyOfFinance)
                     .build();
 
             // 저장
