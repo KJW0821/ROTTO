@@ -6,13 +6,14 @@ import "./WalletWhitelist.sol";
 import "./interfaces/ITokenCreation.sol";
 import "./interfaces/ITokenDistribute.sol";
 import "./interfaces/ITokenDeletion.sol";
+import "./interfaces/IWhitelist.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TokenManager is Ownable {
     address private tokenCreationAddress;
     address private tokenDistributeAddress;
     address private tokenDeletionAddress;
-    whiteList private list;
+    address private whitelistAddress;
 
     modifier validAddress(address _addr) {
         require(_addr != address(0), unicode"올바르지 않은 주소입니다.");
@@ -20,7 +21,8 @@ contract TokenManager is Ownable {
     }
 
     modifier checklist(address _wallet) {
-        require(list.checkWhiteList(_wallet), unicode"허용되지 않는 지갑입니다.");
+        bool check = IWhitelist(whitelistAddress).checkWhiteList(_wallet);
+        require(check, unicode"허용되지 않는 지갑입니다.");
         _;
     }
 
@@ -34,6 +36,10 @@ contract TokenManager is Ownable {
 
     function setTokenDeletionAddress(address _addr) public validAddress(_addr){
         tokenDeletionAddress = _addr;
+    }
+
+    function setWhiteList(address _addr) public validAddress(_addr){
+        whitelistAddress = _addr;
     }
 
     // 토큰 생성
@@ -53,11 +59,11 @@ contract TokenManager is Ownable {
 
     // 입력받은 지갑 주소를 whitelist에 추가
     function insertList(address _wallet) public validAddress(_wallet) onlyOwner {
-        list.insertList(_wallet);
+        IWhitelist(whitelistAddress).insertList(_wallet);
     }
 
     // 입력받은 지갑 주소를 whitelist에 제거
     function removeList(address _wallet) public checklist(_wallet) validAddress(_wallet) onlyOwner {
-        list.removeList(_wallet);
+        IWhitelist(whitelistAddress).removeList(_wallet);
     }
 }
