@@ -2,6 +2,7 @@ package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.UserService;
 import com.rezero.rotto.dto.request.CheckPhoneNumRequest;
+import com.rezero.rotto.dto.request.ModifyPasswordRequest;
 import com.rezero.rotto.dto.request.SignUpRequest;
 import com.rezero.rotto.dto.response.CheckPhoneNumResponse;
 import com.rezero.rotto.dto.response.UserInfoResponse;
@@ -61,6 +62,19 @@ public class UserController {
         return userService.getUserInfo(userCode);
     }
 
+
+    @Operation(summary = "비밀번호 변경", description = "비밀번호 해쉬화하여 변경")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "400", description = "값이 잘못 입력됨"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
+    })
+    @PatchMapping("/modify/password")
+    public ResponseEntity<?> modifyPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+                                             @Valid @RequestBody ModifyPasswordRequest request) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return userService.modifyPassword(userCode, request);
+    }
 
     @Operation(summary = "회원 탈퇴", description = "Soft Delete 를 사용해서 회원 탈퇴")
     @ApiResponses(value = {
