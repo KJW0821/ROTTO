@@ -92,7 +92,7 @@ public class BlockChainServiceImpl implements BlockChainService{
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("요청하신 청약을 찾을 수 없습니다.");
 
 		BigInteger code = BigInteger.valueOf(subscription.getSubscriptionCode());
-		TransactionReceipt transactionReceipt = tokenManager.deleteToken(code, request.getAddress(), BigInteger.valueOf(1)).send();
+		TransactionReceipt transactionReceipt = tokenManager.deleteToken(code, request.getAddress()).send();
 		if(!transactionReceipt.isStatusOK())    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("환급 실패");
 
 		// 거래 장부에 거래 내역 추가
