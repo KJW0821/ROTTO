@@ -55,5 +55,6 @@ public class User {
     @Column(name = "admin")
     private String admin;
 
-
+    @Column(name = "user_key")
+    private String userKey;
 }

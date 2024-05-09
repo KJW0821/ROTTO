@@ -93,7 +93,7 @@ public class AccountServiceImpl implements AccountService{
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("Header", headerMap);
         // 상품 고유번호
-        bodyMap.put("accountTypeUniqueNo", "001-1-81fe2deafd1943"); // 한국은행
+        bodyMap.put("accountTypeUniqueNo", "001-1-81fe2deafd1943"); // 한국은행 입출금 상품
 
         try {
             String apiResponse =  WebClient.create("https://finapi.p.ssafy.io/ssafy/api/v1/")
