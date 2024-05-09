@@ -41,10 +41,10 @@
  * https://trufflesuite.com/docs/truffle/getting-started/using-the-truffle-dashboard/
  */
 
-// require('dotenv').config();
-// const { MNEMONIC, PROJECT_ID } = process.env;
+require('dotenv').config();
+const { MNEMONIC, rpcUrl, rpcPort } = process.env;
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 module.exports = {
   /**
@@ -64,16 +64,18 @@ module.exports = {
     // tab if you use this network and you must also set the `host`, `port` and `network_id`
     // options below to some value.
     //
+    // development: {
+    //  host: "127.0.0.1",     // Localhost (default: none)
+    //  port: 8545,            // Standard Ethereum port (default: none)
+    //  network_id: "*",       // Any network (default: none)
+    // },
     development: {
-     host: "127.0.0.1",     // Localhost (default: none)
-     port: 8545,            // Standard Ethereum port (default: none)
-     network_id: "*",       // Any network (default: none)
-    },
-      // ssafy : {
-      //   host: "https://rpc.ssafy-blockchain.com",
-      //   port: "31221",
-      //   network_id: "*",
-      // }
+      provider: () => new HDWalletProvider(MNEMONIC, rpcUrl),
+      port: rpcPort,
+      gas: 0,
+      gasPrice: 0,
+      network_id: "*",
+    }
     //
     // An additional network, but with some advanced options…
     // advanced: {
