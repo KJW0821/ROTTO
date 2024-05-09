@@ -17,7 +17,7 @@ public class ApplyHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "apply_history_code")
-    int applyHistoryCode;
+    private int applyHistoryCode;
 
     @Column(name = "user_code")
     private int userCode;
@@ -29,6 +29,6 @@ public class ApplyHistory {
     private LocalDateTime applyTime;
 
     @Column(name = "is_delete", columnDefinition = "TINYINT(1) DEFAULT 0")
-    int isDelete;
+    private int isDelete;
 
 }
