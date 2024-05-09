@@ -42,7 +42,7 @@ export const logout = async () => {
     await API.post('/auth/logout', data);
   } catch (err) {
     console.error('로그아웃 에러' + err);
-    return err;
+    return err.response;
   }
 };
 

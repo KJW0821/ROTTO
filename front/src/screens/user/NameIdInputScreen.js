@@ -47,6 +47,7 @@ const NameIdInputScreen = ({navigation}) => {
               underlineColorAndroid="transparent"
               onChangeText={nameInputHandler}
               value={name}
+              placeholder="2자 이상, 20자 이하 입력"
             />
             {
               name.length ?
@@ -84,7 +85,7 @@ const NameIdInputScreen = ({navigation}) => {
             }
           </InputBox>
         </View>
-        <CustomButton disabled={!name || !personId} onPress={pressNextHandler}>다음</CustomButton>
+        <CustomButton disabled={!name || !personId || name.length < 2} onPress={pressNextHandler}>다음</CustomButton>
       </View>
     </View>
   )
