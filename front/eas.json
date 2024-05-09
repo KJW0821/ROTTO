@@ -6,6 +6,11 @@
     },
     "production": {
       "distribution": "store"
+    },
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
     }
   },
   "submit": {
