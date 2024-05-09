@@ -52,8 +52,9 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Builder.Default
     @Column(name = "admin")
-    private String admin;
+    private Boolean admin = false;
 
 
 }
