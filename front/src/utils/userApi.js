@@ -59,3 +59,23 @@ export const checkPhoneNumber = async (data) => {
     }
   }
 };
+
+export const resign = async () => {
+  try {
+    await API.patch('/user');
+    return;
+  } catch (err) {
+    console.error('회원 탈퇴 실패' + err);
+    return err;
+  }
+};
+
+export const changePassword = async (data) => {
+  try {
+    await API.patch('/user/modify/password', data);
+    return;
+  } catch (err) {
+    console.error('비밀번호 변경 에러' + err);
+    return err;
+  }
+};
