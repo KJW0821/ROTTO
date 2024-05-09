@@ -16,7 +16,7 @@ public class SignUpRequest {
     private String sex;
     @NotBlank(message = "휴대폰 번호는 필수입니다.")
     @Size(min = 11, max = 11, message = "휴대폰 번호는 11자리여야 합니다.")
-    @Pattern(regexp = "^\\d{11}", message = "휴대폰 번호는 010으로 시작해야하며, 숫자만을 포함하여야 합니다.")
+    @Pattern(regexp = "^010\\d{8}", message = "휴대폰 번호는 010으로 시작해야하며, 숫자만을 포함하여야 합니다.")
     private String phoneNum;
     @NotBlank(message = "주민등록번호는 필수입니다.")
     @Size(min = 6, max = 6, message = "주민등록번호는 6자리여야 합니다.")
