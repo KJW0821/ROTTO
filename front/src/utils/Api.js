@@ -29,28 +29,29 @@ API.interceptors.request.use(
 
 let isRefreshing = false;
 let refreshPromise = null;
+let storedRefreshToken = null;
 
 API.interceptors.response.use(
   (res) => {
     return res;
   },
-  (err) => {
+  async (err) => {
     if (err.response && err.response.status === 401) {
       if (!isRefreshing) {
         isRefreshing = true;
 
         const getToken = async () => {
           const res = await TokenService.getRefreshToken();
-          return res;
+          storedRefreshToken = res;
         };
 
-        const refreshToken = getToken();
+        await getToken();
 
-        console.log('accessToken 갱신 과정에서 불러오는 refreshtoken: '+refreshToken);
+        console.log('accessToken 갱신 과정에서 불러오는 refreshtoken: ' + storedRefreshToken);
 
         refreshPromise = reissueAPI.post('/auth/refresh', {}, {
           headers: {
-            Authorization: 'Bearer ' + refreshToken
+            Authorization: 'Bearer ' + storedRefreshToken
           }
         })
           .then(async (res) => {
