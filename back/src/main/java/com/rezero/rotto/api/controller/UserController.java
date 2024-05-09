@@ -69,7 +69,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "값이 잘못 입력됨"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
-    @PatchMapping
+    @PatchMapping("/modify/password")
     public ResponseEntity<?> modifyPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
                                              @Valid @RequestBody ModifyPasswordRequest request) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
