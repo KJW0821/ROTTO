@@ -12,4 +12,8 @@ public interface BlockChainService {
 	ResponseEntity<?> distributeToken(PayTokensRequest request) throws Exception;
 
 	ResponseEntity<?> RefundsToken(RefundsTokenRequest request) throws Exception;
+
+	ResponseEntity<?> InsertWhiteList(String wallet) throws Exception;
+
+	ResponseEntity<?> RemoveWhiteList(String wallet) throws Exception;
 }

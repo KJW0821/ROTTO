@@ -102,6 +102,26 @@ public class BlockChainServiceImpl implements BlockChainService{
 		return ResponseEntity.ok().build();
 	}
 
+	@Override
+	public ResponseEntity<?> InsertWhiteList(String wallet) throws Exception {
+		if(tokenManager == null) initContract();
+
+		TransactionReceipt transactionReceipt = tokenManager.insertList(wallet).send();
+		if(!transactionReceipt.isStatusOK())    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("list 추가 작업 실패");
+
+		return ResponseEntity.ok().body("list 추가 작업 완료");
+	}
+
+	@Override
+	public ResponseEntity<?> RemoveWhiteList(String wallet) throws Exception {
+		if(tokenManager == null) initContract();
+
+		TransactionReceipt transactionReceipt = tokenManager.removeList(wallet).send();
+		if(!transactionReceipt.isStatusOK())    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("list 제거 작업 실패");
+
+		return ResponseEntity.ok().body("list 제거 작업 완료");
+	}
+
 	private TokenManager.Subscription changeVariable(Subscription subscription){
 		BigInteger code = BigInteger.valueOf(subscription.getSubscriptionCode());
 		BigInteger confirm_price = BigInteger.valueOf(subscription.getConfirmPrice());
