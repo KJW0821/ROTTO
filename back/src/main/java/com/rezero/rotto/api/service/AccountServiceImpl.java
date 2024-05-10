@@ -61,10 +61,20 @@ public class AccountServiceImpl implements AccountService{
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
+        // 공모계좌 가져오기
+        Account accountOne = accountRepository.findByUserCodeAndAccountType(userCode, 1);
+        // 얘를 뱃겨서 response에 담아야함.
+        AccountOneResponse accountOneResponse = AccountOneResponse.builder()
+                .accountCode(accountOne.getAccountCode())
+                .bankName(accountOne.getBankName())
+                .accountHolder(user.getName())
+                .accountNum(accountOne.getAccountNum())
+                .accountBalance(accountOne.getBalance())
+                .accountType(accountOne.getAccountType())
+                .build();
 
 
-
-        return null;
+        return ResponseEntity.status(HttpStatus.OK).body(accountOneResponse);
     }
 
 
