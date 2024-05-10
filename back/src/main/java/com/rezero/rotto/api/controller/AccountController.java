@@ -40,6 +40,22 @@ public class AccountController {
         return accountService.getAccountZero(userCode);
     }
 
+
+    @Operation(summary = "진짜 계좌 조회",
+            description = "내 진짜 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode ="200", description = "진짜 계좌조회 성공",
+                    content = @Content(schema = @Schema(implementation = AccountOneResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 요청")
+    })
+
+    @GetMapping("/real")
+    public ResponseEntity<?> getAccountOne(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader){
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return accountService.getAccountOne(userCode);
+    }
+
+
     @Operation(summary = "진짜 계좌 연결",
             description = "진짜 내 계좌 연결")
     @ApiResponses(value = {
