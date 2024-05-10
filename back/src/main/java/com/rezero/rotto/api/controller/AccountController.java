@@ -1,9 +1,10 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.AccountService;
-import com.rezero.rotto.dto.request.AccountCreateRequest;
+import com.rezero.rotto.dto.request.AccountConnectionRequest;
+import com.rezero.rotto.dto.response.AccountConnectionResponse;
+import com.rezero.rotto.dto.response.AccountOneResponse;
 import com.rezero.rotto.dto.response.AccountZeroResponse;
-import com.rezero.rotto.dto.response.ApplyHistoryResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,6 +38,20 @@ public class AccountController {
     public ResponseEntity<?> getAccountZero(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader){
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return accountService.getAccountZero(userCode);
+    }
+
+    @Operation(summary = "진짜 계좌 연결",
+            description = "진짜 내 계좌 연결")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode ="200", description = "진짜 내 계좌 연결성공",
+                    content = @Content(schema = @Schema(implementation = AccountConnectionResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 요청")
+    })
+
+    @PostMapping("/connection")
+    public ResponseEntity<?> postAccountConnection(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, AccountConnectionRequest accountConnectionRequest){
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return accountService.postAccountConnection(userCode, accountConnectionRequest);
     }
 
 }
