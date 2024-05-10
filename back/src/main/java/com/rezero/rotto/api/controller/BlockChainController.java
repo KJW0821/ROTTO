@@ -41,7 +41,7 @@ public class BlockChainController {
 		try {
 			int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
 			User user = userRepository.findByUserCode(userCode);
-			if(user.getAdmin().equals("1"))
+			if(user.getAdmin())
 				return blockChainService.createToken(request);
 
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("요청 권한이 없습니다.");
@@ -57,7 +57,7 @@ public class BlockChainController {
 		try{
 			int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
 			User user = userRepository.findByUserCode(userCode);
-			if(user.getAdmin().equals("1"))
+			if(user.getAdmin())
 				return blockChainService.distributeToken(request);
 
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("요청 권한이 없습니다.");
@@ -73,7 +73,7 @@ public class BlockChainController {
 		try{
 			int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
 			User user = userRepository.findByUserCode(userCode);
-			if(user.getAdmin().equals("1"))
+			if(user.getAdmin())
 				return blockChainService.RefundsToken(request);
 
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("요청 권한이 없습니다.");
@@ -88,7 +88,7 @@ public class BlockChainController {
 		try{
 			int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
 			User user = userRepository.findByUserCode(userCode);
-			if(user.getAdmin().equals("1")) {
+			if(user.getAdmin()) {
 				String address = wallet.getWallet();
 				return blockChainService.InsertWhiteList(address);
 			}
@@ -104,7 +104,7 @@ public class BlockChainController {
 		try{
 			int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
 			User user = userRepository.findByUserCode(userCode);
-			if(user.getAdmin().equals("1")) {
+			if(user.getAdmin()) {
 				String address = wallet.getWallet();
 				return blockChainService.RemoveWhiteList(address);
 			}
