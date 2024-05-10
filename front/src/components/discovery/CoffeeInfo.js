@@ -35,7 +35,7 @@ const CoffeeInfo = () => {
       <Pressable
         style={[
           styles.item,
-          isSelected && { borderColor: Colors.primary }, // 선택된 아이템의 테두리 색상 변경
+          isSelected && { borderColor: Colors.bgOrg }, // 선택된 아이템의 테두리 색상 변경
         ]}
         onPress={() => updateSelect(itemData.item.id)}
       >
@@ -46,6 +46,10 @@ const CoffeeInfo = () => {
 
   return (
     <View style={styles.container}>
+      <Image
+          source={require("../../../assets/images/discovery/coffeebean11.png")}
+          style={{ width: width, height: 250, resizeMode: "cover"}}
+        />
       <View style={styles.flatListContainer}>
         {COFFEE_BEAN_INFO.map((item) => (
           <View key={item.id} style={styles.flatListItemContainer}>
@@ -55,17 +59,14 @@ const CoffeeInfo = () => {
       </View>
 
       <View style={styles.description}>
-        <Image
-          source={require("../../../assets/images/discovery/coffeebean11.png")}
-          style={{ width: "100%", height: 200, resizeMode: "cover" }}
-        />
+        
         {selectedItem && imagePath != "" && (
           <>
-            <Image
-              source={{imagePath}}
+            {/* <Image
+              source={{uri : imagePath}}
               style={{ width: "100%", height: 200, resizeMode: "cover" }}
-            />
-            <Text>{COFFEE_BEAN_INFO[selectedItem - 1].description}</Text>
+            /> */}
+            <Text style={styles.descriptionFont}>{COFFEE_BEAN_INFO[selectedItem - 1].description}</Text>
           </>
         )}
       </View>
@@ -83,6 +84,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   flatListContainer: {
+    marginTop: 20,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
@@ -93,8 +95,7 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: Colors.borderGray,
+    
     margin: 5,
   },
   item: {
@@ -102,12 +103,20 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 2,
+    borderColor: Colors.borderGray,
   },
   description: {
     flex: 1,
     // height: 400,
     width: "95%",
+    alignItems: 'center',
+    marginTop: 10
   },
+  descriptionFont:{
+    fontFamily: "pretendard-regular",
+    fontSize: 15
+  }
 });
 
 //   return (

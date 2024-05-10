@@ -19,6 +19,14 @@ import MyPicker from "../../components/common/MyPicker";
 import FarmDetail from "../../components/discovery/FarmDetail";
 import FilterButton from "../../components/discovery/FilterButton";
 
+let sortData = [
+  { index: 0, name: "기본순", value: null },
+  { index: 1, name: "최근 수익률 높은 순", value: "rate" },
+  { index: 2, name: "마감 기한 빠른 순", value: "deadline" },
+  { index: 3, name: "공모가 높은 순", value: "highPrice" },
+  { index: 4, name: "공모가 낮은 순", value: "lowPrice" },
+];
+
 const FarmListScreen = () => {
   const { width, height } = useWindowDimensions();
   const [farms, setFarms] = useState([]);
@@ -106,6 +114,7 @@ const FarmListScreen = () => {
             />
             <Text style={styles.filterFont}>기본순</Text>
           </Pressable>
+          {/* <MyPicker data={sortData} /> */}
           <FilterButton filterName={"청약 진행중"} width={120} />
           <FilterButton filterName={"원두"} width={80} />
           <FilterButton filterName={"관심 농장"} width={100} />
@@ -145,7 +154,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   filterContainer: {
-    flex:1,
+    flex: 1,
     marginTop: 10,
     flexDirection: "row",
   },
@@ -165,7 +174,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   farmsContainer: {
-    flex:120,
+    flex: 120,
     marginTop: 20,
     alignItems: "center",
     justifyContent: "flex-start",
