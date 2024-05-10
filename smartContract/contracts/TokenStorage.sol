@@ -82,4 +82,13 @@ contract TokenStorage is ERC20, Ownable, AccessControl, ReentrancyGuard {
     function transferFrom(address from, address to, uint amount) public override returns(bool) {
         revert(unicode"잘못된 접근입니다.");
     }
+
+    // 컨트랙트 소유권 관련 function 접근 block
+    function transferOwnership(address newOwner) public pure override {
+        revert(unicode"잘못된 접근입니다.");
+    }
+
+    function renounceOwnership() public pure override {
+        revert(unicode"잘못된 접근입니다.");
+    }
 }

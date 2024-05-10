@@ -53,4 +53,15 @@ contract TokenManager is Ownable {
     function removeList(address _wallet) external checklist(_wallet) validAddress(_wallet) onlyOwner {
         IWhitelist(whitelistAddress).removeList(_wallet);
     }
+
+
+
+    // 컨트랙트 소유권 관련 function 접근 block
+    function transferOwnership(address newOwner) public pure override {
+        revert(unicode"잘못된 접근입니다.");
+    }
+
+    function renounceOwnership() public pure override {
+        revert(unicode"잘못된 접근입니다.");
+    }
 }
