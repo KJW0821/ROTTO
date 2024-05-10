@@ -67,9 +67,6 @@ public class UserServiceImpl implements UserService {
             // 'userKey' 값을 추출
             String userKeyOfFinance = jsonNode.path("payload").path("userKey").asText();
 
-            // 계정생성
-            financeAccountCreate(userKeyOfFinance);
-
             // userCode 자동, isDelete 기본값 0, joinDate = CreationTimestamp, deleteTime = null
             User user = User.builder()
                     .name(request.getName())
@@ -83,6 +80,9 @@ public class UserServiceImpl implements UserService {
 
             // 저장
             userRepository.save(user);
+
+            // 계좌생성
+            financeAccountCreate(user.getUserCode(), userKeyOfFinance);
 
             // 리스폰스 생성
             UserInfoResponse response = UserInfoResponse.builder()
@@ -161,8 +161,9 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public void financeAccountCreate(String userKey) {
+    public void financeAccountCreate(int userCode, String userKey) {
 
+        User user = userRepository.findByUserCode(userCode);
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
@@ -194,7 +195,7 @@ public class UserServiceImpl implements UserService {
         headerMap.put("institutionTransactionUniqueNo", institutionTransactionUniqueNo);
         // 개발자 키
         headerMap.put("apiKey", "2afacf41e60a4482b5c4997d194a46f0");
-        // 계정생성해야함 -> 회원가입시 이메일을 작성하면 생성됨.(현재는 예시)
+        // 계정생성해야함 -> 회원가입시 이메일을 작성하면 생성됨
         headerMap.put("userKey", userKey);
 
 
@@ -220,8 +221,8 @@ public class UserServiceImpl implements UserService {
                 // 'bankCode'와 'accountNo'에 접근
                 String bankCode = recNode.get("bankCode").asText();
                 String accountNo = recNode.get("accountNo").asText();
-
                 Account account = new Account();
+                account.setUserCode(userCode);
                 account.setBankName(bankCode);
                 account.setAccountNum(accountNo);
                 account.setBalance(0);

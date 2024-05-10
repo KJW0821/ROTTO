@@ -2,6 +2,7 @@ package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.AccountService;
 import com.rezero.rotto.dto.request.AccountCreateRequest;
+import com.rezero.rotto.dto.response.AccountZeroResponse;
 import com.rezero.rotto.dto.response.ApplyHistoryResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,19 +25,18 @@ public class AccountController {
     private final AccountService accountService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Operation(summary = "계좌생성",
-            description = "금융망에 계좌를 생성해봅시다.(rotto용 계좌)")
+    @Operation(summary = "rotto 계좌 조회",
+            description = "내 로또계좌 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode ="200", description = "계좌생성 성공",
-                    content = @Content(schema = @Schema(implementation = ApplyHistoryResponse.class))),
+            @ApiResponse(responseCode ="200", description = "rotto 계좌조회 성공",
+                    content = @Content(schema = @Schema(implementation = AccountZeroResponse.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 요청")
     })
 
-    // 받을값들
-    @PostMapping("/create")
-    public ResponseEntity<?> postAccountCreate(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, AccountCreateRequest accountCreateRequest){
+    @GetMapping
+    public ResponseEntity<?> getAccountZero(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader){
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return accountService.postAccountCreate(userCode, accountCreateRequest);
+        return accountService.getAccountZero(userCode);
     }
 
 }
