@@ -144,13 +144,14 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "토큰 재발급",
                     content = @Content(schema = @Schema(implementation = TokenResponse.class))),
+            @ApiResponse(responseCode = "400", description = "헤더가 없거나 Bearer 토큰 형식이 아니거나 유효하지 않은 리프레시 토큰"),
             @ApiResponse(responseCode = "401", description = "만료된 리프레시 토큰")
     })
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-                throw new RuntimeException("Authorization 헤더가 없거나 Bearer 토큰 형식이 아닙니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Authorization 헤더가 없거나 Bearer 토큰 형식이 아닙니다.");
             }
 
             String refreshToken = authorizationHeader.substring(7);
@@ -158,15 +159,15 @@ public class AuthController {
 
             // 토큰 유효성 및 블랙리스트 검사
             if (!jwtTokenProvider.validateToken(refreshToken) || token == null) {
-                throw new RuntimeException("리프레시 토큰이 유효하지 않거나 블랙리스트에 등록되어 있습니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("리프레시 토큰이 유효하지 않거나 블랙리스트에 등록되어 있습니다.");
             }
 
             int userCode = token.getUserCode();
 
-            refreshTokenRepository.deleteById(refreshToken);
-
             BlackList blackList = new BlackList(jwtTokenProvider.getExpiration(refreshToken), refreshToken);
             blackListRepository.save(blackList);
+
+            refreshTokenRepository.deleteById(refreshToken);
 
             String newAccessToken = jwtTokenProvider.createAccessToken(String.valueOf(userCode));
             String newRefreshToken = jwtTokenProvider.createRefreshToken();
