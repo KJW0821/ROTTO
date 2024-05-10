@@ -7,7 +7,7 @@ export const getFAQList = async (page) => {
         page,
       },
     });
-    console.log(res.data);
+    console.log(res);
     return res.data;
   } catch (err) {
     console.error(err);
@@ -17,7 +17,6 @@ export const getFAQList = async (page) => {
 export const getFAQDetail = async (code) => {
   try {
     const res = await API.get(`/faq/${code}`);
-    console.log(res.data);
     return res.data;
   } catch (err) {
     console.error(err);

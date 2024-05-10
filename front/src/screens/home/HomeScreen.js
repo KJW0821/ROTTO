@@ -11,10 +11,12 @@ import {
 import MyHeader from "../../components/common/MyHeader";
 import MyBanner from "../../components/home/MyBanner";
 import MyDeposit from "../../components/home/MyDeposit";
+import FAQ from "../../components/home/Faq";
+import FarmILike from "../../components/home/FarmILike";
+import FarmNews from "../../components/home/FarmNews";
 
 import * as Notifications from "expo-notifications";
 import { createRef, useEffect, useState } from "react";
-import FAQScreen from "./FAQScreen";
 
 const HomeScreen = ({ navigation }) => {
   Notifications.setNotificationHandler({
@@ -43,58 +45,59 @@ const HomeScreen = ({ navigation }) => {
     });
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      if (Platform.OS === "android") {
-        await Notifications.setNotificationChannelAsync("default", {
-          name: "default",
-          importance: Notifications.AndroidImportance.MAX,
-          vibrationPattern: [0, 250, 250, 250],
-          lightColor: "#FF231F7C",
-        });
-      }
-      const { granted } = await Notifications.getPermissionsAsync();
-      console.log("granted", granted);
-      if (granted) {
-        const { data } = await Notifications.getExpoPushTokenAsync();
-        setState({ pushToken: data });
-        console.log("data", data);
-      } else if (!granted) {
-        alert("알림이 거부 되었습니다.");
-      } else {
-        alert("알림이 지원 되지않습니다.");
-      }
-      Notifications.addNotificationReceivedListener((notification) => {
-        console.log("NOTIFICATION1:", notification);
-      });
-      notificationListener.current =
-        Notifications.addNotificationReceivedListener((notification) => {
-          setState({ notification: notification });
-        });
-      responseListener.current =
-        Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log("responseRecieved", response);
-        });
-    }
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     if (Platform.OS === "android") {
+  //       await Notifications.setNotificationChannelAsync("default", {
+  //         name: "default",
+  //         importance: Notifications.AndroidImportance.MAX,
+  //         vibrationPattern: [0, 250, 250, 250],
+  //         lightColor: "#FF231F7C",
+  //       });
+  //     }
+  //     const { granted } = await Notifications.getPermissionsAsync();
+  //     console.log("granted", granted);
+  //     if (granted) {
+  //       const { data } = await Notifications.getExpoPushTokenAsync();
+  //       setState({ pushToken: data });
+  //       console.log("data", data);
+  //     } else if (!granted) {
+  //       alert("알림이 거부 되었습니다.");
+  //     } else {
+  //       alert("알림이 지원 되지않습니다.");
+  //     }
+  //     Notifications.addNotificationReceivedListener((notification) => {
+  //       console.log("NOTIFICATION1:", notification);
+  //     });
+  //     notificationListener.current =
+  //       Notifications.addNotificationReceivedListener((notification) => {
+  //         setState({ notification: notification });
+  //       });
+  //     responseListener.current =
+  //       Notifications.addNotificationResponseReceivedListener((response) => {
+  //         console.log("responseRecieved", response);
+  //       });
+  //   }
+  //   fetchData();
+  // }, []);
 
   return (
     <MyHeader>
-      <View>
+      {/* <View>
         <Button
           title="Show Push Token"
           onPress={async () => {
             await schedulePushNotification(state.pushToken);
           }}
         />
-      </View>
+      </View> */}
       <ScrollView style={styles.container}>
         <MyBanner />
-        <Image source={require("../../../assets/images/farmfarm.png")} />
         <MyDeposit />
         <View style={styles.infoContainer}>
-          <FAQScreen />
+          <FarmILike/>
+          <FarmNews />
+          <FAQ/>
         </View>
       </ScrollView>
     </MyHeader>
@@ -110,7 +113,7 @@ const styles = StyleSheet.create({
   infoContainer: {
     flex: 1,
     marginTop: 25,
-    padding: 25,
+    padding: 15,
     borderTopRightRadius: 15,
     borderTopLeftRadius: 15,
     backgroundColor: "white",

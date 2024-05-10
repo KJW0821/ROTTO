@@ -3,17 +3,16 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 import { getFAQList } from "../../utils/FAQApi";
 
-const FAQScreen = () => {
+const FAQ = () => {
   const [faqList, setFaqList] = useState([]);
 
   const getList = async () => {
     const res = await getFAQList();
+    console.log(res);
     setFaqList(res.faqListDtos);
-    console.log(res.faqListDtos);
   };
 
   useEffect(() => {
-    console.log("마운트 됨");
     getList();
   }, []);
 
@@ -22,7 +21,6 @@ const FAQScreen = () => {
       <Text style={styles.header}>FAQ</Text>
       {faqList &&
         faqList.map((item) => {
-          console.log("item", item);
           return (
             <View key={item.faqCode}>
               <Text style={styles.title}>{item.title}</Text>
@@ -34,7 +32,7 @@ const FAQScreen = () => {
   );
 };
 
-export default FAQScreen;
+export default FAQ;
 
 const styles = StyleSheet.create({
   screen: {
