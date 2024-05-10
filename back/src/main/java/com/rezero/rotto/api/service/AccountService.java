@@ -11,6 +11,6 @@ public interface AccountService {
     // 연결계좌
     ResponseEntity<?> getAccountOne(int userCode);
 
-    // 계좌생성
-    ResponseEntity<?> postAccountCreate(int userCode, AccountCreateRequest accountCreateRequest);
+//    // 계좌생성
+//    ResponseEntity<?> postAccountCreate(int userCode, AccountCreateRequest accountCreateRequest);
 }
