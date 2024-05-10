@@ -13,9 +13,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 import Colors from "../../constants/Colors";
 import StackHeader from "../../components/common/StackHeader";
+import MyBottomSheet from "../../components/common/MyBottomSheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import BottomSheet from "../../components/common/MyBottomSheet";
-import MyPicker from "../../components/common/MyPicker";
 import FarmDetail from "../../components/discovery/FarmDetail";
 import FilterButton from "../../components/discovery/FilterButton";
 
@@ -30,29 +29,8 @@ let sortData = [
 const FarmListScreen = () => {
   const { width, height } = useWindowDimensions();
   const [farms, setFarms] = useState([]);
-
-  const [filters, setFilters] = useState([]);
-  // const [params, setParams] = useState({
-  //   "sort": null,
-  //   "keyword": null,
-  //   "interest": null,
-  //   "subsStatus": null,
-  //   "minPrice": null,
-  //   "maxPrice": null,
-  //   "beanType": null,
-  // });
-  const params = useRef({
-    sort: null,
-    keyword: null,
-    interest: null,
-    subsStatus: null,
-    minPrice: null,
-    maxPrice: null,
-    beanType: null,
-  });
-  const [useFilter, setUseFilter] = useState(false);
-  const filterType = useRef("");
-  const filterIndex = useRef(0);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [selectedSort, setSelectedSort] = useState(sortData[0]); // 기본순 선택
 
   const getList = async () => {
     const res = await getFarmList();
@@ -60,8 +38,8 @@ const FarmListScreen = () => {
   };
 
   const applyFilter = (name, id) => {
-    filterIndex.current = id;
-    params.current.sort = name;
+    setSelectedSort(sortData.find((item) => item.index === id));
+    setIsBottomSheetOpen(false); // 바텀시트 닫기
   };
 
   useEffect(() => {
@@ -74,62 +52,57 @@ const FarmListScreen = () => {
 
   return (
     <View style={styles.screen}>
-      {/* <GestureHandlerRootView> */}
-      {/* {filters && (
-          <BottomSheet>
-            {filters.map((filter) => (
-              <Pressable key={filter.index} onPress={() => applyFilter(filter.name, filter.index)}>
-                <Text style={filter.index == filterIndex ? styles.filterFontEmp : styles.filterFont}>{filter.name}</Text>
-              </Pressable>
-            ))}
-          </BottomSheet>
-        )} */}
       <StackHeader
         screenName={"discovery"}
         title={"농장 검색"}
         color={Colors.bgOrg}
         search={true}
       />
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.topScroll}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+      >
         <View style={styles.filterContainer}>
           <Pressable
             style={styles.sortButton}
             onPress={() => {
-              filterType.current = "sort";
-              setFilters([]);
-              setFilters([
-                { index: 0, name: "기본순", value: null },
-                { index: 1, name: "최근 수익률 높은 순", value: "rate" },
-                { index: 2, name: "마감 기한 빠른 순", value: "deadline" },
-                { index: 3, name: "공모가 높은 순", value: "highPrice" },
-                { index: 4, name: "공모가 낮은 순", value: "lowPrice" },
-              ]);
+              setIsBottomSheetOpen(true);
             }}
           >
+            <Text style={styles.filterFont}>{selectedSort.name}</Text>
             <Ionicons
               style={styles.filterIcon}
-              name="chevron-expand-outline"
-              size={24}
-              color="black"
+              name="chevron-down"
+              size={20}
+              color={Colors.iconGray}
             />
-            <Text style={styles.filterFont}>기본순</Text>
           </Pressable>
-          {/* <MyPicker data={sortData} /> */}
-          <FilterButton filterName={"청약 진행중"} width={120} />
-          <FilterButton filterName={"원두"} width={80} />
-          <FilterButton filterName={"관심 농장"} width={100} />
+          <FilterButton filterName={"청약 진행중"} />
+          <FilterButton filterName={"원두"} />
+          <FilterButton filterName={"관심 농장"} />
         </View>
       </ScrollView>
-
-      <View style={styles.farmsContainer}>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={farms}
-          keyExtractor={(item) => item.farmCode}
-          renderItem={renderFarmList}
-        />
-      </View>
-      {/* </GestureHandlerRootView> */}
+      <FlatList
+        contentContainerStyle={styles.farmsContainer}
+        showsVerticalScrollIndicator={false}
+        data={farms}
+        keyExtractor={(item) => item.farmCode}
+        renderItem={renderFarmList}
+      />
+      <MyBottomSheet isOpen={isBottomSheetOpen}>
+        <ScrollView>
+          {sortData.map((sortItem) => (
+            <Pressable
+              key={sortItem.index}
+              onPress={() => applyFilter(sortItem.name, sortItem.index)}
+              style={styles.sortItem}
+            >
+              <Text style={styles.sortItemText}>{sortItem.name}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </MyBottomSheet>
     </View>
   );
 };
@@ -141,21 +114,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
   },
+  topScroll: {
+    height: "auto",
+  },
   sortButton: {
     flexDirection: "row",
     alignItems: "center",
-    // justifyContent: 'space-around',
+    justifyContent: "center",
     width: 100,
     height: 40,
-    borderTopRightRadius: 20, // 오른쪽 위 모서리의 border radius
-    borderBottomRightRadius: 20, // 오른쪽 아래 모서리의 border radius
-    backgroundColor: "white",
-    borderColor: Colors.borderGray,
-    borderWidth: 1,
   },
   filterContainer: {
-    flex: 1,
     marginTop: 10,
+    height: 50,
     flexDirection: "row",
   },
   filterIcon: {
@@ -164,7 +135,7 @@ const styles = StyleSheet.create({
   filterFont: {
     marginBottom: 3,
     marginLeft: 8,
-    fontFamily: "pretendard-regular",
+    fontFamily: "pretendard-bold",
     fontSize: 15,
   },
   filterFontEmp: {
@@ -174,9 +145,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   farmsContainer: {
-    flex: 120,
-    marginTop: 20,
     alignItems: "center",
-    justifyContent: "flex-start",
+    marginTop: 10,
+  },
+  sortItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderGray,
+  },
+  sortItemText: {
+    fontSize: 16,
   },
 });

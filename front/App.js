@@ -27,9 +27,10 @@ export default function App() {
   const statusBarColor = Colors.bgOrg;
 
   return (
-    <SafeAreaProvider>
-      <Provider store={store}>
-        <NavigationContainer>
+    <GestureHandlerRootView>
+      <SafeAreaProvider>
+        <Provider store={store}>
+          <NavigationContainer>
             {/* <StatusBar style="auto" /> */}
             {/* <StatusBar style={styles.statusBar} /> */}
             <StatusBar
@@ -41,9 +42,10 @@ export default function App() {
                 <AuthRouters />
               </SafeAreaView>
             )}
-        </NavigationContainer>
-      </Provider>
-    </SafeAreaProvider>
+          </NavigationContainer>
+        </Provider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 
