@@ -3,6 +3,8 @@ package com.rezero.rotto.api.service;
 import java.math.BigInteger;
 import java.util.concurrent.CompletableFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -38,6 +40,7 @@ public class BlockChainServiceImpl implements BlockChainService{
 	@Value("${CHAIN_TOKEN_MANAGER}")
 	private String tokenManagerAddress;
 
+	private final Logger logger = LoggerFactory.getLogger(BlockChainServiceImpl.class);
 	private static final BigInteger GAS_LIMIT = BigInteger.valueOf(9_007_199_254_740_991L);
 	private static final BigInteger GAS_PRICE = BigInteger.ZERO;
 
@@ -51,8 +54,8 @@ public class BlockChainServiceImpl implements BlockChainService{
 		BigInteger amount = BigInteger.valueOf(request.getAmount());
 
 		TransactionReceipt transactionReceipt = tokenManager.createToken(requestSubscription, amount).send();
-		if(!transactionReceipt.isStatusOK()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("토큰 생성 실패");
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		if(!transactionReceipt.isStatusOK()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ROTTO 생성 실패");
+		return ResponseEntity.status(HttpStatus.CREATED).body("ROTTO 생성 완료");
 	}
 
 	@Override
@@ -63,7 +66,7 @@ public class BlockChainServiceImpl implements BlockChainService{
 		if(subscription == null)
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("요청하신 청약을 찾을 수 없습니다.");
 		else if(request.getAmount() > subscription.getLimitNum())
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("요청하신 수량이 1인당 가질 수 있는 개수를 초과하였습니다.");
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("요청하신 수량이 1인당 가질 수 있는 개수를 초과하였습니다.");
 
 		// 이전에 금융망을 통해 사용자 ssafy 계좌 이체 요청 필요
 
@@ -80,7 +83,7 @@ public class BlockChainServiceImpl implements BlockChainService{
 		// });
 		TransactionReceipt transactionReceipt = tokenManager.distributeToken(requestSubscription, request.getAddress(), amount).send();
 		if(!transactionReceipt.isStatusOK())    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("토큰 발급에 실패하였습니다.");
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok().body("ROTTO 발급 완료");
 	}
 
 	@Override
@@ -99,7 +102,33 @@ public class BlockChainServiceImpl implements BlockChainService{
 
 		// 금융망에 사용자의 계좌에 입금 필요
 
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok().body("환급 완료");
+	}
+
+	@Override
+	public ResponseEntity<?> InsertWhiteList(String wallet) throws Exception {
+		if(tokenManager == null) initContract();
+		logger.info("InsertWhiteList 시작");
+		TransactionReceipt transactionReceipt = tokenManager.insertList(wallet).send();
+		logger.info("InsertWhiteList 끝");
+		if(!transactionReceipt.isStatusOK())    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("list 추가 작업 실패");
+
+		return ResponseEntity.ok().body("list 추가 작업 완료");
+	}
+
+	@Override
+	public ResponseEntity<?> RemoveWhiteList(String wallet) throws Exception {
+		if(tokenManager == null) initContract();
+
+		try {
+			TransactionReceipt transactionReceipt = tokenManager.removeList(wallet).send();
+			if (!transactionReceipt.isStatusOK())
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("list 제거 작업 실패");
+
+			return ResponseEntity.ok().body("list 제거 작업 완료");
+		} catch (Exception e){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("list 제거 작업 실패");
+		}
 	}
 
 	private TokenManager.Subscription changeVariable(Subscription subscription){
