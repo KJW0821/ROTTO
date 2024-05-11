@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class AccountCreateRequest {
-    private String userEmail;
+public class AccountConnectionRequest {
+    private String accountNum;
+    private String bankName;
 }
