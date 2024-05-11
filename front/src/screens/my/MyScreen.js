@@ -1,46 +1,39 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import MyHeader from "../../components/common/MyHeader";
 import MyWallet from "../../components/my/MyWallet";
-import '@walletconnect/react-native-compat'
-import { WagmiConfig } from 'wagmi'
-import { mainnet, polygon, arbitrum } from 'viem/chains'
-import { Web3Modal, createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi-react-native';
+import MyAccount from "../../components/my/MyAccount";
+import { useDispatch, useSelector } from "react-redux";
+import { setWalletModal } from "../../stores/mySlice";
+import { useCallback, useEffect } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 
-const projectId = '41c800331b3143bdaddeef0fdefb7852';
+const MyScreen = ({navigation}) => {
+  const dispatch = useDispatch();
+  const myPageInfo = useSelector(state => state.myPageInfo);
 
-const metadata = {
-  name: 'rotto',
-  description: '커피 STO 투자 증권 앱',
-  url: 'exp://192.168.30.140:8081',
-  icons: ['../../../assets/images/skyIcon.png'],
-  redirect: {
-    native: 'exp://192.168.30.140:8081',
-    universal: 'YOUR_APP_UNIVERSAL_LINK.com'
-  }
-};
+  const pressHandler = () => {
+    if (myPageInfo.isWalletModalOpen) {
+      dispatch(setWalletModal(false));
+    }
+  };
 
-const chains = [mainnet, polygon, arbitrum];
-
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
-
-createWeb3Modal({
-  projectId,
-  chains,
-  wagmiConfig,
-  enableAnalytics: true
-});
-
-const MyScreen = () => {
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        dispatch(setWalletModal(false));
+      }
+    }, [navigation])
+  );
 
   return (
-    <WagmiConfig config={wagmiConfig}>
-      <MyHeader>
+    <MyHeader>
+      <TouchableOpacity style={{ flex: 1 }} onPress={pressHandler} activeOpacity={1}>
         <View style={styles.container}>
+          <MyAccount navigation={navigation} />
           <MyWallet />
         </View>
-        <Web3Modal />
-      </MyHeader>
-    </WagmiConfig>
+      </TouchableOpacity>
+    </MyHeader>
   );
 };
 
@@ -48,6 +41,8 @@ export default MyScreen;
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: 28,
+    gap: 20
   }
 })
