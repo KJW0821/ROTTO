@@ -5,7 +5,8 @@ import FilterButton from "./FilterButton";
 
 const FilterBar = () => {
   return (
-    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+    <View style={styles.container}>
+      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         <View style={styles.filterContainer}>
           <Pressable
             style={styles.sortButton}
@@ -23,12 +24,17 @@ const FilterBar = () => {
           <FilterButton filterName={"가격"} width={80} />
         </View>
       </ScrollView>
+    </View>
   )
 }
 
 export default FilterBar;
 
 const styles = StyleSheet.create({
+  container: {
+    height: 35,
+    marginTop: 10
+  },
   sortButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -43,9 +49,9 @@ const styles = StyleSheet.create({
     gap: 4
   },
   filterContainer: {
-    marginTop: 10,
     flexDirection: "row",
-    gap: 8
+    gap: 8,
+    height: 35
   },
   filterFont: {
     fontFamily: "pretendard-medium",
