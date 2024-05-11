@@ -2,7 +2,6 @@ package com.rezero.rotto.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.checkerframework.checker.units.qual.C;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +29,6 @@ public class AccountHistory {
     private LocalDateTime accountTime;
 
     @Column(name = "deposit_or_withdrawal", columnDefinition = "TINYINT(1)")
-    private int depositOrWithdrawal;
+    private int depositWithdrawalCode;
 
 }

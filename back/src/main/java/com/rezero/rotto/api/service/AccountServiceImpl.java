@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.rezero.rotto.dto.request.AccountConnectionRequest;
 import com.rezero.rotto.dto.request.AccountDepositRequest;
 import com.rezero.rotto.dto.request.AccountWithdrawalRequest;
-import com.rezero.rotto.dto.request.CreateFinanceAccountRequest;
 import com.rezero.rotto.dto.response.AccountConnectionResponse;
 import com.rezero.rotto.dto.response.AccountOneResponse;
 import com.rezero.rotto.dto.response.AccountZeroResponse;
@@ -380,7 +379,7 @@ public class AccountServiceImpl implements AccountService{
             accountHistory.setAccountCode(currentAccount.getAccountCode());
             accountHistory.setAmount(Integer.parseInt(accountWithdrawalRequest.getTransactionBalance()));
             accountHistory.setAccountTime(now);
-            accountHistory.setDepositOrWithdrawal(2);
+            accountHistory.setDepositWithdrawalCode(2);
             accountHistoryRepository.save(accountHistory);
 
 
@@ -473,7 +472,7 @@ public class AccountServiceImpl implements AccountService{
             accountHistory.setAccountCode(toGoAccount.getAccountCode());
             accountHistory.setAmount(Integer.parseInt(accountDepositRequest.getTransactionBalance()));
             accountHistory.setAccountTime(now);
-            accountHistory.setDepositOrWithdrawal(1);
+            accountHistory.setDepositWithdrawalCode(1);
             accountHistoryRepository.save(accountHistory);
 
 

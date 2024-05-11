@@ -37,4 +37,35 @@ public class AccountHistoryController {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return accountHistoryService.getAccountHistory(userCode, accountCode);
     }
+
+
+    @Operation(summary = "가상계좌의 입금내역조회",
+            description = "가상계좌의 입금내역조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode ="200", description = "가상계좌의 입금내역조회 성공",
+                    content = @Content(schema = @Schema(implementation = AccountHistoryListResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않은 요청")
+    })
+
+    // 받을값들
+    @GetMapping("/deposit/{accountCode}")
+    public ResponseEntity<?> getAccountHistoryDeposit(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int accountCode){
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return accountHistoryService.getAccountHistoryDeposit(userCode, accountCode);
+    }
+
+    @Operation(summary = "가상계좌의 출금내역조회",
+            description = "가상계좌의 출금내역조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode ="200", description = "가상계좌의 출금내역조회 성공",
+                    content = @Content(schema = @Schema(implementation = AccountHistoryListResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않은 요청")
+    })
+
+    // 받을값들
+    @GetMapping("/withdrawal/{accountCode}")
+    public ResponseEntity<?> getAccountHistoryWithdrawal(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int accountCode){
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return accountHistoryService.getAccountHistoryWithdrawal(userCode, accountCode);
+    }
 }
