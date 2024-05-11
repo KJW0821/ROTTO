@@ -1,12 +1,12 @@
-package com.rezero.rotto.dto.dto;
+package com.rezero.rotto.dto.response;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Builder
 @Getter
-public class AccountListOneDto {
-
+@Setter
+@AllArgsConstructor
+public class AccountOneResponse {
     private int accountCode;
     private String bankName;
     private String accountHolder;
@@ -14,3 +14,4 @@ public class AccountListOneDto {
     private int accountBalance;
     private int accountType;
 }
+
