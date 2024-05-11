@@ -40,7 +40,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService{
                     .transferName(user.getName())
                     .amount(accountHistoryList.get(i).getAmount())
                     .accountTime(accountHistoryList.get(i).getAccountTime())
-                    .depositOrWithdrawal(accountHistoryList.get(i).getDepositOrWithdrawal())
+                    .depositOrWithdrawal(accountHistoryList.get(i).getDepositWithdrawalCode())
                     .build();
             accountHistoryListDtos.add(accountHistoryListDto);
         }
@@ -48,6 +48,64 @@ public class AccountHistoryServiceImpl implements AccountHistoryService{
         AccountHistoryListResponse accountHistoryListResponse = AccountHistoryListResponse.builder()
                 .accountHistoryListDtoss(accountHistoryListDtos)
                 .build();
+        return ResponseEntity.status(HttpStatus.OK).body(accountHistoryListResponse);
+    }
+
+
+    @Override
+    public ResponseEntity<?> getAccountHistoryDeposit(int userCode, int accountCode) {
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        List<AccountHistory> accountHistoryList = accountHistoryRepository.findByAccountCodeAndDepositWithdrawalCode(accountCode, 1);
+        Collections.reverse(accountHistoryList);
+        List<AccountHistoryListDto> accountHistoryListDtos = new ArrayList<>();
+
+        for (int i = 0; i < accountHistoryList.size(); i++){
+            AccountHistoryListDto accountHistoryListDto = AccountHistoryListDto.builder()
+                    .transferName(user.getName())
+                    .amount(accountHistoryList.get(i).getAmount())
+                    .accountTime(accountHistoryList.get(i).getAccountTime())
+                    .depositOrWithdrawal(accountHistoryList.get(i).getDepositWithdrawalCode())
+                    .build();
+            accountHistoryListDtos.add(accountHistoryListDto);
+        }
+
+        AccountHistoryListResponse accountHistoryListResponse = AccountHistoryListResponse.builder()
+                .accountHistoryListDtoss(accountHistoryListDtos)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(accountHistoryListResponse);
+    }
+
+
+    @Override
+    public ResponseEntity<?> getAccountHistoryWithdrawal(int userCode, int accountCode) {
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        List<AccountHistory> accountHistoryList = accountHistoryRepository.findByAccountCodeAndDepositWithdrawalCode(accountCode, 2);
+        Collections.reverse(accountHistoryList);
+        List<AccountHistoryListDto> accountHistoryListDtos = new ArrayList<>();
+
+        for (int i = 0; i < accountHistoryList.size(); i++){
+            AccountHistoryListDto accountHistoryListDto = AccountHistoryListDto.builder()
+                    .transferName(user.getName())
+                    .amount(accountHistoryList.get(i).getAmount())
+                    .accountTime(accountHistoryList.get(i).getAccountTime())
+                    .depositOrWithdrawal(accountHistoryList.get(i).getDepositWithdrawalCode())
+                    .build();
+            accountHistoryListDtos.add(accountHistoryListDto);
+        }
+
+        AccountHistoryListResponse accountHistoryListResponse = AccountHistoryListResponse.builder()
+                .accountHistoryListDtoss(accountHistoryListDtos)
+                .build();
+
         return ResponseEntity.status(HttpStatus.OK).body(accountHistoryListResponse);
     }
 }
