@@ -394,6 +394,7 @@ public class AccountServiceImpl implements AccountService{
     }
 
 
+    // 진짜계좌에서 공모계좌로 입금하기
     @Override
     public ResponseEntity<?> patchAccountDeposit(int userCode,  AccountDepositRequest accountDepositRequest) {
 
@@ -469,7 +470,7 @@ public class AccountServiceImpl implements AccountService{
 
             // 입출금내역 저장.
             AccountHistory accountHistory = new AccountHistory();
-            accountHistory.setAccountCode(currentAccount.getAccountCode());
+            accountHistory.setAccountCode(toGoAccount.getAccountCode());
             accountHistory.setAmount(Integer.parseInt(accountDepositRequest.getTransactionBalance()));
             accountHistory.setAccountTime(now);
             accountHistory.setDepositOrWithdrawal(1);
