@@ -2,9 +2,25 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Colors from '../../constants/Colors';
 import { useState } from 'react';
 import TradeList from './TradeList';
+import ApplyList from './ApplyList';
 
 const InvestmentList = ({navigation}) => {
   const [selectedMenu, setSelectedMenu] = useState('보유 내역');
+
+  let ComponentToShow;
+  switch (selectedMenu) {
+    case '보유 내역':
+      ComponentToShow = TradeList;
+      break;
+    case '신청 내역':
+      ComponentToShow = ApplyList;
+      break;
+    case '정산 내역':
+      ComponentToShow = TradeList;
+      break;
+    case '해지 내역':
+      ComponentToShow = TradeList;
+  }
 
   return (
     <View style={styles.container}>
@@ -24,7 +40,7 @@ const InvestmentList = ({navigation}) => {
         </Pressable>
       </View>
       <View style={{flex: 1}}>
-        <TradeList />
+        {ComponentToShow && <ComponentToShow />}
       </View>
     </View>
   )
