@@ -3,7 +3,8 @@ const Colors = {
   bgOrg: '#223A59',
   iconGray: '#70798C',
   fontGray: '#888888',
-  borderGray: '#DDDDDD'
+  borderGray: '#DDDDDD',
+  btnYellow: '#F2BF5E'
 }
 
 export default Colors;
