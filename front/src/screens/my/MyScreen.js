@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setWalletModal } from "../../stores/mySlice";
 import { useCallback, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import InvestmentList from "../../components/my/InvestmentList";
 
 const MyScreen = ({navigation}) => {
   const dispatch = useDispatch();
@@ -31,6 +32,7 @@ const MyScreen = ({navigation}) => {
         <View style={styles.container}>
           <MyAccount navigation={navigation} />
           <MyWallet />
+          <InvestmentList navigation={navigation} />
         </View>
       </TouchableOpacity>
     </MyHeader>
@@ -43,6 +45,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     marginTop: 28,
-    gap: 20
+    gap: 20,
+    flex: 1
   }
 })
