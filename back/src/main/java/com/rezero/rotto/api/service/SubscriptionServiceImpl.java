@@ -9,7 +9,6 @@ import com.rezero.rotto.entity.User;
 import com.rezero.rotto.repository.FarmRepository;
 import com.rezero.rotto.repository.SubscriptionRepository;
 import com.rezero.rotto.repository.UserRepository;
-import com.rezero.rotto.utils.Pagination;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -49,6 +48,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                     .applyCount(subscription.getApplyCount())
                     .endTime(subscription.getEndedTime())
                     .limitNum(subscription.getLimitNum())
+                    .totalTokenCount(subscription.getTotalTokenCount())
                     .build();
 
             subscriptionListDtos.add(subscriptionListDto);
@@ -81,6 +81,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 .returnRate(subscriptionDetail.getReturnRate())
                 .limitNum(subscriptionDetail.getLimitNum())
                 .applyCount(subscriptionDetail.getApplyCount())
+                .totalTokenCount(subscriptionDetail.getTotalTokenCount())
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(subscriptionDetailResponse);
