@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 import Colors from "../../constants/Colors";
 
-const StackHeader = ({ title, screenName, color, search }) => {
+const StackHeader = ({ title, screenName, color, search, onPress }) => {
   const Navigation = useNavigation();
 
   return (
@@ -33,9 +33,9 @@ const StackHeader = ({ title, screenName, color, search }) => {
         </Text>
       </View>
       {search ? (
-        <View style={styles.iconContainer}>
+        <Pressable style={styles.iconContainer} onPress={onPress}>
           <Ionicons name="search" size={24} color={color ? "white" : "black"} />
-        </View>
+        </Pressable>
       ) : (
         <View></View>
       )}

@@ -4,6 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -26,25 +27,93 @@ let sortData = [
   { index: 4, name: "공모가 낮은 순", value: "lowPrice" },
 ];
 
+let fundingData = [
+  { index: 0, name: "선택 안함", value: null },
+  { index: 1, name: "진행 예정", value: 0 },
+  { index: 2, name: "진행중", value: 1 },
+];
+
+let beanData = [
+  { index: 0, name: "선택 안함", value: null },
+  { index: 1, name: "브라질 산토스", value: "브라질 산토스" },
+  { index: 2, name: "콜롬비아 수프리모", value: "콜롬비아 수프리모" },
+  { index: 3, name: "자메이카 블루마운틴", value: "자메이카 블루마운틴" },
+  { index: 4, name: "에티오피아 예가체프", value: "에티오피아 예가체프" },
+  { index: 5, name: "케냐 AA", value: "케냐 AA" },
+  { index: 6, name: "코스타리카 따라주", value: "코스타리카 따라주" },
+  { index: 7, name: "탄자니아 AA", value: "탄자니아 AA" },
+  { index: 8, name: "예멘 모카 마타리", value: "예멘 모카 마타리" },
+  { index: 9, name: "하와이 코나", value: "하와이 코나" },
+  { index: 10, name: "과테말라 안티구아", value: "과테말라 안티구아" },
+  { index: 11, name: "파나마 게이샤", value: "파나마 게이샤" },
+  { index: 12, name: "엘살바도르", value: "엘살바도르" },
+];
+
 const FarmListScreen = () => {
   const { width, height } = useWindowDimensions();
   const [farms, setFarms] = useState([]);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState(sortData[0]); // 기본순 선택
+  const [fundingStatus, setFundingStatus] = useState(fundingData[0]); // 청약 진행 여부 선택
+  const [selectedBean, setSelectedBean] = useState(beanData[0]); // 원두 종류 선택
+  const [isLiked, setIsLiked] = useState(null);
+  const [minPrice, setMinPrice] = useState(null); // 최저 가격 선택
+  const [maxPrice, setMaxPrice] = useState(null); // 최고 가격 선택
+  const [selectedCategory, setSelectedCategory] = useState(null); // 바텀 시트 표시 내용 선택
+  const [keyword, setKeyword] = useState("");
 
-  const getList = async () => {
-    const res = await getFarmList();
+  const getList = async (
+    sort,
+    keyword,
+    isLiked,
+    subsStatus,
+    minPrice,
+    maxPrice,
+    beanType
+  ) => {
+    const res = await getFarmList(
+      sort,
+      keyword,
+      isLiked,
+      subsStatus,
+      minPrice,
+      maxPrice,
+      beanType
+    );
     setFarms(res.farms);
   };
 
-  const applyFilter = (name, id) => {
-    setSelectedSort(sortData.find((item) => item.index === id));
+  const applyFilter = (category, name, id) => {
+    if (category === "sort") {
+      setSelectedSort(sortData.find((item) => item.index === id));
+    } else if (category === "funding") {
+      setFundingStatus(fundingData.find((item) => item.index === id));
+    } else if (category === "bean") {
+      setSelectedBean(beanData.find((item) => item.index === id));
+    } else if (category === "search") {
+    }
     setIsBottomSheetOpen(false); // 바텀시트 닫기
   };
 
   useEffect(() => {
-    getList();
-  }, []);
+    getList(
+      selectedSort.value,
+      keyword,
+      isLiked ? true : null,
+      fundingStatus.value,
+      minPrice,
+      maxPrice,
+      selectedBean.value
+    );
+  }, [
+    selectedSort,
+    keyword,
+    isLiked,
+    fundingStatus,
+    minPrice,
+    maxPrice,
+    selectedBean,
+  ]);
 
   const renderFarmList = (itemData) => {
     return <FarmDetail data={itemData.item} />;
@@ -57,6 +126,10 @@ const FarmListScreen = () => {
         title={"농장 검색"}
         color={Colors.bgOrg}
         search={true}
+        onPress={() => {
+          setIsBottomSheetOpen(true);
+          setSelectedCategory("search");
+        }}
       />
       <ScrollView
         contentContainerStyle={styles.topScroll}
@@ -68,6 +141,7 @@ const FarmListScreen = () => {
             style={styles.sortButton}
             onPress={() => {
               setIsBottomSheetOpen(true);
+              setSelectedCategory("sort");
             }}
           >
             <Text style={styles.filterFont}>{selectedSort.name}</Text>
@@ -78,9 +152,34 @@ const FarmListScreen = () => {
               color={Colors.iconGray}
             />
           </Pressable>
-          <FilterButton filterName={"청약 진행중"} />
-          <FilterButton filterName={"원두"} />
-          <FilterButton filterName={"관심 농장"} />
+          <FilterButton
+            filterName={fundingStatus.index != 0 ? fundingStatus.name : "청약"}
+            onPress={() => {
+              setIsBottomSheetOpen(true);
+              setSelectedCategory("funding");
+            }}
+          />
+          <FilterButton
+            filterName={selectedBean.index != 0 ? selectedBean.name : "원두"}
+            onPress={() => {
+              setIsBottomSheetOpen(true);
+              setSelectedCategory("bean");
+            }}
+          />
+          <FilterButton
+            filterName={"관심 농장"}
+            isChecked={isLiked}
+            onPress={() => {
+              setIsLiked(!isLiked);
+            }}
+          />
+          <FilterButton
+            filterName={"가격"}
+            onPress={() => {
+              setIsBottomSheetOpen(true);
+              setSelectedCategory("price");
+            }}
+          />
         </View>
       </ScrollView>
       <FlatList
@@ -92,15 +191,72 @@ const FarmListScreen = () => {
       />
       <MyBottomSheet isOpen={isBottomSheetOpen}>
         <ScrollView>
-          {sortData.map((sortItem) => (
-            <Pressable
-              key={sortItem.index}
-              onPress={() => applyFilter(sortItem.name, sortItem.index)}
-              style={styles.sortItem}
-            >
-              <Text style={styles.sortItemText}>{sortItem.name}</Text>
-            </Pressable>
-          ))}
+          {selectedCategory === "sort" &&
+            sortData.map((sortItem) => (
+              <Pressable
+                key={sortItem.index}
+                onPress={() =>
+                  applyFilter("sort", sortItem.name, sortItem.index)
+                }
+                style={styles.sortItem}
+              >
+                <Text style={styles.sortItemText}>{sortItem.name}</Text>
+              </Pressable>
+            ))}
+          {selectedCategory === "funding" &&
+            fundingData.map((item) => (
+              <Pressable
+                key={item.index}
+                onPress={() => applyFilter("funding", item.name, item.index)}
+                style={styles.sortItem}
+              >
+                <Text style={styles.sortItemText}>{item.name}</Text>
+              </Pressable>
+            ))}
+          {selectedCategory === "bean" &&
+            beanData.map((item) => (
+              <Pressable
+                key={item.index}
+                onPress={() => applyFilter("bean", item.name, item.index)}
+                style={styles.sortItem}
+              >
+                <Text style={styles.sortItemText}>{item.name}</Text>
+              </Pressable>
+            ))}
+          {selectedCategory === "price" && (
+            <>
+              <TextInput
+                maxLength={10}
+                autoCapitalize="none"
+                autoCorrect={false}
+                onChangeText={(minPrice) => setMinPrice(minPrice)}
+                placeholder="최소 가격"
+                keyboardType="number-pad"
+                value={minPrice}
+              />
+              <TextInput
+                maxLength={10}
+                autoCapitalize="none"
+                autoCorrect={false}
+                onChangeText={(maxPrice) => setMaxPrice(maxPrice)}
+                placeholder="최대 가격"
+                keyboardType="number-pad"
+                value={maxPrice}
+              />
+            </>
+          )}
+          {selectedCategory === "search" && (
+            <View>
+              <Text>검색</Text>
+              <TextInput
+                maxLength={10}
+                autoCapitalize="none"
+                autoCorrect={false}
+                onChangeText={(keyword) => setKeyword(keyword)}
+                value={keyword}
+              />
+            </View>
+          )}
         </ScrollView>
       </MyBottomSheet>
     </View>
@@ -116,13 +272,14 @@ const styles = StyleSheet.create({
   },
   topScroll: {
     height: "auto",
+    paddingRight: 15,
   },
   sortButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    width: 100,
     height: 40,
+    marginLeft: 10,
   },
   filterContainer: {
     marginTop: 10,

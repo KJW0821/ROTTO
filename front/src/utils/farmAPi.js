@@ -1,10 +1,16 @@
 import API from "./Api";
 
-export const getFarmList = async (sort, keyword, ) => {
+export const getFarmList = async (sort, keyword, isLiked, subsStatus, minPrice, maxPrice, beanType) => {
   try {
     const res = await API.get("/farm",{
       params: {
-               
+        "sort" : sort,
+        "keyword" : keyword, 
+        "is-liked" : isLiked, 
+        "subs-status" : subsStatus, 
+        "min-price" : minPrice, 
+        "max-price" : maxPrice, 
+        "bean-type" : beanType
       },
     });
     return res.data;
