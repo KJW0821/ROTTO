@@ -39,5 +39,8 @@ public class Subscription {
     @Column(name = "apply_count")
     private int applyCount;
 
+    @Column(name = "total_token_count")
+    private int totalTokenCount;
+
 
 }
