@@ -272,7 +272,7 @@ public class AccountServiceImpl implements AccountService{
             if (recNode != null) { // 'REC' 필드가 존재하는지 확인
                 String bankCode = recNode.get("bankCode").asText();
                 String accountNo = recNode.get("accountNo").asText();
-                int accountBalance = Integer.parseInt( recNode.get("accountBalace").asText());
+                int accountBalance = Integer.parseInt( recNode.get("accountBalance").asText());
                 Account account = new Account();
                 account.setUserCode(userCode);
                 account.setBankName(bankCode);

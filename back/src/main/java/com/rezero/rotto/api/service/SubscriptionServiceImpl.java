@@ -28,6 +28,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     private final UserRepository userRepository;
     private final FarmRepository farmRepository;
 
+
     public ResponseEntity<?> getSubscriptionList(int userCode){
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
