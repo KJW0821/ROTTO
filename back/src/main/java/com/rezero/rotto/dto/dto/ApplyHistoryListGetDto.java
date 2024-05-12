@@ -19,7 +19,6 @@ public class ApplyHistoryListGetDto {
     private LocalDateTime applyTime;
     private LocalDateTime startedTime;
     private LocalDateTime endedTime;
-    private int isDelete;
     private int applyCount;
     private int totalTokenCount;
 
