@@ -234,8 +234,8 @@ public class AccountServiceImpl implements AccountService{
         Map<String, Object> headerMap = new HashMap<>();
         headerMap.put("apiName", "inquireAccountInfo");
         // 요청날짜
-        headerMap.put("transmissionDate", now.format(dateFormatter));
-        headerMap.put("transmissionTime", now.format(timeFormatter));
+        headerMap.put("transmissionDate", formattedDate);
+        headerMap.put("transmissionTime", formattedTime);
         // 기관코드 고정
         headerMap.put("institutionCode", "00100");
         //핀테크 앱 고정
@@ -264,7 +264,7 @@ public class AccountServiceImpl implements AccountService{
                     .bodyToMono(JsonNode.class)
                     .block();
 
-            System.out.println("금융망 계좌조회 호출결과: " + jsonNode);
+            System.out.println("금융망 계좌조회(진짜계좌) 호출결과: " + jsonNode);
 
             // 'REC' 필드에 접근
             JsonNode recNode = jsonNode.get("REC");
@@ -272,11 +272,12 @@ public class AccountServiceImpl implements AccountService{
             if (recNode != null) { // 'REC' 필드가 존재하는지 확인
                 String bankCode = recNode.get("bankCode").asText();
                 String accountNo = recNode.get("accountNo").asText();
+                int accountBalance = Integer.parseInt( recNode.get("accountBalace").asText());
                 Account account = new Account();
                 account.setUserCode(userCode);
                 account.setBankName(bankCode);
                 account.setAccountNum(accountNo);
-                account.setBalance(account.getBalance());
+                account.setBalance(accountBalance);
                 account.setAccountType(1);
                 accountRepository.save(account);
 
@@ -336,8 +337,8 @@ public class AccountServiceImpl implements AccountService{
         Map<String, Object> headerMap = new HashMap<>();
         headerMap.put("apiName", "accountTransfer");
         // 요청날짜
-        headerMap.put("transmissionDate", now.format(dateFormatter));
-        headerMap.put("transmissionTime", now.format(timeFormatter));
+        headerMap.put("transmissionDate", formattedDate);
+        headerMap.put("transmissionTime", formattedTime);
         // 기관코드 고정
         headerMap.put("institutionCode", "00100");
         //핀테크 앱 고정
@@ -432,8 +433,8 @@ public class AccountServiceImpl implements AccountService{
         Map<String, Object> headerMap = new HashMap<>();
         headerMap.put("apiName", "accountTransfer");
         // 요청날짜
-        headerMap.put("transmissionDate", now.format(dateFormatter));
-        headerMap.put("transmissionTime", now.format(timeFormatter));
+        headerMap.put("transmissionDate", formattedDate);
+        headerMap.put("transmissionTime", formattedTime);
         // 기관코드 고정
         headerMap.put("institutionCode", "00100");
         //핀테크 앱 고정

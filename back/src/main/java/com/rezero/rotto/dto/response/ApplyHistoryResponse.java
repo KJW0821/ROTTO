@@ -17,5 +17,6 @@ public class ApplyHistoryResponse {
     private int confirmPrice;
     private LocalDateTime applyTime;
     private int isDelete;
+    private int applyCount;
 
 }

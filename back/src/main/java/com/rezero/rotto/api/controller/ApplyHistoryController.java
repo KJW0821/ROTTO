@@ -34,9 +34,9 @@ public class ApplyHistoryController {
 
     // 받을값들
     @PostMapping("/{subscriptionCode}")
-    public ResponseEntity<?> postApply(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int subscriptionCode){
+    public ResponseEntity<?> postApply(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int subscriptionCode, int applyCount){
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return applyHistoryService.postApply(userCode, subscriptionCode);
+        return applyHistoryService.postApply(userCode, subscriptionCode, applyCount);
     }
 
 

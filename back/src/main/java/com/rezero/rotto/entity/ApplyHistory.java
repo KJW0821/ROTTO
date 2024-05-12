@@ -31,4 +31,7 @@ public class ApplyHistory {
     @Column(name = "is_delete", columnDefinition = "TINYINT(1) DEFAULT 0")
     private int isDelete;
 
+    @Column(name = "apply_count")
+    private  int applyCount;
+
 }

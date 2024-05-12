@@ -35,7 +35,7 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
 
 
     @Override
-    public ResponseEntity<?> postApply(int userCode, int subscriptionCode) {
+    public ResponseEntity<?> postApply(int userCode, int subscriptionCode, int applyCount) {
         User user = userRepository.findByUserCode(userCode);
         LocalDateTime now = LocalDateTime.now();
         if (user == null || user.getIsDelete()) {
@@ -45,16 +45,18 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
         ApplyHistory applyHistory = new ApplyHistory();
         Subscription subscription = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
 
+        int limitNum = subscription.getLimitNum();
         LocalDateTime startedTime = subscription.getStartedTime();
         LocalDateTime endedTime = subscription.getEndedTime();
 
         // 현재 시간이 시작 시간과 종료 시간 사이에 있는지 확인합니다.
-        if (!now.isBefore(startedTime) && !now.isAfter(endedTime)) {
+        if (!now.isBefore(startedTime) && !now.isAfter(endedTime) && applyCount <= limitNum) {
             // 범위안에 있을 때
             applyHistory.setUserCode(userCode);
             applyHistory.setSubscriptionCode(subscriptionCode);
             applyHistory.setIsDelete(1);
             applyHistory.setApplyTime(now);
+            applyHistory.setApplyCount(applyCount);
             applyHistoryRepository.save(applyHistory);
 
             return ResponseEntity.status(HttpStatus.OK).body(applyHistory);
