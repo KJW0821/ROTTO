@@ -21,3 +21,13 @@ export const getRealAccountInfo = async () => {
     return err;
   }
 };
+
+export const disConnectAccount = async (accountCode) => {
+  try {
+    const res = await API.delete(URL + `/real/remove/${accountCode}`);
+    return res;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
