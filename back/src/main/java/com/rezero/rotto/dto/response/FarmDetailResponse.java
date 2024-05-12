@@ -13,8 +13,8 @@ public class FarmDetailResponse {
 
     private int farmCode;
     private String farmName;
+    private String farmCeoName;
     private String farmLogoPath;
-    private String farmImgPath;
     private String farmAddress;
     private int farmScale;
     private LocalDateTime farmStartedDate;
