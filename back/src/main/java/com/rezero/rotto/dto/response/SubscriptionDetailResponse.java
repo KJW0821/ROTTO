@@ -19,4 +19,5 @@ public class SubscriptionDetailResponse {
     private int limitNum;
     private int returnRate;
     private int applyCount;
+    private int totalTokenCount;
 }

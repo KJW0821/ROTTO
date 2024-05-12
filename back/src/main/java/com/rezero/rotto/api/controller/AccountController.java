@@ -99,7 +99,7 @@ public class AccountController {
     })
 
     @PatchMapping("/deposit")
-    public ResponseEntity<?> patchAccountDeposit(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, AccountDepositRequest accountDepositRequest){
+    public ResponseEntity<?> patchAccountDeposit(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,  AccountDepositRequest accountDepositRequest){
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return accountService.patchAccountDeposit(userCode, accountDepositRequest);
     }
