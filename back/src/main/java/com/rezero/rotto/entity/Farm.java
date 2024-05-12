@@ -28,14 +28,8 @@ public class Farm {
     @Column(name = "farm_logo_path")
     private String farmLogoPath;
 
-    @Column(name = "farm_img_path")
-    private String farmImgPath;
-
     @Column(name = "farm_address")
     private String farmAddress;
-
-    @Column(name = "farm_country")
-    private String farmCountry;
 
     @Column(name = "farm_scale")
     private int farmScale;
