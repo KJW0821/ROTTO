@@ -255,6 +255,7 @@ public class AccountServiceImpl implements AccountService{
         bodyMap.put("bankCode", accountConnectionRequest.getBankName());
         bodyMap.put("accountNo", accountConnectionRequest.getAccountNum());
 
+        System.out.println(bodyMap);
         try {
             JsonNode jsonNode =  WebClient.create("https://finapi.p.ssafy.io")
                     .post()

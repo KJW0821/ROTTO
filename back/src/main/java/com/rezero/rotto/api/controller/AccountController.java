@@ -69,7 +69,7 @@ public class AccountController {
     })
 
     @PostMapping("/connection")
-    public ResponseEntity<?> postAccountConnection(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, AccountConnectionRequest accountConnectionRequest){
+    public ResponseEntity<?> postAccountConnection(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestBody  AccountConnectionRequest accountConnectionRequest){
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return accountService.postAccountConnection(userCode, accountConnectionRequest);
     }
