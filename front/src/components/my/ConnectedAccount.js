@@ -3,8 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
 import { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { getRealAccountInfo } from '../../utils/accountApi';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { disConnectAccount as disconnect, getRealAccountInfo } from '../../utils/accountApi';
 
 const ConnectedAccount = () => {
   const [connectedAccount, setConnectedAccount] = useState();
@@ -46,6 +45,13 @@ const ConnectedAccount = () => {
     }
   }, [connectedAccount]);
 
+  const disconnectAccount = async () => {
+    const res = await disconnect(connectedAccount.accountCode);
+    if (res.status === 200) {
+      setConnectedAccount();
+    }
+  };
+
   return (
     <View style={styles.container}>
       {
@@ -56,7 +62,7 @@ const ConnectedAccount = () => {
             <View style={styles.infoContainer}>
               <Image style={styles.bankLogo} source={bankLogo} resizeMode="stretch" />
               <Text style={styles.mdFont}>{bankName}</Text>
-              <Text style={styles.mdFont}>{connectedAccount.accountNum.slice(-4)}</Text>
+              <Text style={styles.mdFont}>{connectedAccount.accountNum}</Text>
             </View>
           </View>
           <Pressable onPress={() => setModalVisible(true)}>
@@ -70,7 +76,9 @@ const ConnectedAccount = () => {
           >
             <Pressable style={styles.modalBack} onPress={() => setModalVisible(false)}>
               <View style={styles.modal}>
-                <Text style={styles.modalMenu}>연결 끊기</Text>
+                <Pressable onPress={disconnectAccount}>
+                  <Text style={styles.modalMenu}>연결 끊기</Text>
+                </Pressable>
                 <View style={styles.line} />
                 <Pressable onPress={() => setModalVisible(false)}>
                   <Text style={styles.modalCloseMenu}>닫기</Text>
@@ -80,7 +88,10 @@ const ConnectedAccount = () => {
           </Modal>
         </>
         :
-        <Text style={[styles.mdFont, {color: Colors.fontGray}]}>연결된 계좌가 없습니다</Text>
+        <>
+          <Text style={[styles.mdFont, {color: Colors.fontGray}]}>연결된 계좌가 없습니다</Text>
+          <Ionicons name="add-circle-outline" size={16} color={Colors.fontGray} />
+        </>
       }
     </View>
   )
