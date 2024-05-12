@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import SettingTopBar from '../../components/setting/SettingTopBar';
 import { getRequestDetail } from '../../utils/settingApi';
 import Colors from '../../constants/Colors';
+import DetailTopBar from '../../components/common/DetailTopBar';
 
 const InquiryDetailScreen = ({navigation, route}) => {
   const [data, setData] = useState();
@@ -18,7 +18,7 @@ const InquiryDetailScreen = ({navigation, route}) => {
 
   return (
     <View style={styles.outerContainer}>
-      <SettingTopBar title='문의 상세' navigation={navigation} />
+      <DetailTopBar title='문의 상세' navigation={navigation} />
       {
         data &&
         <View style={styles.innerContainer}>

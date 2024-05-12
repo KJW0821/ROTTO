@@ -1,10 +1,10 @@
 import { View, TextInput, StyleSheet, Alert } from "react-native";
-import SettingTopBar from "../../components/setting/SettingTopBar";
 import CustomButton from "../../components/common/CustomButton";
 import Colors from "../../constants/Colors";
 import { useEffect, useState } from "react";
 import { createRequest } from "../../utils/settingApi";
 import TokenService from "../../utils/token";
+import DetailTopBar from "../../components/common/DetailTopBar";
 
 const InquiryCreateScreen = ({navigation}) => {
   const [title, setTitle] = useState('');
@@ -31,7 +31,7 @@ const InquiryCreateScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <SettingTopBar title='문의 작성' navigation={navigation} />
+      <DetailTopBar title='문의 작성' navigation={navigation} />
       <View style={styles.contentContainer}>
         <TextInput 
           placeholder="제목을 입력해주세요.(20자 이내)"

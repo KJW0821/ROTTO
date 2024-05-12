@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import SettingTopBar from '../../components/setting/SettingTopBar';
 import { useEffect, useState } from 'react';
 import { getTerms } from '../../utils/settingApi';
+import DetailTopBar from '../../components/common/DetailTopBar';
 
 const TermsScreen = ({navigation}) => {
   const [terms, setTerms] = useState();
@@ -17,7 +17,7 @@ const TermsScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <SettingTopBar title="이용 약관" navigation={navigation} />
+      <DetailTopBar title="이용 약관" navigation={navigation} />
       {
         terms &&
         <ScrollView style={styles.contentContainer}>

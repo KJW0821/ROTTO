@@ -1,12 +1,11 @@
 import { View, Text, SafeAreaView, StyleSheet, Alert } from 'react-native';
-import SettingTopBar from '../../components/setting/SettingTopBar';
-import Title from '../../components/user/Title';
 import ReactNativePinView from 'react-native-pin-view';
 import { useEffect, useState, useRef } from 'react';
 import KeyService from '../../utils/pinCode';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
 import BioAuthButton from '../../components/common/BioAuthButton';
+import DetailTopBar from '../../components/common/DetailTopBar';
 
 const PINRegisterScreen = ({navigation}) => {
   const pinView = useRef(null)
@@ -41,7 +40,7 @@ const PINRegisterScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <SettingTopBar title='간편 비밀번호 등록' navigation={navigation} />
+      <DetailTopBar title='간편 비밀번호 등록' navigation={navigation} />
       <View style={styles.pinContainer}>
         <Text style={styles.description}>
           {

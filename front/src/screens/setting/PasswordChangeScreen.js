@@ -3,8 +3,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import CustomButton from '../../components/common/CustomButton';
 import Colors from '../../constants/Colors';
 import { useEffect, useState } from 'react';
-import SettingTopBar from '../../components/setting/SettingTopBar';
 import { changePassword } from '../../utils/userApi';
+import DetailTopBar from '../../components/common/DetailTopBar';
 
 const PasswordChangeScreen = ({navigation}) => {
   const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*]).{8,}$/;
@@ -41,7 +41,7 @@ const PasswordChangeScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <SettingTopBar title="비밀번호 변경" navigation={navigation} destination="setting" />
+      <DetailTopBar title="비밀번호 변경" navigation={navigation} destination="setting" />
       <View style={styles.dataContainer}>
         <View style={styles.inputsContainer}>
           <View>

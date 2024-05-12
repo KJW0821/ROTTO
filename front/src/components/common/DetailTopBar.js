@@ -1,7 +1,7 @@
 import { View, Pressable, Text, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
-const SettingTopBar = ({title, navigation, destination}) => {
+const DetailTopBar = ({title, navigation, destination}) => {
   return (
     <View style={styles.topBar}>
       <Pressable onPress={() => {
@@ -19,7 +19,7 @@ const SettingTopBar = ({title, navigation, destination}) => {
   )
 }
 
-export default SettingTopBar;
+export default DetailTopBar;
 
 const styles = StyleSheet.create({
   topBar: {

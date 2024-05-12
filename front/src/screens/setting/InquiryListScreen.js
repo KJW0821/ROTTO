@@ -1,9 +1,9 @@
 import { ScrollView, View, StyleSheet } from 'react-native'; 
-import SettingTopBar from '../../components/setting/SettingTopBar';
 import CustomButton from '../../components/common/CustomButton';
 import InquiryCard from '../../components/setting/InquiryCard';
 import { useEffect, useState } from 'react';
 import { getRequestList } from '../../utils/settingApi';
+import DetailTopBar from '../../components/common/DetailTopBar';
 
 const InquiryListScreen = ({navigation}) => {
   // const inquiryList = [
@@ -37,7 +37,7 @@ const InquiryListScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <SettingTopBar navigation={navigation} title="문의 내역" />
+      <DetailTopBar navigation={navigation} title="문의 내역" />
       <View style={styles.listContainer}>
         <View style={styles.buttonContainer}>
           <CustomButton 
