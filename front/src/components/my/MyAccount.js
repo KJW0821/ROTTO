@@ -3,8 +3,9 @@ import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { getAccountInfo } from '../../utils/accountApi';
 import { MaterialIcons } from '@expo/vector-icons';
 import CustomButton from '../common/CustomButton';
+import Colors from '../../constants/Colors';
 
-const MyAccount = ({navigation}) => {
+const MyAccount = ({navigation, detail}) => {
   const [fundingAccount, setFundingAccount] = useState();
   
   useEffect(() => {
@@ -17,7 +18,7 @@ const MyAccount = ({navigation}) => {
   }, [navigation])
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, detail && styles.border]}>
       {
         fundingAccount &&
         <>
@@ -27,15 +28,18 @@ const MyAccount = ({navigation}) => {
               <Text style={styles.bankName}>싸피 은행</Text>
               <Text style={styles.accountNum}>{fundingAccount.accountNum}</Text>
             </View>
-            <Pressable onPress={() => navigation.navigate('account')}>
-              <MaterialIcons name="arrow-forward-ios" size={16} />
-            </Pressable>
+            {
+              !detail &&
+              <Pressable onPress={() => navigation.navigate('account')}>
+                <MaterialIcons name="arrow-forward-ios" size={16} />
+              </Pressable>
+            }
           </View>
           <Text style={styles.balanceText}>{fundingAccount.accountBalance} 원</Text>
-          <View style={styles.buttonContainer}>
-            <CustomButton style={{ width: '16%', height: 24 }} fontFamily='pretendard-medium'>채우기</CustomButton>
+          <View style={[styles.buttonContainer, detail && { justifyContent: 'space-between' }]}>
+            <CustomButton style={{ width: detail ? '48%' : '16%', height: detail ? 30 : 24 }} fontFamily='pretendard-medium'>채우기</CustomButton>
   {/* style={{ backgroundColor: 'black', width: '16%', height: 22 }} btnColor='black' */}
-            <CustomButton style={{ width: '16%', height: 24 }} fontFamily='pretendard-medium' btnColor='black'>보내기</CustomButton>
+            <CustomButton style={{ width: detail ? '48%' : '16%', height: detail ? 30 : 24 }} fontFamily='pretendard-medium' btnColor='black'>보내기</CustomButton>
           </View>
         </>
       }
@@ -52,6 +56,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 18,
     gap: 16
+  },
+  border: {
+    borderColor: Colors.fontGray,
+    borderWidth: 0.5
   },
   topContainer: {
     flexDirection: 'row',
