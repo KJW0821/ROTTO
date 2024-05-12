@@ -27,7 +27,7 @@ const MyAccount = ({navigation}) => {
               <Text style={styles.bankName}>싸피 은행</Text>
               <Text style={styles.accountNum}>{fundingAccount.accountNum}</Text>
             </View>
-            <Pressable>
+            <Pressable onPress={() => navigation.navigate('account')}>
               <MaterialIcons name="arrow-forward-ios" size={16} />
             </Pressable>
           </View>

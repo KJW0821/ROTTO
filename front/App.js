@@ -21,11 +21,10 @@ const projectId = '41c800331b3143bdaddeef0fdefb7852';
 const metadata = {
   name: 'rotto',
   description: '커피 STO 투자 증권 앱',
-  url: 'exp://192.168.10.6:8081',
+  url: 'exp://192.168.10.4:8081',
   icons: ['../../../assets/images/skyIcon.png'],
   redirect: {
-    native: 'exp://192.168.10.6:8081',
-    universal: 'YOUR_APP_UNIVERSAL_LINK.com'
+    native: 'exp://192.168.10.4:8081',
   }
 };
 
