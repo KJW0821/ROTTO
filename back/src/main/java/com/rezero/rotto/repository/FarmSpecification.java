@@ -133,6 +133,15 @@ public class FarmSpecification {
                         )
                 );
                 query.orderBy(criteriaBuilder.asc(rateSubquery));
+
+            } else if ("like".equals(sort)) {
+                Subquery<Long> likeCountSubquery = query.subquery(Long.class);
+                Root<InterestFarm> interestFarmRoot = likeCountSubquery.from(InterestFarm.class);
+                likeCountSubquery.select(criteriaBuilder.count(interestFarmRoot.get("farmCode")));
+                likeCountSubquery.where(criteriaBuilder.equal(interestFarmRoot.get("farmCode"), root.get("farmCode")));
+                likeCountSubquery.groupBy(interestFarmRoot.get("farmCode"));
+                query.orderBy(criteriaBuilder.asc(criteriaBuilder.count(likeCountSubquery.getSelection())));
+
             } else if ("deadline".equals(sort) || "highPrice".equals(sort) || "lowPrice".equals(sort)) {
                 // 청약 진행중인 상태를 필터링하는 Specification
                 Specification<Farm> ongoingSubsSpec = FarmSpecification.filterBySubscriptionStatus(1);
