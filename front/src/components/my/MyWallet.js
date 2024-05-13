@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, Pressable, Button } from "react-native";
 import { useAccount, useBalance, useDisconnect } from "wagmi";
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Colors from "../../constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import { setWalletModal } from "../../stores/mySlice";
@@ -15,16 +15,21 @@ const MyWallet = () => {
   const { disconnect } = useDisconnect();
 
   const { address, isConnected, isDisconnected } = useAccount();
-  const { data, isLoading } = useBalance({ address, chainId: 31221, watch: true });
-
+  const { data, isLoading } = useBalance({ address, chainId: "0x79f5", watch: true, address: "0x85c41a930ddEc0f37BAED79BEd3047Af190c4f98"});
+  // const { data, isLoading } = useBalance({ address: "0x85c41a930ddEc0f37BAED79BEd3047Af190c4f98" });
+  
   const modalHandler = () => {
     dispatch(setWalletModal(!isModalOpen));
   };
-
+  
   const disconnectWallet = () => {
     disconnect();
     dispatch(setWalletModal(false));
   };
+  
+  useEffect(() => {
+    console.log("토큰 조회 데이터", data)    
+  }, [data])
 
   return (
     <View style={styles.container}>

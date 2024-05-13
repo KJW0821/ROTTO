@@ -30,15 +30,22 @@ const metadata = {
 
 const ssafy = defineChain({
   id: 31221,
-  name: 'ssafy',
+  network: 'ssafy',
+  // name: 'ssafy',
   nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   rpcUrls: {
-    default: { http: ['https://rpc.ssafy-blockchain.com'] },
+    public: { 
+      http: ['https://rpc.ssafy-blockchain.com'] 
+    },
   },
-  testnet: false
+  contracts: {
+    ensRegistry: {
+      address: '0x85c41a930ddEc0f37BAED79BEd3047Af190c4f98'
+    }
+  }
 });
 
-const chains = [mainnet, polygon, arbitrum];
+const chains = [mainnet];
 
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 
