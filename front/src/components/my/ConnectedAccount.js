@@ -49,6 +49,7 @@ const ConnectedAccount = ({navigation}) => {
     const res = await disconnect(connectedAccount.accountCode);
     if (res.status === 200) {
       setConnectedAccount();
+      setModalVisible(false);
     }
   };
 
