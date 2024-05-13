@@ -2,16 +2,17 @@ import { Pressable, StyleSheet, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 
-const FilterButton = ({filterName, width}) => {
+const FilterButton = ({ filterName, onPress, isChecked }) => {
   return (
-    <Pressable style={[styles.filterButton, {width: width}]}>
-      <Text style={styles.filterFont}>{filterName}</Text>
-      <Ionicons
-        style={styles.filterIcon}
-        name="chevron-down"
-        size={24}
-        color="black"
-      />
+    <Pressable
+      style={
+        isChecked
+          ? [styles.filterButton, styles.checkedFilterButton]
+          : styles.filterButton
+      }
+      onPress={onPress}
+    >
+      <Text style={isChecked ? styles.checkedFilterFont : styles.filterFont}>{filterName}</Text>
     </Pressable>
   );
 };
@@ -22,35 +23,28 @@ const styles = StyleSheet.create({
   filterButton: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: 'space-around',
-    height: 40,
-    borderRadius: 20,
+    justifyContent: "center",
+    height: 35,
+    borderRadius: 5,
     backgroundColor: "white",
     borderColor: Colors.borderGray,
     borderWidth: 1,
     marginLeft: 10,
   },
-  filterContainer: {
-    marginTop: 10,
-  },
-  filterIcon: {
-    marginRight: 5,
+  checkedFilterButton:{
+    borderColor: "black",
+    borderWidth: 1,
   },
   filterFont: {
     marginBottom: 3,
-    marginLeft: 8,
+    marginHorizontal: 10,
     fontFamily: "pretendard-regular",
     fontSize: 15,
   },
-  filterFontEmp: {
+  checkedFilterFont: {
     marginBottom: 3,
-    marginLeft: 8,
+    marginHorizontal: 10,
     fontFamily: "pretendard-bold",
     fontSize: 15,
-  },
-  farmsContainer: {
-    marginTop: 20,
-    alignItems: "center",
-    justifyContent: "flex-start",
   },
 });

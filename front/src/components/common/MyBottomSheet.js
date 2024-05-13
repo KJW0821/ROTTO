@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -12,7 +12,8 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const MAX_TRANSLATE_Y = SCREEN_HEIGHT / 1.5;
 const MIN_TRANSLATE_Y = SCREEN_HEIGHT / 5;
 
-const BottomSheet = ({ children }) => {
+const MyBottomSheet = ({ children, isOpen }) => {
+  // const [isOpen, setIsOpen] = useState(false);
   const translateY = useSharedValue(0);
   const context = useSharedValue({ y: 0 });
 
@@ -42,8 +43,9 @@ const BottomSheet = ({ children }) => {
   };
 
   useEffect(() => {
-    scrollTo(-SCREEN_HEIGHT / 3);
-  }, []);
+    // scrollTo(-SCREEN_HEIGHT / 3);
+    scrollTo(isOpen ? -SCREEN_HEIGHT / 3 : SCREEN_HEIGHT);
+  }, [isOpen]);
 
   return (
     <>
@@ -55,13 +57,12 @@ const BottomSheet = ({ children }) => {
           {children}
         </Animated.View>
       </GestureDetector>
-      <Pressable 
-      style={styles.overlay}/>
+      <Pressable pointerEvents="box-none" style={styles.overlay} />
     </>
   );
 };
 
-export default BottomSheet;
+export default MyBottomSheet;
 
 const styles = StyleSheet.create({
   bottomsheet_container: {
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "transparent"
+    backgroundColor: "transparent",
   },
   line: {
     width: 75,
