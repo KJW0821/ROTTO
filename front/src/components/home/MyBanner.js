@@ -170,7 +170,7 @@ const MyBanner = () => {
               </View>
               <Image
                 source={require("../../../assets/images/farmfarm.png")}
-                style={{ width: 150, height: 150, resizeMode: "contain" }}
+                style={{ width: 160, height: 160, resizeMode: "contain", marginLeft:30}}
               />
             </View>
             <View style={styles.indicatorContainer}>
@@ -210,16 +210,17 @@ const styles = StyleSheet.create({
     width: width - 40,
     borderRadius: 15,
     margin: 20,
-    height: 200,
+    height: 160,
     justifyContent: "center",
     alignItems: "center",
   },
   text: {
     fontFamily: "pretendard-extraBold",
-    fontSize: 30,
+    fontSize: 28,
     color: "white",
   },
   indicatorContainer: {
+    marginLeft:10,
     position: "absolute",
     bottom: 10,
     left: 20, // 왼쪽 아래 정렬을 위해 변경

@@ -19,14 +19,14 @@ const FaqBanner = () => {
 
   return (
     <View style={styles.FAQContainer}>
-        <Text
+        {/* <Text
         style={[
             styles.header,
             {
                 marginLeft:25,
             },
           ]}
-        >FAQ</Text>
+        >FAQ</Text> */}
         <TouchableOpacity onPress={() => Navigation.navigate("announcement")}>
             <View
             style={[

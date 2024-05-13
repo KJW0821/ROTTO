@@ -11,7 +11,6 @@ import {
 import MyHeader from "../../components/common/MyHeader";
 import MyBanner from "../../components/home/MyBanner";
 import MyDeposit from "../../components/home/MyDeposit";
-import FAQ from "../../components/home/Faq";
 import FaqBanner from "../../components/home/FaqBanner";
 import FarmILike from "../../components/home/FarmILike";
 import FarmNews from "../../components/home/FarmNews";
