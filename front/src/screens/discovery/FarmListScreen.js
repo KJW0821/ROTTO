@@ -49,6 +49,8 @@ let beanData = [
   { index: 12, name: "엘살바도르", value: "엘살바도르" },
 ];
 
+let deviceWidth
+
 const FarmListScreen = () => {
   const { width, height } = useWindowDimensions();
   const [farms, setFarms] = useState([]);
@@ -61,6 +63,8 @@ const FarmListScreen = () => {
   const [maxPrice, setMaxPrice] = useState(null); // 최고 가격 선택
   const [selectedCategory, setSelectedCategory] = useState(null); // 바텀 시트 표시 내용 선택
   const [keyword, setKeyword] = useState("");
+
+  deviceWidth = width
 
   const getList = async (
     sort,
@@ -224,26 +228,36 @@ const FarmListScreen = () => {
               </Pressable>
             ))}
           {selectedCategory === "price" && (
-            <>
-              <TextInput
-                maxLength={10}
-                autoCapitalize="none"
-                autoCorrect={false}
-                onChangeText={(minPrice) => setMinPrice(minPrice)}
-                placeholder="최소 가격"
-                keyboardType="number-pad"
-                value={minPrice}
-              />
-              <TextInput
-                maxLength={10}
-                autoCapitalize="none"
-                autoCorrect={false}
-                onChangeText={(maxPrice) => setMaxPrice(maxPrice)}
-                placeholder="최대 가격"
-                keyboardType="number-pad"
-                value={maxPrice}
-              />
-            </>
+            <View style={styles.priceContainer}>
+              <Text>가격</Text>
+              <View style={styles.inputsContainer}>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    maxLength={10}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    onChangeText={(minPrice) => setMinPrice(minPrice)}
+                    placeholder="최소 가격"
+                    keyboardType="number-pad"
+                    value={minPrice}
+                  />
+                  <Text>  원</Text>   
+                </View>
+                <Text> ~ </Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    maxLength={10}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    onChangeText={(maxPrice) => setMaxPrice(maxPrice)}
+                    placeholder="최대 가격"
+                    keyboardType="number-pad"
+                    value={maxPrice}
+                  />
+                  <Text>  원</Text>
+                </View>
+              </View>
+            </View>
           )}
           {selectedCategory === "search" && (
             <View>
@@ -302,8 +316,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   farmsContainer: {
+    minHeight: 800,
     alignItems: "center",
-    marginTop: 10,
+    // justifyContent: "flex-start",
+    marginTop: 0,
   },
   sortItem: {
     paddingVertical: 10,
@@ -314,4 +330,26 @@ const styles = StyleSheet.create({
   sortItemText: {
     fontSize: 16,
   },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 3,
+    borderColor: Colors.borderGray,
+    borderWidth: 1,
+    padding: 5,
+    paddingHorizontal: 15,
+    width:  150,
+    justifyContent:'space-between'
+  },
+  inputsContainer: {
+    width: deviceWidth,
+    marginTop: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+    },
+  priceContainer: {
+    marginTop: 10,
+    marginHorizontal: 20,
+  }
 });
