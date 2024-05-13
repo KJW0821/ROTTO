@@ -4,9 +4,13 @@ import Colors from '../../constants/Colors';
 import { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { disConnectAccount as disconnect, getRealAccountInfo } from '../../utils/accountApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { setConnectedAccount } from '../../stores/mySlice';
 
 const ConnectedAccount = ({navigation}) => {
-  const [connectedAccount, setConnectedAccount] = useState();
+  const dispatch = useDispatch();
+  const connectedAccount = useSelector(state => state.myPageInfo.connectedAccount);
+  
   const [bankLogo, setBankLogo] = useState(require('../../../assets/images/bank/bokLogo.png'));
   const [bankName, setBankName] = useState('한국');
   const [modalVisible, setModalVisible] = useState(false);
@@ -15,7 +19,7 @@ const ConnectedAccount = ({navigation}) => {
     useCallback(() => {
       const getRealAccountData = async () => {
         const res = await getRealAccountInfo();
-        setConnectedAccount(res);
+        dispatch(setConnectedAccount(res));
       };
 
       getRealAccountData();
