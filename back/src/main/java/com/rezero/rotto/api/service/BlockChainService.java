@@ -7,13 +7,13 @@ import com.rezero.rotto.dto.request.PayTokensRequest;
 import com.rezero.rotto.dto.request.RefundsTokenRequest;
 
 public interface BlockChainService {
-	ResponseEntity<?> createToken(CreateTokenRequest request) throws Exception;
+	ResponseEntity<?> createToken(CreateTokenRequest request);
 
-	ResponseEntity<?> distributeToken(PayTokensRequest request) throws Exception;
+	ResponseEntity<?> distributeToken(PayTokensRequest request);
 
-	ResponseEntity<?> RefundsToken(RefundsTokenRequest request) throws Exception;
+	ResponseEntity<?> RefundsToken(RefundsTokenRequest request);
 
-	ResponseEntity<?> InsertWhiteList(String wallet) throws Exception;
+	ResponseEntity<?> InsertWhiteList(String wallet);
 
-	ResponseEntity<?> RemoveWhiteList(String wallet) throws Exception;
+	ResponseEntity<?> RemoveWhiteList(String wallet);
 }
