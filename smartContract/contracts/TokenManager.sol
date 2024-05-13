@@ -55,7 +55,6 @@ contract TokenManager is Ownable {
     }
 
 
-
     // 컨트랙트 소유권 관련 function 접근 block
     function transferOwnership(address newOwner) public pure override {
         revert(unicode"잘못된 접근입니다.");

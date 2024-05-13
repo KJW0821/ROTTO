@@ -63,9 +63,10 @@ contract TokenStorage is ERC20, Ownable, AccessControl, ReentrancyGuard {
     }
 
     // 사용자 지갑 주소 이용하여 청약 코드와 일치하는 토큰 burn
-    function burn(uint code, address _wallet) external checkRole(TOKEN_MANAGER) nonReentrant {    
+    function burn(uint code, address _wallet) external checkRole(TOKEN_MANAGER) nonReentrant {
         require(isExists[code], unicode"해당 코드와 일치하는 토큰이 없습니다.");
         require(isExistAccount[_wallet], unicode"잘못된 요청입니다.");
+        require(ownToken[_wallet][code] > 0, unicode"해당 코드에 대한 토큰을 가지고 있지 않습니다.");
 
         uint amount = ownToken[_wallet][code];
         ownToken[_wallet][code] = 0;
