@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { disConnectAccount as disconnect, getRealAccountInfo } from '../../utils/accountApi';
 
-const ConnectedAccount = () => {
+const ConnectedAccount = ({navigation}) => {
   const [connectedAccount, setConnectedAccount] = useState();
   const [bankLogo, setBankLogo] = useState(require('../../../assets/images/bank/bokLogo.png'));
   const [bankName, setBankName] = useState('한국');
@@ -90,7 +90,9 @@ const ConnectedAccount = () => {
         :
         <>
           <Text style={[styles.mdFont, {color: Colors.fontGray}]}>연결된 계좌가 없습니다</Text>
-          <Ionicons name="add-circle-outline" size={16} color={Colors.fontGray} />
+          <Pressable onPress={() => navigation.navigate('connection')}>
+            <Ionicons name="add-circle-outline" size={16} color={Colors.fontGray} />
+          </Pressable>
         </>
       }
     </View>

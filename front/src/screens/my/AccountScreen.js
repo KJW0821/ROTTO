@@ -9,7 +9,7 @@ const AccountScreen = ({navigation}) => {
       <DetailTopBar title='계좌 상세' navigation={navigation} />
       <View style={styles.innerContainer}>
         <MyAccount detail={true} />
-        <ConnectedAccount />
+        <ConnectedAccount navigation={navigation} />
       </View>
     </View>
   )
