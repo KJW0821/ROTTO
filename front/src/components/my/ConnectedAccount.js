@@ -4,9 +4,13 @@ import Colors from '../../constants/Colors';
 import { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { disConnectAccount as disconnect, getRealAccountInfo } from '../../utils/accountApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { setConnectedAccount } from '../../stores/mySlice';
 
-const ConnectedAccount = () => {
-  const [connectedAccount, setConnectedAccount] = useState();
+const ConnectedAccount = ({navigation}) => {
+  const dispatch = useDispatch();
+  const connectedAccount = useSelector(state => state.myPageInfo.connectedAccount);
+  
   const [bankLogo, setBankLogo] = useState(require('../../../assets/images/bank/bokLogo.png'));
   const [bankName, setBankName] = useState('한국');
   const [modalVisible, setModalVisible] = useState(false);
@@ -15,7 +19,7 @@ const ConnectedAccount = () => {
     useCallback(() => {
       const getRealAccountData = async () => {
         const res = await getRealAccountInfo();
-        setConnectedAccount(res);
+        dispatch(setConnectedAccount(res));
       };
 
       getRealAccountData();
@@ -49,6 +53,7 @@ const ConnectedAccount = () => {
     const res = await disconnect(connectedAccount.accountCode);
     if (res.status === 200) {
       setConnectedAccount();
+      setModalVisible(false);
     }
   };
 
@@ -90,7 +95,9 @@ const ConnectedAccount = () => {
         :
         <>
           <Text style={[styles.mdFont, {color: Colors.fontGray}]}>연결된 계좌가 없습니다</Text>
-          <Ionicons name="add-circle-outline" size={16} color={Colors.fontGray} />
+          <Pressable onPress={() => navigation.navigate('connection')}>
+            <Ionicons name="add-circle-outline" size={16} color={Colors.fontGray} />
+          </Pressable>
         </>
       }
     </View>

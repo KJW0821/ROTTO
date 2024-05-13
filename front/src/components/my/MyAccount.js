@@ -37,8 +37,13 @@ const MyAccount = ({navigation, detail}) => {
           </View>
           <Text style={styles.balanceText}>{fundingAccount.accountBalance} 원</Text>
           <View style={[styles.buttonContainer, detail && { justifyContent: 'space-between' }]}>
-            <CustomButton style={{ width: detail ? '48%' : '16%', height: detail ? 30 : 24 }} fontFamily='pretendard-medium'>채우기</CustomButton>
-  {/* style={{ backgroundColor: 'black', width: '16%', height: 22 }} btnColor='black' */}
+            <CustomButton 
+              style={{ width: detail ? '48%' : '16%', height: detail ? 30 : 24 }} 
+              fontFamily='pretendard-medium'
+              onPress={() => navigation.navigate('charge')}
+            >
+              채우기
+            </CustomButton>
             <CustomButton style={{ width: detail ? '48%' : '16%', height: detail ? 30 : 24 }} fontFamily='pretendard-medium' btnColor='black'>보내기</CustomButton>
           </View>
         </>

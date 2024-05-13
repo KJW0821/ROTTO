@@ -17,8 +17,9 @@ export const getRealAccountInfo = async () => {
     const res = await API.get(URL + '/real');
     return res.data;
   } catch (err) {
-    console.error(err);
-    return err;
+    if (err.response.status === 500) {
+      return null;
+    }
   }
 };
 
@@ -29,5 +30,15 @@ export const disConnectAccount = async (accountCode) => {
   } catch (err) {
     console.error(err);
     return err;
+  }
+};
+
+export const connectAccount = async (data) => {
+  try {
+    const res = await API.post(URL + '/connection', data);
+    return res;
+  } catch (err) {
+    console.error('계좌 연결 실패 ' + err);
+    return err.response;
   }
 };

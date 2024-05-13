@@ -8,8 +8,8 @@ const AccountScreen = ({navigation}) => {
     <View style={styles.container}>
       <DetailTopBar title='계좌 상세' navigation={navigation} />
       <View style={styles.innerContainer}>
-        <MyAccount detail={true} />
-        <ConnectedAccount />
+        <MyAccount navigation={navigation} detail={true} />
+        <ConnectedAccount navigation={navigation} />
       </View>
     </View>
   )
