@@ -208,8 +208,9 @@ const styles = StyleSheet.create({
   },
   item: {
     width: width - 40,
-    borderRadius: 15,
-    margin: 20,
+    borderRadius: 25,
+    marginTop: 10,
+    marginHorizontal: 20,
     height: 160,
     justifyContent: "center",
     alignItems: "center",

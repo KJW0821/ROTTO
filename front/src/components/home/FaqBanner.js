@@ -27,7 +27,7 @@ const FaqBanner = () => {
             },
           ]}
         >FAQ</Text> */}
-        <TouchableOpacity onPress={() => Navigation.navigate("announcement")}>
+        <TouchableOpacity onPress={() => Navigation.navigate("faqscreen")}>
             <View
             style={[
                 styles.item,
