@@ -106,8 +106,11 @@ public class BlockChainServiceImpl implements BlockChainService{
 
 		try {
 			TransactionReceipt transactionReceipt = transactionReceiptFuture.join();
-			if(transactionReceipt.isStatusOK())
+			if(transactionReceipt.isStatusOK()) {
+				TradeHistory history = new TradeHistory();
+				history.setTradeHistoryCode(subscription.getSubscriptionCode());
 				return ResponseEntity.status(HttpStatus.OK).body("ROTTO 발급 완료");
+			}
 			else
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ROTTO 발급 실패");
 		} catch (Exception ex){
