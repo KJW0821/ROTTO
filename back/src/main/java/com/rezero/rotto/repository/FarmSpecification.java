@@ -35,9 +35,7 @@ public class FarmSpecification {
             priceSubquery.where(
                     criteriaBuilder.and(
                             priceRangePredicate,
-                            criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode")),
-                            criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
-                            criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
+                            criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode"))
                     )
             );
 
