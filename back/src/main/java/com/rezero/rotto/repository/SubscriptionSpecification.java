@@ -54,15 +54,18 @@ public class SubscriptionSpecification {
     // 농장 이름에 특정 키워드가 포함되어 있는지 확인하는 스펙
     public static Specification<Subscription> nameContains(String keyword) {
         return (root, query, criteriaBuilder) -> {
-            Subquery<Farm> farmSubquery = query.subquery(Farm.class);
+            // 서브쿼리 생성
+            Subquery<Integer> farmSubquery = query.subquery(Integer.class);
             Root<Farm> farmRoot = farmSubquery.from(Farm.class);
 
-            // Farm 엔티티와의 관계를 나타내는 서브쿼리를 생성합니다.
-            farmSubquery.select(farmRoot)
-                    .where(criteriaBuilder.equal(root.get("farmCode"), farmRoot.get("farmCode")),
-                            criteriaBuilder.like(farmRoot.get("farmName"), "%" + keyword + "%"));
+            // 서브쿼리에서 farmCode를 선택
+            farmSubquery.select(farmRoot.get("farmCode"))
+                    .where(
+                            criteriaBuilder.equal(root.get("farmCode"), farmRoot.get("farmCode")),
+                            criteriaBuilder.like(farmRoot.get("farmName"), "%" + keyword + "%")
+                    );
 
-            // Subscription 엔티티와 Farm 엔티티 사이의 관계를 나타내는 서브쿼리를 쿼리에 적용합니다.
+            // Subscription 엔티티와 Farm 엔티티 사이의 관계를 나타내는 서브쿼리를 쿼리에 적용
             return criteriaBuilder.exists(farmSubquery);
         };
     }
