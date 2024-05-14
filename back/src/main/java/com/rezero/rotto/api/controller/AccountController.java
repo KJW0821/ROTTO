@@ -84,7 +84,7 @@ public class AccountController {
     })
 
     @PatchMapping("/withdrawal")
-    public ResponseEntity<?> patchAccountWithdrawal(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, AccountWithdrawalRequest accountWithdrawalRequest){
+    public ResponseEntity<?> patchAccountWithdrawal(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,@RequestBody AccountWithdrawalRequest accountWithdrawalRequest){
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return accountService.patchAccountWithdrawal(userCode, accountWithdrawalRequest);
     }
@@ -94,12 +94,11 @@ public class AccountController {
             description = "공모계좌 입금(진짜계좌 -> 공모계좌)")
     @ApiResponses(value = {
             @ApiResponse(responseCode ="200", description = "공모계좌 입금 성공"),
-//                    content = @Content(schema = @Schema(implementation = AccountConnectionResponse.class)))
             @ApiResponse(responseCode = "404", description = "존재하지 않는 요청")
     })
 
     @PatchMapping("/deposit")
-    public ResponseEntity<?> patchAccountDeposit(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,  AccountDepositRequest accountDepositRequest){
+    public ResponseEntity<?> patchAccountDeposit(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestBody AccountDepositRequest accountDepositRequest){
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return accountService.patchAccountDeposit(userCode, accountDepositRequest);
     }
