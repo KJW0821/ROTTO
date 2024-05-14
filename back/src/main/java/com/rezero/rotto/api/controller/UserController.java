@@ -57,7 +57,7 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "중복 체크 요청 성공",
             content = @Content(schema = @Schema(implementation = CheckEmailResponse.class)))
     @PostMapping("/email-check")
-    public ResponseEntity<?> checkEmail(@Valid @RequestBody CheckEmailRequest request) {
+    public ResponseEntity<?> checkEmail(@RequestBody CheckEmailRequest request) {
         return userService.checkEmail(request);
     }
 
