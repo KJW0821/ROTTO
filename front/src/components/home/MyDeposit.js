@@ -46,7 +46,7 @@ export default MyDeposit;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 25,
+    marginTop: 35,
     marginHorizontal: 20,
     marginBottom: 10,
     // height: 200,

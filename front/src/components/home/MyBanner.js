@@ -60,13 +60,13 @@ const MyBanner = () => {
                 style={[
                   {
                     flex: 1,
-                    alignItems: "center",
-                    marginHorizontal: 10,
+                    alignItems: "flex-start",
+                    marginHorizontal: 30,
                   },
                 ]}
               >
-                <Text style={styles.text}>커피농장 투자</Text>
-                <Text style={styles.text}>시작해볼까요?</Text>
+                <Text style={styles.textHeader}>청약 안내</Text>
+                <Text style={styles.text}>5월 신청 농장</Text>
               </View>
               <Image
                 source={require("../../../assets/images/farmfarm.png")}
@@ -111,13 +111,13 @@ const MyBanner = () => {
               <View
                 style={[
                   {
-                    alignItems: "center",
-                    marginHorizontal: 10,
+                    alignItems: "start",
+                    marginHorizontal: 30,
                   },
                 ]}
               >
-                <Text style={styles.text}>커피농장 투자</Text>
-                <Text style={styles.text}>시작해볼까요?</Text>
+                <Text style={styles.textHeader}>타임라인</Text>
+                <Text style={styles.text}>ROTTO 주요 정보</Text>
               </View>
               <Image
                 source={require("../../../assets/images/farmfarm.png")}
@@ -221,6 +221,11 @@ const styles = StyleSheet.create({
     height: 160,
     justifyContent: "center",
     alignItems: "center",
+  },
+  textHeader: {
+    fontFamily: "pretendard-regular",
+    fontSize: 18,
+    color: "white",
   },
   text: {
     fontFamily: "pretendard-extraBold",

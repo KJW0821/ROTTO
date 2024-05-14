@@ -19,20 +19,17 @@ const FaqBanner = () => {
 
   return (
     <View style={styles.FAQContainer}>
-      {/* <Text
+      <Text
         style={[
             styles.header,
-            {
-                marginLeft:25,
-            },
           ]}
-        >FAQ</Text> */}
+        >FAQ</Text>
       <TouchableOpacity onPress={() => Navigation.navigate("faqscreen")}>
         <View
           style={[
             styles.item,
             {
-              backgroundColor: "#4E4E4E",
+              backgroundColor: "#D99748",
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
@@ -41,7 +38,7 @@ const FaqBanner = () => {
           ]}
         >
           <Image
-            source={require("../../../assets/images/farmfarm.png")}
+            source={require("../../../assets/images/icon.png")}
             style={{ width: 90, height: 90, resizeMode: "contain", flex: 1 }}
           />
           <View
@@ -59,7 +56,8 @@ const FaqBanner = () => {
 const styles = StyleSheet.create({
   header: {
     fontFamily: "pretendard-extraBold",
-    fontSize: 23,
+    fontSize: 18,
+    marginHorizontal: 25,
     color: "white",
   },
   FAQContainer: {
@@ -68,7 +66,7 @@ const styles = StyleSheet.create({
   },
   item: {
     width: width - 40,
-    borderRadius: 20,
+    borderRadius: 15,
     marginTop: 5,
     marginHorizontal: 20,
     height: 200,
@@ -76,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textHeader: {
-    fontFamily: "pretendard",
+    fontFamily: "pretendard-regular",
     fontSize: 16,
     color: "white",
   },
