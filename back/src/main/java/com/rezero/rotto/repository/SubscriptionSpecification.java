@@ -73,12 +73,12 @@ public class SubscriptionSpecification {
     // 원두 종류에 따른 필터링
     public static Specification<Subscription> filterByBeanType(String beanType) {
         return (root, query, criteriaBuilder) -> {
-            Subquery<Farm> farmSubquery = query.subquery(Farm.class);
+            Subquery<Integer> farmSubquery = query.subquery(Integer.class);
             Root<Farm> farmRoot = farmSubquery.from(Farm.class);
 
 
             // Farm 엔티티와의 관계를 나타내는 서브쿼리를 생성합니다.
-            farmSubquery.select(farmRoot)
+            farmSubquery.select(farmRoot.get("farmCode"))
                     .where(criteriaBuilder.equal(root.get("farmCode"), farmRoot.get("farmCode")),
                             criteriaBuilder.equal(farmRoot.get("farmBeanName"), beanType));
 
