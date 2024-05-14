@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import static com.rezero.rotto.utils.Const.VALID_BEAN_TYPES;
 
 @Service
 @Transactional
@@ -176,7 +177,7 @@ public class FarmServiceImpl implements FarmService {
         if (isLiked != null && !isLiked) {
             return false;
         }
-        // subsStatus 가 null 이 아니면서 0 미만이거나 3 초과다.
+        // subsStatus 가 null 이 아니면서 0 미만이거나 2 초과다.
         if (subsStatus != null && (subsStatus < 0 || subsStatus > 1)) {
             return false;
         }
@@ -184,9 +185,8 @@ public class FarmServiceImpl implements FarmService {
         if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
             return false;
         }
-        List<String> validBeanTypes = Arrays.asList("브라질 산토스", "콜롬비아 수프리모", "자메이카 블루마운틴", "에티오피아 예가체프", "케냐 AA", "코스타리카 따라주",
-                                                    "탄자니아 AA", "예멘 모카 마타리", "하와이 코나", "과테말라 안티구아", "파나마 게이샤", "엘살바도르");
-        // beanType 이 null 이 아니면서 위의 리스트에 포함되지 않는 값이면 false 처리
-        return beanType == null || validBeanTypes.contains(beanType);
+
+        // beanType 이 null 이 아니면서 허용 리스트에 포함되지 않는 값이면 false 처리
+        return beanType == null || VALID_BEAN_TYPES.contains(beanType);
     }
 }
