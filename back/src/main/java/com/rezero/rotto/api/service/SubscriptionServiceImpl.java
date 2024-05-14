@@ -8,16 +8,18 @@ import com.rezero.rotto.entity.Subscription;
 import com.rezero.rotto.entity.User;
 import com.rezero.rotto.repository.FarmRepository;
 import com.rezero.rotto.repository.SubscriptionRepository;
+import com.rezero.rotto.repository.SubscriptionSpecification;
 import com.rezero.rotto.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import static com.rezero.rotto.utils.Const.VALID_BEAN_TYPES;
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -28,15 +30,26 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     private final FarmRepository farmRepository;
 
 
-    public ResponseEntity<?> getSubscriptionList(int userCode){
+    public ResponseEntity<?> getSubscriptionList(int userCode, Integer subsStatus, Integer minPrice, Integer maxPrice, String beanType, String sort, String keyword){
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
-        List<Subscription> subscriptions = subscriptionRepository.findAll();
-        List<SubscriptionListDto> subscriptionListDtos = new ArrayList<>();
+        // 입력값 유효성 검사
+        if (!isValidInput(subsStatus, minPrice, maxPrice, beanType)) {
+            return ResponseEntity.badRequest().body("잘못된 입력값입니다.");
+        }
 
+        Specification<Subscription> spec = Specification.where(null);
+        if (keyword != null) spec = spec.and(SubscriptionSpecification.nameContains(keyword));
+        if (subsStatus != null) spec = spec.and(SubscriptionSpecification.filterBySubscriptionStatus(subsStatus));
+        if (minPrice != null || maxPrice != null) spec = spec.and(SubscriptionSpecification.priceBetween(minPrice, maxPrice));
+        if (beanType != null ) spec = spec.and(SubscriptionSpecification.filterByBeanType(beanType));
+        spec = spec.and(SubscriptionSpecification.applySorting(sort));
+
+        List<Subscription> subscriptions = subscriptionRepository.findAll(spec);
+        List<SubscriptionListDto> subscriptionListDtos = new ArrayList<>();
 
         for (Subscription subscription : subscriptions) {
             Farm farm = farmRepository.findByFarmCode(subscription.getFarmCode());
@@ -46,8 +59,11 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                     .farmName(farm.getFarmName())
                     .confirmPrice(subscription.getConfirmPrice())
                     .applyCount(subscription.getApplyCount())
+                    .startedTime(subscription.getStartedTime())
                     .endTime(subscription.getEndedTime())
                     .limitNum(subscription.getLimitNum())
+                    .beanType(farm.getFarmBeanName())
+                    .returnRate(subscription.getReturnRate())
                     .totalTokenCount(subscription.getTotalTokenCount())
                     .build();
 
@@ -85,5 +101,20 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(subscriptionDetailResponse);
+    }
+
+    private boolean isValidInput(Integer subsStatus, Integer minPrice, Integer maxPrice, String beanType) {
+
+        // subsStatus 가 null 이 아니면서 0 미만이거나 2 초과다.
+        if (subsStatus != null && (subsStatus < 0 || subsStatus > 2)) {
+            return false;
+        }
+        // minPrice 와 maxPrice 가 모두 null 이 아니면서 minPrice 가 maxPrice 보다 크다.
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            return false;
+        }
+
+        // beanType 이 null 이 아니면서 허용 리스트에 포함되지 않는 값이면 false 처리
+        return beanType == null || VALID_BEAN_TYPES.contains(beanType);
     }
 }
