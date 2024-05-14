@@ -58,7 +58,7 @@ public class FarmSpecification {
             // 상태 조건
             Predicate statusPredicate;
             if (subsStatus == 0) { // 청약 예정
-                statusPredicate = criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("startedTime"), criteriaBuilder.currentTimestamp());
+                statusPredicate = criteriaBuilder.greaterThan(subscriptionRoot.get("startedTime"), criteriaBuilder.currentTimestamp());
             } else if (subsStatus == 1) { // 청약 진행 중
                 statusPredicate = criteriaBuilder.and(
                         criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
@@ -161,11 +161,7 @@ public class FarmSpecification {
                 Root<Subscription> subscriptionRoot = priceSubquery.from(Subscription.class);
                 priceSubquery.select(subscriptionRoot.get("confirmPrice"));
                 priceSubquery.where(
-                        criteriaBuilder.and(
-                                criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode")),
-                                criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
-                                criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
-                        )
+                        criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode"))
                 );
                 if ("highPrice".equals(sort)) {
                     // 가격 높은 순으로 정렬
