@@ -41,4 +41,7 @@ public class TradeHistory {
 
 	@Column(name = "refund")
 	private int refund;
+
+	@Column(name = "bc_address")
+	private String bcAddress;
 }
