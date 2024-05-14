@@ -112,16 +112,23 @@ public class SubscriptionSpecification {
                     applyHistoryCountSubquery.where(criteriaBuilder.equal(root.get("subscriptionCode"), applyHistoryRoot.get("subscriptionCode")));
 
                     // 총 신청내역 갯수를 반환합니다.
-                    Expression<Long> applyHistoryCount = applyHistoryCountSubquery.getSelection();
+                    Subquery<Double> totalAmountSubquery = query.subquery(Double.class);
+                    Root<ApplyHistory> totalAmountRoot = totalAmountSubquery.from(ApplyHistory.class);
+                    totalAmountSubquery.select(criteriaBuilder.sum(totalAmountRoot.get("applyCount")));
+
+                    // Subscription 엔티티와 ApplyHistory 엔티티의 관계를 나타내는 서브쿼리를 생성합니다.
+                    totalAmountSubquery.where(criteriaBuilder.equal(root.get("subscriptionCode"), totalAmountRoot.get("subscriptionCode")));
 
                     // 총 발행토큰 수를 반환합니다.
+                    Expression<Double> totalAmount = totalAmountSubquery.getSelection();
                     Expression<Double> totalTokenCount = root.get("totalTokenCount");
 
                     // 퍼센테이지를 계산합니다.
-                    Expression<Number> percentage = criteriaBuilder.quot(applyHistoryCount, totalTokenCount);
+                    Expression<Number> percentage = criteriaBuilder.quot(totalAmount, totalTokenCount);
 
                     // 최종 결과를 퍼센테이지 순으로 정렬합니다.
                     query.orderBy(criteriaBuilder.desc(percentage));
+
                 }
             }
 
