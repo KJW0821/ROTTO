@@ -92,11 +92,11 @@ const HomeScreen = ({ navigation }) => {
         />
       </View> */}
       <ScrollView style={styles.container}>
-      <FaqBanner/>
-      <MyDeposit />
         <MyBanner />
+        <MyDeposit />
+        <FaqBanner />
         <View style={styles.infoContainer}>
-          <FarmILike/>
+          <FarmILike />
           <FarmNews />
         </View>
       </ScrollView>

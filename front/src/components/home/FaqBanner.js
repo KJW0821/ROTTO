@@ -19,7 +19,7 @@ const FaqBanner = () => {
 
   return (
     <View style={styles.FAQContainer}>
-        {/* <Text
+      {/* <Text
         style={[
             styles.header,
             {
@@ -27,45 +27,31 @@ const FaqBanner = () => {
             },
           ]}
         >FAQ</Text> */}
-        <TouchableOpacity onPress={() => Navigation.navigate("faqscreen")}>
-            <View
-            style={[
-                styles.item,
-                {
-                  backgroundColor: "#4E4E4E",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  height: 100
-                },
-              ]}
-            >
-            
-            <View>
-                <Text
-                style={[
-                    styles.textHeader,
-                  ]}
-                >
-                    투자공시
-                </Text>
-                <Text
-                style={[
-                    styles.text,
-                  ]}
-                >
-                    청약 신청 방법은 어떻게 되나요?
-                </Text>
-            </View>
-            <View>
-            <Image
-                source={require("../../../assets/images/farmfarm.png")}
-                style={{ width: 90, height: 90, resizeMode: "contain" }}
-              />
-            </View>
-
-            </View>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={() => Navigation.navigate("faqscreen")}>
+        <View
+          style={[
+            styles.item,
+            {
+              backgroundColor: "#4E4E4E",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              height: 100,
+            },
+          ]}
+        >
+          <Image
+            source={require("../../../assets/images/farmfarm.png")}
+            style={{ width: 90, height: 90, resizeMode: "contain", flex: 1 }}
+          />
+          <View
+          style={{flex: 2}}
+          >
+            <Text style={[styles.textHeader]}>투자공시</Text>
+            <Text style={[styles.text]}>청약 신청 방법은 어떻게 되나요?</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -74,7 +60,7 @@ const styles = StyleSheet.create({
   header: {
     fontFamily: "pretendard-extraBold",
     fontSize: 23,
-    color: "white"
+    color: "white",
   },
   FAQContainer: {
     marginTop: 10,
@@ -90,14 +76,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textHeader: {
-    marginLeft:20,
     fontFamily: "pretendard",
     fontSize: 16,
     color: "white",
   },
   text: {
-    marginLeft:20,
-    fontFamily: "pretendard-Bold",
+    fontFamily: "pretendard-bold",
     fontSize: 18,
     color: "white",
   },

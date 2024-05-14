@@ -25,6 +25,7 @@ const MyBanner = () => {
 
   return (
     <View style={styles.carouselContainer}>
+      <Text style={styles.header}>공지사항</Text>
       <ScrollView
         horizontal={true}
         pagingEnabled={true}
@@ -58,6 +59,7 @@ const MyBanner = () => {
               <View
                 style={[
                   {
+                    flex: 1,
                     alignItems: "center",
                     marginHorizontal: 10,
                   },
@@ -68,7 +70,7 @@ const MyBanner = () => {
               </View>
               <Image
                 source={require("../../../assets/images/farmfarm.png")}
-                style={{ width: 150, height: 150, resizeMode: "contain" }}
+                style={{ width: 140, height: 140, resizeMode: "contain", flex:1 }}
               />
             </View>
             <View style={styles.indicatorContainer}>
@@ -170,7 +172,12 @@ const MyBanner = () => {
               </View>
               <Image
                 source={require("../../../assets/images/farmfarm.png")}
-                style={{ width: 160, height: 160, resizeMode: "contain", marginLeft:30}}
+                style={{
+                  width: 160,
+                  height: 160,
+                  resizeMode: "contain",
+                  marginLeft: 30,
+                }}
               />
             </View>
             <View style={styles.indicatorContainer}>
@@ -186,7 +193,6 @@ const MyBanner = () => {
             </View>
           </View>
         </TouchableOpacity>
-
       </ScrollView>
     </View>
   );
@@ -195,8 +201,9 @@ const MyBanner = () => {
 const styles = StyleSheet.create({
   header: {
     fontFamily: "pretendard-extraBold",
-    fontSize: 23,
-    paddingBottom: 20,
+    fontSize: 18,
+    marginHorizontal: 25,
+    color: "white",
   },
   carouselContainer: {
     // 새로운 스타일
@@ -208,7 +215,7 @@ const styles = StyleSheet.create({
   },
   item: {
     width: width - 40,
-    borderRadius: 25,
+    borderRadius: 15,
     marginTop: 10,
     marginHorizontal: 20,
     height: 160,
@@ -217,11 +224,11 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: "pretendard-extraBold",
-    fontSize: 28,
+    fontSize: 22,
     color: "white",
   },
   indicatorContainer: {
-    marginLeft:10,
+    marginLeft: 10,
     position: "absolute",
     bottom: 10,
     left: 20, // 왼쪽 아래 정렬을 위해 변경
