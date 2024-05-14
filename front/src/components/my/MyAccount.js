@@ -5,19 +5,19 @@ import { MaterialIcons } from '@expo/vector-icons';
 import CustomButton from '../common/CustomButton';
 import Colors from '../../constants/Colors';
 import { useFocusEffect } from '@react-navigation/native';
-import { setTransactionMode } from '../../stores/mySlice';
-import { useDispatch } from 'react-redux';
+import { setFundingAccount, setTransactionMode } from '../../stores/mySlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const MyAccount = ({navigation, detail}) => {
   const dispatch = useDispatch();
-  const [fundingAccount, setFundingAccount] = useState();
+  const fundingAccount = useSelector(state => state.myPageInfo.fundingAccount);
 
   useFocusEffect(
     useCallback(() => {
       const getFundingAccount = async () => {
         const res = await getAccountInfo();
         console.log(res)
-        setFundingAccount(res);
+        dispatch(setFundingAccount(res));
       };
       
       getFundingAccount();
