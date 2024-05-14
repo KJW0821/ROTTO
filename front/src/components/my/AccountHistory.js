@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, TouchableWithoutFeedback } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
@@ -35,7 +35,7 @@ const AccountHistory = () => {
     const sections = {};
 
     data.forEach((el) => {
-      const date = dayjs(el.accountTime).subtract(9, 'hour').format("YYYY년 MM월 DD일");
+      const date = dayjs(el.accountTime).add(9, 'hour').format("YYYY년 MM월 DD일");
       if (sections[date]) {
         sections[date].push(el);
       } else {
@@ -65,6 +65,31 @@ const AccountHistory = () => {
         </Pressable>
         <Ionicons name="reload" size={24} color={Colors.fontGray} />
       </View>
+      <ScrollView>
+        {
+          Object.entries(sections).map(([day, content]) => (
+            <View key={day}>
+              <Text>{day}</Text>
+              {
+                content.map((el) => (
+                  <View key={el.accountTime}>
+                    <View>
+                      <FontAwesome name="won" size={24} color="white" />
+                    </View>
+                    <View>
+                      <Text>{el.transferName}</Text>
+                      <Text>{dayjs(el.accountTime).add(9, 'hour').format("HH:mm")}</Text>
+                    </View>
+                    <View>
+                      <Text>{el.depositOrWithdrawal === 1 ? '+' : '-'}{el.amount.toLocaleString('ko-KR')} 원</Text>
+                    </View>
+                  </View>
+                ))
+              }
+            </View>
+          ))
+        }
+      </ScrollView>
       <FilterModal />
     </View>
   )
@@ -76,7 +101,8 @@ const styles = StyleSheet.create({
   container: {
     width: '90%',
     gap: 16,
-    paddingTop: 12
+    paddingTop: 12,
+    flex: 1
   },
   filterContainer: {
     flexDirection: 'row',

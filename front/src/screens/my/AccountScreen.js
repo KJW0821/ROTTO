@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import DetailTopBar from '../../components/common/DetailTopBar';
 import MyAccount from '../../components/my/MyAccount';
 import ConnectedAccount from '../../components/my/ConnectedAccount';
+import AccountHistory from '../../components/my/AccountHistory';
 
 const AccountScreen = ({navigation}) => {
   return (
@@ -10,6 +11,7 @@ const AccountScreen = ({navigation}) => {
       <View style={styles.innerContainer}>
         <MyAccount navigation={navigation} detail={true} />
         <ConnectedAccount navigation={navigation} />
+        <AccountHistory />
       </View>
     </View>
   )
@@ -26,6 +28,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     width: '100%',
     gap: 16,
-    alignItems: 'center'
+    alignItems: 'center',
+    flex: 1
   }
 });
