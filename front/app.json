@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "front",
+    "name": "rotto",
     "scheme": "rotto",
-    "slug": "front",
+    "slug": "rotto",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/skyIcon.png",
