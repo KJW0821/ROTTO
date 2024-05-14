@@ -3,13 +3,11 @@ package com.rezero.rotto.api.service;
 import com.rezero.rotto.dto.dto.SubscriptionListDto;
 import com.rezero.rotto.dto.response.SubscriptionDetailResponse;
 import com.rezero.rotto.dto.response.SubscriptionListResponse;
+import com.rezero.rotto.entity.ApplyHistory;
 import com.rezero.rotto.entity.Farm;
 import com.rezero.rotto.entity.Subscription;
 import com.rezero.rotto.entity.User;
-import com.rezero.rotto.repository.FarmRepository;
-import com.rezero.rotto.repository.SubscriptionRepository;
-import com.rezero.rotto.repository.SubscriptionSpecification;
-import com.rezero.rotto.repository.UserRepository;
+import com.rezero.rotto.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,6 +24,7 @@ import static com.rezero.rotto.utils.Const.VALID_BEAN_TYPES;
 public class SubscriptionServiceImpl implements SubscriptionService{
 
     private final SubscriptionRepository subscriptionRepository;
+    private final ApplyHistoryRepository applyHistoryRepository;
     private final UserRepository userRepository;
     private final FarmRepository farmRepository;
 
@@ -53,12 +52,15 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
         for (Subscription subscription : subscriptions) {
             Farm farm = farmRepository.findByFarmCode(subscription.getFarmCode());
+            int subscriptionCode = subscription.getSubscriptionCode();
+            Integer applyCount = applyHistoryRepository.sumApplyCountBySubscriptionCode(subscriptionCode);
+            applyCount = (applyCount != null) ? applyCount : 0;
             SubscriptionListDto subscriptionListDto = SubscriptionListDto.builder()
-                    .subscriptionCode(subscription.getSubscriptionCode())
+                    .subscriptionCode(subscriptionCode)
                     .farmCode(farm.getFarmCode())
                     .farmName(farm.getFarmName())
                     .confirmPrice(subscription.getConfirmPrice())
-                    .applyCount(subscription.getApplyCount())
+                    .applyCount(applyCount)
                     .startedTime(subscription.getStartedTime())
                     .endTime(subscription.getEndedTime())
                     .limitNum(subscription.getLimitNum())

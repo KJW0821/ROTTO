@@ -20,7 +20,7 @@ public class SubscriptionListDto {
     private String beanType;
     private int limitNum;
     private int returnRate;
-    private int applyCount;
+    private Integer applyCount;
     private int totalTokenCount;
 
 }
