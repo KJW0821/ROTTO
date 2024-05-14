@@ -2,10 +2,14 @@ import { View, Text, StyleSheet, Alert } from 'react-native';
 import DetailTopBar from '../../components/common/DetailTopBar';
 import { useEffect, useState } from 'react';
 import { chargeAccount as charge } from '../../utils/accountApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { setTransactionMode } from '../../stores/mySlice';
 
-const SuccessChargeScreen = ({navigation, route}) => {
+const TransactionResultScreen = ({navigation, route}) => {
   const transactionBalance = route.params.amount;
-  
+  const transactionMode = useSelector(state => state.myPageInfo.transactionMode);
+  const dispatch = useDispatch();
+
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -14,6 +18,7 @@ const SuccessChargeScreen = ({navigation, route}) => {
       const res = await charge({ transactionBalance });
       if (res.status !== 200) {
         setIsLoading(true);
+        dispatch(setTransactionMode(null));
         return Alert.alert('거래가 실패했습니다.', '', [{
           text: '돌아가기',
           onPress: () => navigation.navigate('mypage')
@@ -21,10 +26,15 @@ const SuccessChargeScreen = ({navigation, route}) => {
       } else {
         setIsLoading(true);
         setIsSuccess(true);
+        dispatch(setTransactionMode(null));
       }
     };
 
-    chargeAccount();
+    if (transactionMode === 'charge') {
+      chargeAccount();
+    } else {
+
+    }
   }, [navigation])
 
   return (
@@ -44,7 +54,7 @@ const SuccessChargeScreen = ({navigation, route}) => {
   )
 }
 
-export default SuccessChargeScreen;
+export default TransactionResultScreen;
 
 const styles = StyleSheet.create({
   container: {

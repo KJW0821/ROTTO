@@ -22,7 +22,7 @@ const BioAuthScreen = ({navigation, route}) => {
   
           if (bioAuth.success) {
             console.log('생체 인증 성공');
-            navigation.navigate('successCharge', { amount });
+            navigation.navigate('transactionResult', { amount });
           } else if (bioAuth.error === 'user_cancel') {
             navigation.goBack();
           }

@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TextInput } from 'react-native';
 import DetailTopBar from '../../components/common/DetailTopBar';
 import { getRealAccountInfo } from '../../utils/accountApi';
 import { useDispatch, useSelector } from 'react-redux';
-import { setConnectedAccount } from '../../stores/mySlice';
+import { setConnectedAccount, setTransactionMode } from '../../stores/mySlice';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import Colors from '../../constants/Colors';
@@ -31,6 +31,7 @@ const ChargeScreen = ({navigation}) => {
   };
 
   const chargeAccount = () => {
+    dispatch(setTransactionMode('charge'));
     navigation.navigate('transactionBioAuth', { amount });
   };
   
