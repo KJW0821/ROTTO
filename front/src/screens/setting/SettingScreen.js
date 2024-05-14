@@ -101,12 +101,7 @@ const SettingScreen = ({navigation}) => {
           <Text style={styles.subTitle}>보안</Text>
           <Pressable 
             style={styles.menuContainer} 
-            onPress={() => navigation.navigate('bioAuth', { 
-              destination: '설정', 
-              subDestination: 'passwordChange',
-              cancelDestination: '설정',
-              cancelSubDestination: 'setting'
-            })}
+            onPress={() => navigation.navigate('bioAuth')}
           >
             <Text style={styles.menuText}>비밀번호 변경</Text>
           </Pressable>
