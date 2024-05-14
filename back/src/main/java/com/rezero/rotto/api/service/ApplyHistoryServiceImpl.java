@@ -220,18 +220,25 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
                 applyHistory.setIsDelete(1);
                 applyHistoryRepository.save(applyHistory);
 
-            return ResponseEntity.status(HttpStatus.OK).body(applyHistory);
+                AccountHistory accountHistory = new AccountHistory();
+                accountHistory.setAccountCode(userAccount.getAccountCode());
+                accountHistory.setAmount(applyCountBalance);
+                accountHistory.setAccountTime(now);
+                accountHistory.setDepositWithdrawalCode(1);
+
+                return ResponseEntity.status(HttpStatus.OK).body(applyHistory);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("금융망 API 실패");
+            }
+
         }
-
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("신청기간이 아닙니다.");
-
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("신청기간이 아닙니다.");
     }
 
     @Override
     public ResponseEntity<?> getApply(int userCode) {
         User user = userRepository.findByUserCode(userCode);
-        LocalDateTime now = LocalDateTime.now();
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
