@@ -1,27 +1,23 @@
 package com.rezero.rotto.api.service;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.rezero.rotto.dto.dto.ApplyHistoryListCancelDto;
 import com.rezero.rotto.dto.dto.ApplyHistoryListGetDto;
 import com.rezero.rotto.dto.response.ApplyHistoryListCancelResponse;
 import com.rezero.rotto.dto.response.ApplyHistoryListGetResponse;
-import com.rezero.rotto.entity.ApplyHistory;
-import com.rezero.rotto.entity.Farm;
-import com.rezero.rotto.entity.Subscription;
-import com.rezero.rotto.entity.User;
-import com.rezero.rotto.repository.ApplyHistoryRepository;
-import com.rezero.rotto.repository.FarmRepository;
-import com.rezero.rotto.repository.SubscriptionRepository;
-import com.rezero.rotto.repository.UserRepository;
+import com.rezero.rotto.entity.*;
+import com.rezero.rotto.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,62 +28,197 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
     private final UserRepository userRepository;
     private final SubscriptionRepository subscriptionRepository;
     private final FarmRepository farmRepository;
+    private final AccountRepository accountRepository;
+    private final AccountHistoryRepository accountHistoryRepository;
 
 
     @Override
     public ResponseEntity<?> postApply(int userCode, int subscriptionCode, int applyCount) {
         User user = userRepository.findByUserCode(userCode);
-        LocalDateTime now = LocalDateTime.now();
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
         ApplyHistory applyHistory = new ApplyHistory();
         Subscription subscription = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
+        Account userAccount = accountRepository.findByUserCodeAndAccountType(userCode, 0);
 
+        int applyBalance = subscription.getConfirmPrice() * applyCount;
         int limitNum = subscription.getLimitNum();
         LocalDateTime startedTime = subscription.getStartedTime();
         LocalDateTime endedTime = subscription.getEndedTime();
 
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
+
         // 현재 시간이 시작 시간과 종료 시간 사이에 있는지 확인합니다.
         if (!now.isBefore(startedTime) && !now.isAfter(endedTime) && applyCount <= limitNum) {
+
+            if (userAccount.getBalance() < applyCount * subscription.getConfirmPrice()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잔액이 부족합니다.");
+            }
+
+            // 날짜와 시간 포맷
+            String formattedDate = now.format(dateFormatter);
+            String formattedTime = now.format(timeFormatter);
+
+            // 랜덤 6자리 일련번호 생성
+            Random random = new Random();
+            int randomNumber = random.nextInt(999999); // 0에서 999999까지의 난수 생성
+            String formattedRandomNumber = String.format("%06d", randomNumber); // 난수를 6자리 문자열로 포맷팅
+
+            // 기관 거래 고유 번호 생성
+            String institutionTransactionUniqueNo = formattedDate + formattedTime + formattedRandomNumber;
+
+            Map<String, Object> headerMap = new HashMap<>();
+            headerMap.put("apiName", "accountTransfer");
+            // 요청날짜
+            headerMap.put("transmissionDate", formattedDate);
+            headerMap.put("transmissionTime", formattedTime);
+            // 기관코드 고정
+            headerMap.put("institutionCode", "00100");
+            //핀테크 앱 고정
+            headerMap.put("fintechAppNo", "001");
+            headerMap.put("apiServiceCode", "accountTransfer");
+            // 기관 거래 고유 번호 : 새로운 번호로 임의 채번 (YYYYMMDD + HHMMSS + 일련번호 6자리) 또는 20자리의 난수
+            headerMap.put("institutionTransactionUniqueNo", institutionTransactionUniqueNo);
+            // 개발자 키
+            headerMap.put("apiKey", "2afacf41e60a4482b5c4997d194a46f0");
+            // 계정생성해야함 -> 회원가입시 이메일을 작성하면 생성됨
+            headerMap.put("userKey", user.getUserKey());
+
+
+            Map<String, Object> bodyMap = new HashMap<>();
+            bodyMap.put("Header", headerMap);
+            // 은행코드(은행이름으로 불리는 코드)
+            bodyMap.put("depositBankCode", "001");
+            bodyMap.put("depositAccountNo", "0015553944459869");
+            bodyMap.put("depositTransactionSummary", "입금이체 계좌");
+            bodyMap.put("transactionBalance", applyBalance);
+            bodyMap.put("withdrawalBankCode", userAccount.getBankName());
+            bodyMap.put("withdrawalAccountNo", userAccount.getAccountNum());
+            bodyMap.put("withdrawalTransactionSummary", "출금이체 계좌");
+
+
+            try {
+                JsonNode jsonNode = WebClient.create("https://finapi.p.ssafy.io")
+                        .post()
+                        .uri("/ssafy/api/v1/edu/account/accountTransfer")
+                        .bodyValue(bodyMap) // 구성한 Map을 bodyValue에 전달
+                        .retrieve()
+                        .bodyToMono(JsonNode.class)
+                        .block();
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+
             // 범위안에 있을 때
             applyHistory.setUserCode(userCode);
             applyHistory.setSubscriptionCode(subscriptionCode);
-            applyHistory.setIsDelete(1);
+            applyHistory.setIsDelete(0);
             applyHistory.setApplyTime(now);
             applyHistory.setApplyCount(applyCount);
             applyHistoryRepository.save(applyHistory);
 
+
+            AccountHistory accountHistory = new AccountHistory();
+            accountHistory.setAccountCode(userAccount.getAccountCode());
+            accountHistory.setAmount(applyBalance);
+            accountHistory.setAccountTime(now);
+            accountHistory.setDepositWithdrawalCode(2);
+
+
             return ResponseEntity.status(HttpStatus.OK).body(applyHistory);
         }
-
-
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("신청기간이 아닙니다.");
-
-
-
     }
 
     @Override
     public ResponseEntity<?> deleteApply(int userCode, int subscriptionCode) {
         User user = userRepository.findByUserCode(userCode);
-        LocalDateTime now = LocalDateTime.now();
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
         ApplyHistory applyHistory = applyHistoryRepository.findByUserCodeAndSubscriptionCode(userCode, subscriptionCode);
-        Subscription subscription = subscriptionRepository.findBySubscriptionCode(applyHistory.getSubscriptionCode());
+        if (applyHistory == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("신청내역이 없습니다.");
+        }
+
+        Subscription subscription = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
+        Account userAccount = accountRepository.findByUserCodeAndAccountType(userCode, 0);
+
+        int applyCountBalance = subscription.getConfirmPrice() * applyHistory.getApplyCount();
+
 
         LocalDateTime startedTime = subscription.getStartedTime();
         LocalDateTime endedTime = subscription.getEndedTime();
 
+        LocalDateTime now = LocalDateTime.now();
+
         // 현재 시간이 시작 시간과 종료 시간 사이에 있는지 확인합니다.
         if (!now.isBefore(startedTime) && !now.isAfter(endedTime)) {
-            // 범위안에 있을 때
-            applyHistory.setIsDelete(0);
-            applyHistoryRepository.save(applyHistory);
+
+            // 랜덤 6자리 일련번호 생성
+            Random random = new Random();
+            int randomNumber = random.nextInt(999999); // 0에서 999999까지의 난수 생성
+            String formattedRandomNumber = String.format("%06d", randomNumber); // 난수를 6자리 문자열로 포맷팅
+
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
+
+            // 날짜와 시간 포맷
+            String formattedDate = now.format(dateFormatter);
+            String formattedTime = now.format(timeFormatter);
+
+            // 기관 거래 고유 번호 생성
+            String institutionTransactionUniqueNo = formattedDate + formattedTime + formattedRandomNumber;
+
+            Map<String, Object> headerMap = new HashMap<>();
+            headerMap.put("apiName", "accountTransfer");
+            // 요청날짜
+            headerMap.put("transmissionDate", formattedDate);
+            headerMap.put("transmissionTime", formattedTime);
+            // 기관코드 고정
+            headerMap.put("institutionCode", "00100");
+            //핀테크 앱 고정
+            headerMap.put("fintechAppNo", "001");
+            headerMap.put("apiServiceCode", "accountTransfer");
+            // 기관 거래 고유 번호 : 새로운 번호로 임의 채번 (YYYYMMDD + HHMMSS + 일련번호 6자리) 또는 20자리의 난수
+            headerMap.put("institutionTransactionUniqueNo", institutionTransactionUniqueNo);
+            // 개발자 키
+            headerMap.put("apiKey", "2afacf41e60a4482b5c4997d194a46f0");
+            //
+            headerMap.put("userKey", "6c055b7e-b452-4e4a-ad20-b9533ed9e307");
+
+
+            Map<String, Object> bodyMap = new HashMap<>();
+            bodyMap.put("Header", headerMap);
+            // 은행코드(은행이름으로 불리는 코드)
+            bodyMap.put("depositBankCode", userAccount.getBankName());
+            bodyMap.put("depositAccountNo", userAccount.getAccountNum());
+            bodyMap.put("depositTransactionSummary", "입금이체 계좌");
+            bodyMap.put("transactionBalance", applyCountBalance);
+            // 관리자 계좌에서 빠져나감
+            bodyMap.put("withdrawalBankCode", "001");
+            bodyMap.put("withdrawalAccountNo", "0015553944459869");
+            bodyMap.put("withdrawalTransactionSummary", "출금이체 계좌");
+
+            try {
+                JsonNode jsonNode = WebClient.create("https://finapi.p.ssafy.io")
+                        .post()
+                        .uri("/ssafy/api/v1/edu/account/accountTransfer")
+                        .bodyValue(bodyMap) // 구성한 Map을 bodyValue에 전달
+                        .retrieve()
+                        .bodyToMono(JsonNode.class)
+                        .block();
+
+                // 범위안에 있을 때
+                applyHistory.setIsDelete(1);
+                applyHistoryRepository.save(applyHistory);
 
             return ResponseEntity.status(HttpStatus.OK).body(applyHistory);
         }
@@ -122,6 +253,7 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
                     .applyTime(applyHistory.getApplyTime())
                     .startedTime(subscription.getStartedTime())
                     .endedTime(subscription.getEndedTime())
+                    .applyCount(applyHistory.getApplyCount())
                     .build();
 
             applyHistoryListDtos.add(applyHistoryListDto);
@@ -137,6 +269,7 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
     @Override
     public ResponseEntity<?> getApplyTerminated(int userCode) {
         User user = userRepository.findByUserCode(userCode);
+        LocalDateTime now = LocalDateTime.now();
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
