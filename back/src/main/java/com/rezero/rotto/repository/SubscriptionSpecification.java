@@ -103,7 +103,7 @@ public class SubscriptionSpecification {
                 if ("deadline".equals(sort)) {
                     query.orderBy(criteriaBuilder.desc(root.get("endedTime")));
                 // sort = highApplyPercent. 신청률 높은 순
-                } else {
+                } else if ("highApplyPercent".equals(sort)) {
                     Subquery<Long> applyHistoryCountSubquery = query.subquery(Long.class);
                     Root<ApplyHistory> applyHistoryRoot = applyHistoryCountSubquery.from(ApplyHistory.class);
                     applyHistoryCountSubquery.select(criteriaBuilder.count(applyHistoryRoot));
@@ -128,8 +128,15 @@ public class SubscriptionSpecification {
 
                     // 최종 결과를 퍼센테이지 순으로 정렬합니다.
                     query.orderBy(criteriaBuilder.desc(percentage));
-
                 }
+            // 가격 높은순으로 정렬
+            } else if ("highPrice".equals(sort)) {
+                query.orderBy(criteriaBuilder.desc(root.get("confirmPrice")));
+            // 가격 낮은순으로 정렬
+            } else if ("lowPrice".equals(sort)) {
+                query.orderBy(criteriaBuilder.asc(root.get("confirmPrice")));
+            // 기본 정렬
+            } else {
             }
 
             return query.getRestriction();
