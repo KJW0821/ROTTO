@@ -8,6 +8,9 @@ import { useCallback } from 'react';
 const BioAuthScreen = ({navigation, route}) => {
   const destination = route.params.destination;
   const subDestination = route.params.subDestination;
+  const cancelDestination = route.params.cancelDestination;
+  const cancelSubDestination = route.params.cancelSubDestination;
+  
 
   useFocusEffect(
     useCallback(() => {
@@ -17,7 +20,6 @@ const BioAuthScreen = ({navigation, route}) => {
         if (isEnabled) {
           const bioAuth = await LocalAuthentication.authenticateAsync({
             promptMessage: '생체 인증 진행',
-            cancelLabel: '취소',
             fallbackLabel: '비밀번호 입력',
             disableDeviceFallback: false
           });
@@ -27,22 +29,17 @@ const BioAuthScreen = ({navigation, route}) => {
             navigation.navigate(destination, {
               screen: subDestination
             });
-          } else if (bioAuth.error === 'user_fallback') {
-            navigation.navigate('pinAuth', {
-              destination: '설정',
-              subDestination: 'passwordChange'
-            });
-          } else {
-            console.log('생체 인증 실패');
-            navigation.navigate('pinAuth', {
-              destination: '설정',
-              subDestination: 'passwordChange'
+          } else if (bioAuth.error === 'user_cancel') {
+            navigation.navigate(cancelDestination, {
+              screen: cancelSubDestination
             });
           }
         } else {
           navigation.navigate('pinAuth', {
-            destination: '설정',
-            subDestination: 'passwordChange'
+            destination,
+            subDestination,
+            cancelDestination,
+            cancelSubDestination
           });
         }
       };
