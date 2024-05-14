@@ -5,7 +5,9 @@ const initialState = {
   isBankModalOpen: false,
   selectedBank: null,
   connectedAccount: null,
-  transactionMode: null
+  transactionMode: null,
+  isFilterModalOpen: null,
+  selectedFilter: '전체'
 }
 
 export const mySlice = createSlice({
@@ -26,10 +28,24 @@ export const mySlice = createSlice({
     },
     setTransactionMode: (state, action) => {
       state.transactionMode = action.payload;
+    },
+    setFilterModal: (state, action) => {
+      state.isFilterModalOpen = action.payload;
+    },
+    setSelectedFilter: (state,action) => {
+      state.selectedFilter = action.payload;
     }
   }
 });
 
-export const { setWalletModal, setBankModal, setSelectedBank, setConnectedAccount, setTransactionMode } = mySlice.actions;
+export const { 
+  setWalletModal, 
+  setBankModal, 
+  setSelectedBank, 
+  setConnectedAccount, 
+  setTransactionMode, 
+  setFilterModal,
+  setSelectedFilter
+} = mySlice.actions;
 
 export default mySlice.reducer;
