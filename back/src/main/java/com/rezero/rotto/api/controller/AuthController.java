@@ -194,7 +194,7 @@ public class AuthController {
                     content = @Content(schema = @Schema(implementation = DecryptResponse.class))),
             @ApiResponse(responseCode = "500", description = "실패")
     })
-    @GetMapping("/decrypt")
+    @PostMapping("/decrypt")
     public ResponseEntity<?> decrypt(@RequestBody DecryptRequest request) {
         try {
             String requestPhoneNum = request.getPhoneNum();
