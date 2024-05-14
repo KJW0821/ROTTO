@@ -5,8 +5,11 @@ import { MaterialIcons } from '@expo/vector-icons';
 import CustomButton from '../common/CustomButton';
 import Colors from '../../constants/Colors';
 import { useFocusEffect } from '@react-navigation/native';
+import { setTransactionMode } from '../../stores/mySlice';
+import { useDispatch } from 'react-redux';
 
 const MyAccount = ({navigation, detail}) => {
+  const dispatch = useDispatch();
   const [fundingAccount, setFundingAccount] = useState();
 
   useFocusEffect(
@@ -44,11 +47,24 @@ const MyAccount = ({navigation, detail}) => {
             <CustomButton 
               style={{ width: detail ? '48%' : '16%', height: detail ? 30 : 24 }} 
               fontFamily='pretendard-medium'
-              onPress={() => navigation.navigate('charge')}
+              onPress={() => {
+                dispatch(setTransactionMode('charge'));
+                navigation.navigate('transaction');
+              }}
             >
               채우기
             </CustomButton>
-            <CustomButton style={{ width: detail ? '48%' : '16%', height: detail ? 30 : 24 }} fontFamily='pretendard-medium' btnColor='black'>보내기</CustomButton>
+            <CustomButton 
+              style={{ width: detail ? '48%' : '16%', height: detail ? 30 : 24 }} 
+              fontFamily='pretendard-medium' 
+              btnColor='black'
+              onPress={() => {
+                dispatch(setTransactionMode('send'));
+                navigation.navigate('transaction');
+              }}
+            >
+              보내기
+            </CustomButton>
           </View>
         </>
       }

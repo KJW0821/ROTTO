@@ -2,15 +2,16 @@ import { View, Text, StyleSheet, TextInput } from 'react-native';
 import DetailTopBar from '../../components/common/DetailTopBar';
 import { getRealAccountInfo } from '../../utils/accountApi';
 import { useDispatch, useSelector } from 'react-redux';
-import { setConnectedAccount, setTransactionMode } from '../../stores/mySlice';
+import { setConnectedAccount } from '../../stores/mySlice';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import Colors from '../../constants/Colors';
 import CustomButton from '../../components/common/CustomButton';
 
-const ChargeScreen = ({navigation}) => {
+const TransactionScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const connectedAccount = useSelector(state => state.myPageInfo.connectedAccount);
+  const transactionMode = useSelector(state => state.myPageInfo.transactionMode);
 
   const [amount, setAmount] = useState(0);
 
@@ -30,19 +31,18 @@ const ChargeScreen = ({navigation}) => {
     setAmount(enteredText);
   };
 
-  const chargeAccount = () => {
-    dispatch(setTransactionMode('charge'));
+  const transactionHandler = () => {
     navigation.navigate('transactionBioAuth', { amount });
   };
   
   return (
     <View style={styles.container}>
-      <DetailTopBar title='채우기' navigation={navigation} />
+      <DetailTopBar title={transactionMode === 'charge' ? '채우기' : '보내기'} navigation={navigation} />
       <View style={styles.innerContainer}>
         <View style={styles.inputContainer}>
           <TextInput 
             style={styles.inputText}
-            placeholder='얼마나 채울까요?'
+            placeholder={transactionMode === 'charge' ? '얼마나 채울까요?' : '얼마나 보낼까요?'}
             keyboardType='number-pad'
             onChangeText={amountHandler}
             value={amount}
@@ -50,18 +50,18 @@ const ChargeScreen = ({navigation}) => {
           <Text style={styles.unitText}>원</Text>
         </View>
         {
-          connectedAccount &&
+          connectedAccount && transactionMode === 'charge' &&
           <View>
             <Text style={styles.balance}>최대 가능 금액: {connectedAccount.accountBalance}원</Text>
           </View>
         }
-        <CustomButton onPress={chargeAccount}>채우기</CustomButton>
+        <CustomButton onPress={transactionHandler}>{ transactionMode === 'charge' ? '채우기' : '보내기'}</CustomButton>
       </View>
     </View>
   )
 }
 
-export default ChargeScreen;
+export default TransactionScreen;
 
 const styles = StyleSheet.create({
   container: {
