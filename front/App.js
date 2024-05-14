@@ -49,23 +49,6 @@ const metadata = {
   },
 };
 
-// const ssafy = defineChain({
-//   id: 31221,
-//   network: 'ssafy',
-//   // name: 'ssafy',
-//   nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-//   rpcUrls: {
-//     public: {
-//       http: ['https://rpc.ssafy-blockchain.com']
-//     },
-//   }
-  // contracts: {
-  //   ensRegistry: {
-  //     address: '0x85c41a930ddEc0f37BAED79BEd3047Af190c4f98'
-  //   }
-  // }
-// });
-// 
 const chains = [mainnet];
 
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
@@ -74,7 +57,6 @@ const { publicClient } = configureChains(
   [customChain],
   [jsonRpcProvider({ rpc: () => ({ http: customChain.rpcUrls.public.http }) })]
 );
-
 
 createConfig({
   autoConnect: true,
@@ -86,11 +68,6 @@ createWeb3Modal({
   chains,
   wagmiConfig,
   enableAnalytics: true
-  // tokens: {
-  //   31221: {
-  //     address: "0x85c41a930ddEc0f37BAED79BEd3047Af190c4f98",
-  //   },
-  // },
 });
 
 export default function App() {

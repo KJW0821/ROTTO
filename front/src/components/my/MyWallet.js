@@ -15,12 +15,7 @@ const MyWallet = () => {
   const { disconnect } = useDisconnect();
 
   const { address, isConnected, isDisconnected } = useAccount();
-  // const { data, isLoading } = useBalance({ address, chainId: 1, watch: true });
-  // const { data, isLoading } = useBalance({ address: "0x85c41a930ddEc0f37BAED79BEd3047Af190c4f98" });
   
-  // const walletAddress = '0x37938458dFE27A60439dDf0d70de28FA5d16D088'; // 유정
-  // const walletAddress = '0xe93BA6314C6f296Eb4bDc78ad9db68dd7f7D7346'; // 준형
-  // const adminWalletAddress = '0x6077611485470F3AaF7B8B941Be7d20B967B676c'; // 스마트 컨트랙트 소유자
   const tokenAddress = '0x85c41a930ddEc0f37BAED79BEd3047Af190c4f98';
 
   const { data, isError, isLoading } = useBalance({
