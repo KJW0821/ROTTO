@@ -3,6 +3,9 @@ import MyScreen from "../screens/my/MyScreen";
 import AccountScreen from "../screens/my/AccountScreen";
 import ConnectionScreen from "../screens/my/ConnectionScreen";
 import ChargeScreen from "../screens/my/ChargeScreen";
+import SuccessChargeScreen from "../screens/my/SuccessChargeScreen";
+import BioAuthScreen from "../screens/my/BioAuthScreen";
+import PinAuthScreen from "../screens/my/PinAuthScreen";
 
 const MyRouters = () => {
   const MyStack = createStackNavigator();
@@ -13,6 +16,9 @@ const MyRouters = () => {
       <MyStack.Screen name="account" component={AccountScreen} />
       <MyStack.Screen name="connection" component={ConnectionScreen} />
       <MyStack.Screen name="charge" component={ChargeScreen} />
+      <MyStack.Screen name="successCharge" component={SuccessChargeScreen} />
+      <MyStack.Screen name="transactionBioAuth" component={BioAuthScreen} />
+      <MyStack.Screen name="transactionPinAuth" component={PinAuthScreen} />
     </MyStack.Navigator>
   );
 };

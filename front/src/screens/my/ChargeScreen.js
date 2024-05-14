@@ -4,13 +4,15 @@ import { getRealAccountInfo } from '../../utils/accountApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setConnectedAccount } from '../../stores/mySlice';
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import Colors from '../../constants/Colors';
 import CustomButton from '../../components/common/CustomButton';
 
 const ChargeScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const connectedAccount = useSelector(state => state.myPageInfo.connectedAccount);
+
+  const [amount, setAmount] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -23,6 +25,14 @@ const ChargeScreen = ({navigation}) => {
       console.log(connectedAccount);
     }, [])
   );
+
+  const amountHandler = (enteredText) => {
+    setAmount(enteredText);
+  };
+
+  const chargeAccount = () => {
+    navigation.navigate('transactionBioAuth', { amount });
+  };
   
   return (
     <View style={styles.container}>
@@ -33,6 +43,8 @@ const ChargeScreen = ({navigation}) => {
             style={styles.inputText}
             placeholder='얼마나 채울까요?'
             keyboardType='number-pad'
+            onChangeText={amountHandler}
+            value={amount}
           />
           <Text style={styles.unitText}>원</Text>
         </View>
@@ -42,7 +54,7 @@ const ChargeScreen = ({navigation}) => {
             <Text style={styles.balance}>최대 가능 금액: {connectedAccount.accountBalance}원</Text>
           </View>
         }
-        <CustomButton>채우기</CustomButton>
+        <CustomButton onPress={chargeAccount}>채우기</CustomButton>
       </View>
     </View>
   )
