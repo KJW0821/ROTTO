@@ -137,7 +137,6 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
     @Override
     public ResponseEntity<?> getApplyTerminated(int userCode) {
         User user = userRepository.findByUserCode(userCode);
-        LocalDateTime now = LocalDateTime.now();
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
