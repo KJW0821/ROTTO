@@ -5,8 +5,8 @@ import Colors from '../../constants/Colors';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
 import FilterModal from './FilterModal';
-import { setFilterModal } from '../../stores/mySlice';
-import { getAccountHistory } from '../../utils/accountApi';
+import { setFilterModal, setSelectedFilter } from '../../stores/mySlice';
+import { getAccountDeposit, getAccountHistory, getAccountWithdrawal } from '../../utils/accountApi';
 import dayjs from 'dayjs';
 
 const AccountHistory = () => {
@@ -17,16 +17,21 @@ const AccountHistory = () => {
   const [data, setData] = useState();
   const [sections, setSections] = useState({});
 
+  const getTransactionData = async () => {
+    if (filter === '전체') {
+      const res = await getAccountHistory(fundingAccount.accountCode);
+      setData(res.accountHistoryListDtoss);
+    } else if (filter === '입금') {
+      const res = await getAccountDeposit(fundingAccount.accountCode);
+      setData(res.accountHistoryListDtoss);
+    } else {
+      const res = await getAccountWithdrawal(fundingAccount.accountCode);
+      setData(res.accountHistoryListDtoss);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
-      const getTransactionData = async () => {
-        if (filter === '전체') {
-          const res = await getAccountHistory(fundingAccount.accountCode);
-          console.log(res);
-          setData(res.accountHistoryListDtoss);
-        }
-      };
-
       getTransactionData();
     }, [filter])
   );
@@ -63,7 +68,9 @@ const AccountHistory = () => {
           <Text style={styles.filterText}>{filter}</Text>
           <Ionicons name="chevron-down" size={20} color={Colors.fontGray} />
         </Pressable>
-        <Ionicons name="reload" size={24} color={Colors.fontGray} />
+        <Pressable onPress={getTransactionData}>
+          <Ionicons name="reload" size={24} color={Colors.fontGray} />
+        </Pressable>
       </View>
       <ScrollView>
         {
