@@ -48,7 +48,7 @@ export const chargeAccount = async (data) => {
     const res = await API.patch(URL + '/deposit', data);
     return res;
   } catch (err) {
-    console.error('금액 충전 실패 ' + err.response);
+    console.error('금액 충전 실패 ' + err.response.data);
     return err.response;
   }
 };
