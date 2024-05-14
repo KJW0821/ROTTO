@@ -17,6 +17,7 @@ public class SubscriptionListDto {
     private int confirmPrice;
     private LocalDateTime startedTime;
     private LocalDateTime endTime;
+    private String beanType;
     private int limitNum;
     private int returnRate;
     private int applyCount;
