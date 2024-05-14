@@ -123,6 +123,13 @@ const FarmListScreen = () => {
     return <FarmDetail data={itemData.item} />;
   };
 
+  const handleGestureEvent = (event) => {
+    const { translationY } = event.nativeEvent;
+    if (translationY > 0) {
+      setIsBottomSheetOpen(false); // 바텀 시트를 닫습니다.
+    }
+  };
+
   return (
     <View style={styles.screen}>
       <StackHeader
@@ -193,7 +200,7 @@ const FarmListScreen = () => {
         keyExtractor={(item) => item.farmCode}
         renderItem={renderFarmList}
       />
-      <MyBottomSheet isOpen={isBottomSheetOpen}>
+      <MyBottomSheet isOpen={isBottomSheetOpen} onGestureEvent={handleGestureEvent}>
         <ScrollView>
           {selectedCategory === "sort" &&
             sortData.map((sortItem) => (
