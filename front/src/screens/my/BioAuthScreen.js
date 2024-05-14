@@ -5,7 +5,8 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 
-const BioAuthScreen = ({navigation}) => {
+const BioAuthScreen = ({navigation, route}) => {
+  const amount = route.params.amount;
 
   useFocusEffect(
     useCallback(() => {
@@ -21,12 +22,12 @@ const BioAuthScreen = ({navigation}) => {
   
           if (bioAuth.success) {
             console.log('생체 인증 성공');
-            navigation.navigate('passwordChange');
+            navigation.navigate('transactionResult', { amount });
           } else if (bioAuth.error === 'user_cancel') {
-            navigation.navigate('setting');
+            navigation.goBack();
           }
         } else {
-          navigation.navigate('pinAuth');
+          navigation.navigate('transcationPinAuth', { amount });
         }
       };
   

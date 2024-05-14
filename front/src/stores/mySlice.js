@@ -4,7 +4,8 @@ const initialState = {
   isWalletModalOpen: false,
   isBankModalOpen: false,
   selectedBank: null,
-  connectedAccount: null
+  connectedAccount: null,
+  transactionMode: null
 }
 
 export const mySlice = createSlice({
@@ -22,10 +23,13 @@ export const mySlice = createSlice({
     },
     setConnectedAccount: (state, action) => {
       state.connectedAccount = action.payload;
+    },
+    setTransactionMode: (state, action) => {
+      state.transactionMode = action.payload;
     }
   }
 });
 
-export const { setWalletModal, setBankModal, setSelectedBank, setConnectedAccount } = mySlice.actions;
+export const { setWalletModal, setBankModal, setSelectedBank, setConnectedAccount, setTransactionMode } = mySlice.actions;
 
 export default mySlice.reducer;

@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
 
 const PinAuthScreen = ({navigation, route}) => {
+  const amount = route.params.amount;
 
   const pinView = useRef(null)
   const [showRemoveButton, setShowRemoveButton] = useState(false)
@@ -27,7 +28,7 @@ const PinAuthScreen = ({navigation, route}) => {
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', () => {
-      navigation.navigate('setting');
+      navigation.goBack();
       return true;
     })
   }, [])
@@ -40,7 +41,7 @@ const PinAuthScreen = ({navigation, route}) => {
   const checkPinCode = async () => {
     const storedPin = await KeyService.getPinCode();
     if (storedPin === enteredPin) {
-      navigation.navigate('passwordChange');
+      navigation.navigate('transactionResult', { amount });
     } else {
       Alert.alert('잘못 입력하셨습니다. 다시 입력해주세요.', '', [{text: '재입력', onPress: resetPinCode}])
       setEnteredPin('');
