@@ -92,85 +92,37 @@ public class SubscriptionSpecification {
     public static Specification<Subscription> applySorting(String sort) {
         return (root, query, criteriaBuilder) -> {
             if ("rate".equals(sort)) {
-                // 가장 최근 청약의 returnRate로 정렬
-                Subquery<Integer> rateSubquery = query.subquery(Integer.class);
-                Root<Subscription> rateRoot = rateSubquery.from(Subscription.class);
-                rateSubquery.select(rateRoot.get("returnRate"));
-
-                //
-                Subquery<Date> latestDateSubquery = query.subquery(Date.class);
-                Root<Subscription> latestDateRoot = latestDateSubquery.from(Subscription.class);
-                latestDateSubquery.select(criteriaBuilder.greatest(latestDateRoot.get("endedTime").as(Date.class)));
-
-
-                rateSubquery.where(
-                        criteriaBuilder.and(
-                                criteriaBuilder.equal(rateRoot.get("endedTime"), latestDateSubquery.getSelection())
-                        )
-                );
-                query.orderBy(criteriaBuilder.asc(rateSubquery));
-
-            } else if ("deadline".equals(sort) || "highPrice".equals(sort) || "lowPrice".equals(sort)){
-                // 청약 진행중인 상태를 필터링
-                Specification<Subscription> ongoingSubSpec = SubscriptionSpecification.filterBySubscriptionStatus(1);
-                Predicate ongoingPredicate = ongoingSubSpec.toPredicate(root, query, criteriaBuilder);
-                query.where(ongoingPredicate);
-
-                Subquery<Integer> priceSubquery = query.subquery(Integer.class);
-                Root<Subscription> subscriptionRoot = priceSubquery.from(Subscription.class);
-                priceSubquery.select(subscriptionRoot.get("confirmPrice"));
-                priceSubquery.where(
-                        criteriaBuilder.and(
-                                criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
-                                criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
-                        )
-                );
-
+                // 수익률 높은 순으로 정렬
+                query.orderBy(criteriaBuilder.desc(root.get("returnRate")));
+            } else if ("deadline".equals(sort) || "highApplyPercent".equals(sort)) {
+                query.where(criteriaBuilder.and(
+                        criteriaBuilder.lessThan(root.get("startedTime"), criteriaBuilder.currentTimestamp()),
+                        criteriaBuilder.greaterThan(root.get("endedTime"), criteriaBuilder.currentTimestamp())
+                ));
+                // 청약 마감 기한 빠른 순
                 if ("deadline".equals(sort)) {
-                    // 마감 기한이 가장 빠른 순으로 정렬
-                    Subquery<Date> deadlineSubquery = query.subquery(Date.class);
-                    Root<Subscription> deadlineRoot = deadlineSubquery.from(Subscription.class);
-                    deadlineSubquery.select(deadlineRoot.get("endedTime"));
-                    deadlineSubquery.where(
-                            criteriaBuilder.and(
-                                    criteriaBuilder.lessThanOrEqualTo(deadlineRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
-                                    criteriaBuilder.greaterThanOrEqualTo(deadlineRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
-                            )
-                    );
-                    query.orderBy(criteriaBuilder.desc(deadlineSubquery));
-                } else if ("highPrice".equals(sort)){
-                    query.orderBy(criteriaBuilder.asc(priceSubquery));
-                } else if ("lowPrice".equals(sort)) {
-                    query.orderBy(criteriaBuilder.desc(priceSubquery));
+                    query.orderBy(criteriaBuilder.desc(root.get("endedTime")));
+                // sort = highApplyPercent. 신청률 높은 순
+                } else {
+                    Subquery<Long> applyHistoryCountSubquery = query.subquery(Long.class);
+                    Root<ApplyHistory> applyHistoryRoot = applyHistoryCountSubquery.from(ApplyHistory.class);
+                    applyHistoryCountSubquery.select(criteriaBuilder.count(applyHistoryRoot));
+
+                    // Subscription 엔티티와 ApplyHistory 엔티티의 관계를 나타내는 서브쿼리를 생성합니다.
+                    applyHistoryCountSubquery.where(criteriaBuilder.equal(root.get("subscriptionCode"), applyHistoryRoot.get("subscriptionCode")));
+
+                    // 총 신청내역 갯수를 반환합니다.
+                    Expression<Long> applyHistoryCount = applyHistoryCountSubquery.getSelection();
+
+                    // 총 발행토큰 수를 반환합니다.
+                    Expression<Double> totalTokenCount = root.get("totalTokenCount");
+
+                    // 퍼센테이지를 계산합니다.
+                    Expression<Number> percentage = criteriaBuilder.quot(applyHistoryCount, totalTokenCount);
+
+                    // 최종 결과를 퍼센테이지 순으로 정렬합니다.
+                    query.orderBy(criteriaBuilder.desc(percentage));
                 }
-
-            }
-            if ("highApplyPercent".equals(sort)){
-                Subquery<Long> applyHistoryCountSubquery = query.subquery(Long.class);
-                Root<ApplyHistory> applyHistoryRoot = applyHistoryCountSubquery.from(ApplyHistory.class);
-                applyHistoryCountSubquery.select(criteriaBuilder.count(applyHistoryRoot));
-
-                // Subscription 엔티티와 ApplyHistory 엔티티의 관계를 나타내는 서브쿼리를 생성합니다.
-                applyHistoryCountSubquery.where(criteriaBuilder.equal(root, applyHistoryRoot.get("subscriptionCode")));
-
-                // 총 신청내역 갯수를 반환합니다.
-                Expression<Long> applyHistoryCount = applyHistoryCountSubquery.getSelection();
-
-                Subquery<Double> totalAmountSubquery = query.subquery(Double.class);
-                Root<ApplyHistory> totalAmountRoot = totalAmountSubquery.from(ApplyHistory.class);
-                totalAmountSubquery.select(criteriaBuilder.sum(totalAmountRoot.get("applyCount")));
-
-                // Subscription 엔티티와 ApplyHistory 엔티티의 관계를 나타내는 서브쿼리를 생성합니다.
-                totalAmountSubquery.where(criteriaBuilder.equal(root, totalAmountRoot.get("subscriptionCode")));
-
-                // 총 발행토큰 수를 반환합니다.
-                Expression<Double> totalAmount = totalAmountSubquery.getSelection();
-
-                // 퍼센테이지를 계산합니다.
-                Expression<Number> percentage = criteriaBuilder.quot(totalAmount, applyHistoryCount);
-
-                // 최종 결과를 퍼센테이지 순으로 정렬합니다.
-                query.orderBy(criteriaBuilder.desc(percentage));
             }
 
             return query.getRestriction();
