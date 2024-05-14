@@ -178,7 +178,7 @@ public class FarmServiceImpl implements FarmService {
             return false;
         }
         // subsStatus 가 null 이 아니면서 0 미만이거나 2 초과다.
-        if (subsStatus != null && (subsStatus < 0 || subsStatus > 1)) {
+        if (subsStatus != null && (subsStatus < 0 || subsStatus > 2)) {
             return false;
         }
         // minPrice 와 maxPrice 가 모두 null 이 아니면서 minPrice 가 maxPrice 보다 크다.
