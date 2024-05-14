@@ -95,6 +95,9 @@ dependencies {
 
 	// BlockChain
 	implementation 'org.web3j:core:4.9.6'
+
+	// Selenium
+	implementation 'org.seleniumhq.selenium:selenium-java:4.6.0'
 }
 
 //test {

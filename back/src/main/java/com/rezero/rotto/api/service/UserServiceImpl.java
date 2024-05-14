@@ -3,10 +3,8 @@ package com.rezero.rotto.api.service;
 //import com.rezero.rotto.dto.request.RegisterPinRequest;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.rezero.rotto.dto.request.CheckPhoneNumRequest;
-import com.rezero.rotto.dto.request.CreateFinanceAccountRequest;
-import com.rezero.rotto.dto.request.ModifyPasswordRequest;
-import com.rezero.rotto.dto.request.SignUpRequest;
+import com.rezero.rotto.dto.request.*;
+import com.rezero.rotto.dto.response.CheckEmailResponse;
 import com.rezero.rotto.dto.response.CheckPhoneNumResponse;
 import com.rezero.rotto.dto.response.UserInfoResponse;
 import com.rezero.rotto.entity.Account;
@@ -101,10 +99,27 @@ public class UserServiceImpl implements UserService {
 
     // 폰번호 중복 체크
     public ResponseEntity<?> checkPhoneNum(CheckPhoneNumRequest request) {
+        try {
+            // 요청받은 폰번호를 암호화
+            String encryptedPhoneNum = AESUtil.encrypt(request.getPhoneNum(), aesKey);
+            // 암호화된 폰번호를 DB 에서 조회하여 데이터가 존재하는지를 Bool 형태로 체크
+            Boolean isExist = userRepository.existsByPhoneNum(encryptedPhoneNum);
+            // 리스폰스 생성후 반환
+            CheckPhoneNumResponse response = new CheckPhoneNumResponse(isExist);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("중복체크 실패");
+        }
+    }
+
+
+    // 이메일 중복 체크
+    public ResponseEntity<?> checkEmail(CheckEmailRequest request) {
         // 폰 번호로 유저 조회하여 데이터가 존재하는지를 Bool 형태로 체크
-        Boolean isExist = userRepository.existsByPhoneNum(request.getPhoneNum());
+        Boolean isExist = userRepository.existsByEmail(request.getEmail());
         // 리스폰스 생성후 반환
-        CheckPhoneNumResponse response = new CheckPhoneNumResponse(isExist);
+        CheckEmailResponse response = new CheckEmailResponse(isExist);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
