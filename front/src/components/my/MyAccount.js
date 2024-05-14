@@ -1,21 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { getAccountInfo } from '../../utils/accountApi';
 import { MaterialIcons } from '@expo/vector-icons';
 import CustomButton from '../common/CustomButton';
 import Colors from '../../constants/Colors';
+import { useFocusEffect } from '@react-navigation/native';
 
 const MyAccount = ({navigation, detail}) => {
   const [fundingAccount, setFundingAccount] = useState();
-  
-  useEffect(() => {
-    const getFundingAccount = async () => {
-      const res = await getAccountInfo();
-      setFundingAccount(res);
-    };
 
-    getFundingAccount();
-  }, [navigation])
+  useFocusEffect(
+    useCallback(() => {
+      const getFundingAccount = async () => {
+        const res = await getAccountInfo();
+        console.log(res)
+        setFundingAccount(res);
+      };
+      
+      getFundingAccount();
+    }, [])
+  );
 
   return (
     <View style={[styles.container, detail && styles.border]}>
