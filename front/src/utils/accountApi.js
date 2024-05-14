@@ -55,10 +55,10 @@ export const chargeAccount = async (data) => {
 
 export const sendMoney = async (data) => {
   try {
-    const res = await API.patch(URL + '/withdrawal');
+    const res = await API.patch(URL + '/withdrawal', data);
     return res;
   } catch (err) {
-    console.error('보내기 실패' + err.response.data);
+    console.error('보내기 실패' + err.response);
     return err.response;
   }
 };
