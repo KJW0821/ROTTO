@@ -7,4 +7,6 @@ public interface SubscriptionService {
 
     ResponseEntity<?> getSubscriptionList(int userCode);
     ResponseEntity<?> getSubscriptionDetail(int userCode, int subscriptionCode);
+
+	ResponseEntity<?> calculateSubscription(int subscriptionCode);
 }

@@ -49,5 +49,9 @@ public class SubscriptionController {
         return subscriptionService.getSubscriptionDetail(userCode, subscriptionCode);
     }
 
-
+    @Operation(summary = "청약 정산")
+    @PostMapping("/{subscription-code}")
+    public ResponseEntity<?> calculateSubscription(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int subscriptionCode){
+        return subscriptionService.calculateSubscription(subscriptionCode);
+    }
 }
