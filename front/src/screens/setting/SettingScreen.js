@@ -1,11 +1,12 @@
 import { View, Text, Pressable, Switch, StyleSheet, Alert } from 'react-native';
 import Colors from '../../constants/Colors';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ToggleButton from '../../components/common/ToggleButton';
 import SettingService from '../../utils/setting';
 import { logout, resign } from '../../utils/userApi';
 import TokenService from '../../utils/token';
 import KeyService from '../../utils/pinCode';
+import { useFocusEffect } from '@react-navigation/core';
 
 const SettingScreen = ({navigation}) => {
   const [isCheckedBio, setIsCheckedBio] = useState();
@@ -23,42 +24,44 @@ const SettingScreen = ({navigation}) => {
     setIsCheckedPush(!isCheckedPush);
   };
 
-  useEffect(() => {
-    const getBiometricEnabled = async () => {
-      const isEnabled = await SettingService.getBiometricEnabled();
-      setIsCheckedBio(() => isEnabled ? isEnabled : false);
-    };
-
-    const getPushEnabled = async () => {
-      const isEnabled = await SettingService.getPushEnabled();
-      setIsCheckedPush(() => isEnabled ? isEnabled : false);
-    };
-
-    const getPinCode = async () => {
-      const pinCode = await KeyService.getPinCode();
-      setIsRegisteredPinCode(pinCode !== null);
-    };
-
-    const getToken = async () => {
-      const token = await TokenService.getAccessToken();
-      const refresh = await TokenService.getRefreshToken();
-      console.log(token);
-      console.log(refresh);
-    };
-
-    getToken();
-
-    const loadInitialData = async () => {
-      await Promise.all([
-        getBiometricEnabled(),
-        getPushEnabled(),
-        getPinCode()
-      ]);
-      setIsLoaded(true);
-    };
-
-    loadInitialData();
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      const getBiometricEnabled = async () => {
+        const isEnabled = await SettingService.getBiometricEnabled();
+        setIsCheckedBio(() => isEnabled ? isEnabled : false);
+      };
+  
+      const getPushEnabled = async () => {
+        const isEnabled = await SettingService.getPushEnabled();
+        setIsCheckedPush(() => isEnabled ? isEnabled : false);
+      };
+  
+      const getPinCode = async () => {
+        const pinCode = await KeyService.getPinCode();
+        setIsRegisteredPinCode(pinCode !== null);
+      };
+  
+      const getToken = async () => {
+        const token = await TokenService.getAccessToken();
+        const refresh = await TokenService.getRefreshToken();
+        console.log(token);
+        console.log(refresh);
+      };
+  
+      getToken();
+  
+      const loadInitialData = async () => {
+        await Promise.all([
+          getBiometricEnabled(),
+          getPushEnabled(),
+          getPinCode()
+        ]);
+        setIsLoaded(true);
+      };
+  
+      loadInitialData();
+    }, [])
+  )
 
   const logoutHandler = async () => {
     await logout();
