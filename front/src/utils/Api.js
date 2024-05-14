@@ -29,6 +29,7 @@ API.interceptors.request.use(
 
 let isRefreshing = false;
 let refreshPromise = null;
+let storedRefreshToken = null;
 
 API.interceptors.response.use(
   (res) => {
@@ -37,12 +38,15 @@ API.interceptors.response.use(
   async (err) => {
     if (err.response && err.response.status === 401) {
       if (!isRefreshing) {
-        isRefreshing = true;
-        const refreshToken = await TokenService.getRefreshToken();
+        isRefreshing = true;        
 
-        refreshPromise = await reissueAPI.post('/auth/refresh', null, {
+        storedRefreshToken = await getToken();
+
+        console.log('accessToken 갱신 과정에서 불러오는 refreshtoken: ' + storedRefreshToken);
+
+        refreshPromise = reissueAPI.post('/auth/refresh', null, {
           headers: {
-            Authorization: 'Bearer ' + refreshToken
+            Authorization: 'Bearer ' + storedRefreshToken
           }
         })
           .then(async (res) => {
@@ -57,7 +61,7 @@ API.interceptors.response.use(
               const accessToken = await TokenService.getAccessToken();
               const refreshToken = await TokenService.getRefreshToken();
               const params = { accessToken, refreshToken };
-              return await API.post('/auth/logout', { params })
+              await API.post('/auth/logout', { params })
                 .then(async () => {
                   await TokenService.clearAllData();
                 })
@@ -86,4 +90,9 @@ API.interceptors.response.use(
   }
 );
 
-export default API
+export default API;
+
+const getToken = async () => {
+  const res = await TokenService.getRefreshToken();
+  return res;
+};

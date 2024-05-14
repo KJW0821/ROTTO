@@ -1,13 +1,11 @@
-import { View, Text, SafeAreaView, StyleSheet, Alert, Platform, Pressable } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, Alert, BackHandler } from 'react-native';
 import ReactNativePinView from 'react-native-pin-view';
 import { useEffect, useState, useRef } from 'react';
 import KeyService from '../../utils/pinCode';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
 
 const PinAuthScreen = ({navigation, route}) => {
-  const destination = route.params.destination;
-  const subDestination = route.params.subDestination;
 
   const pinView = useRef(null)
   const [showRemoveButton, setShowRemoveButton] = useState(false)
@@ -27,6 +25,13 @@ const PinAuthScreen = ({navigation, route}) => {
     }
   }, [enteredPin]);
 
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      navigation.navigate('setting');
+      return true;
+    })
+  }, [])
+
   const resetPinCode = () => {
     setEnteredPin('');
     pinView.current.clearAll();
@@ -35,9 +40,7 @@ const PinAuthScreen = ({navigation, route}) => {
   const checkPinCode = async () => {
     const storedPin = await KeyService.getPinCode();
     if (storedPin === enteredPin) {
-      navigation.navigate(destination, {
-        screen: subDestination
-      });
+      navigation.navigate('passwordChange');
     } else {
       Alert.alert('잘못 입력하셨습니다. 다시 입력해주세요.', '', [{text: '재입력', onPress: resetPinCode}])
       setEnteredPin('');
@@ -82,13 +85,6 @@ const PinAuthScreen = ({navigation, route}) => {
           customLeftButton={showRemoveButton ? <Ionicons name={"arrow-back-outline"} size={36} color={"black"} /> : undefined}
           customRightButton={showCompletedButton ? <Ionicons name={"checkmark-outline"} size={36} color={"black"} /> : undefined}
         />
-        <Pressable style={styles.bioButton} onPress={() => navigation.navigate('bioAuth', {
-          destination: '설정',
-          subDestination: 'passwordChange'
-        })}>
-          <MaterialCommunityIcons name={ Platform.OS === 'android' ? 'fingerprint' : 'face-recognition' } size={12} />
-          <Text style={styles.bioText}>생체 인증</Text>
-        </Pressable>
       </View>
     </SafeAreaView>
   )
@@ -113,20 +109,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 32
-  },
-  bioButton: {
-    flexDirection: 'row',
-    gap: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    width: 100,
-    height: 30,
-    borderRadius: 15,
-    marginTop: 16
-  },
-  bioText: {
-    fontFamily: 'pretendard-medium',
-    fontSize: 12
   }
 });

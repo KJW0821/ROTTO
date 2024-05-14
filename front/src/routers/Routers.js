@@ -6,13 +6,19 @@ import DiscoveryRouters from "./DiscoveryRouters";
 import FundingRouters from "./FundingRouters";
 import MyRouters from "./MyRouters";
 import SettingRouters from "./SettingRouters";
+import Colors from "../constants/Colors";
 
 const Routers = () => {
   const Tab = createMaterialBottomTabNavigator();
 
   return (
     <Tab.Navigator
-      barStyle={{ backgroundColor: "white", paddingHorizontal: 10 }}
+      barStyle={{
+        backgroundColor: "white",
+        paddingHorizontal: 10,
+        borderColor: Colors.borderGray,
+        borderTopWidth: 1,
+      }}
       initialRouteName="HomePage"
     >
       <Tab.Screen

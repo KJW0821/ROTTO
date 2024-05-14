@@ -8,6 +8,67 @@ import AuthRouters from "./src/routers/AuthRouters";
 import Constants from "expo-constants";
 import { useFonts } from "expo-font";
 import Colors from "./src/constants/Colors";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import BottomSheet from "./src/components/common/MyBottomSheet";
+import "@walletconnect/react-native-compat";
+import { WagmiConfig, configureChains, createConfig } from "wagmi";
+import { mainnet, polygon, arbitrum } from "viem/chains";
+import {
+  Web3Modal,
+  createWeb3Modal,
+  defaultWagmiConfig,
+} from "@web3modal/wagmi-react-native";
+import { defineChain } from "viem";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+
+const customChain = {
+  id: 31221,
+  name: "ssafy",
+  rpcUrls: {
+    public: {
+      http: ["https://rpc.ssafy-blockchain.com"],
+    }
+  },
+  nativeCurrency: {
+    name: "Ether",
+    symbol: "ETH",
+    decimals: 18,
+  },
+  testnet: false,
+};
+
+const projectId = "41c800331b3143bdaddeef0fdefb7852";
+
+const metadata = {
+  name: "rotto",
+  description: "커피 STO 투자 증권 앱",
+  url: "exp://192.168.30.203:3000",
+  icons: ["../../../assets/images/skyIcon.png"],
+  redirect: {
+    native: "exp://192.168.30.203:3000",
+  },
+};
+
+const chains = [mainnet];
+
+const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
+
+const { publicClient } = configureChains(
+  [customChain],
+  [jsonRpcProvider({ rpc: () => ({ http: customChain.rpcUrls.public.http }) })]
+);
+
+createConfig({
+  autoConnect: true,
+  publicClient,
+});
+
+createWeb3Modal({
+  projectId,
+  chains,
+  wagmiConfig,
+  enableAnalytics: true
+});
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -27,16 +88,23 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <Provider store={store}>
-        <NavigationContainer>
-          {/* <StatusBar style="auto" /> */}
-          {/* <StatusBar style={styles.statusBar} /> */}
-          <StatusBar backgroundColor={statusBarColor} style={statusBarStyle} />
-          {fontsLoaded && (
-            <SafeAreaView style={styles.safeAreaView}>
-              <AuthRouters />
-            </SafeAreaView>
-          )}
-        </NavigationContainer>
+        <WagmiConfig config={wagmiConfig}>
+          {/* <WagmiConfig config={config}> */}
+          <NavigationContainer>
+            {/* <StatusBar style="auto" /> */}
+            {/* <StatusBar style={styles.statusBar} /> */}
+            <StatusBar
+              backgroundColor={statusBarColor}
+              style={statusBarStyle}
+            />
+            {fontsLoaded && (
+              <SafeAreaView style={styles.safeAreaView}>
+                <AuthRouters />
+              </SafeAreaView>
+            )}
+            <Web3Modal />
+          </NavigationContainer>
+        </WagmiConfig>
       </Provider>
     </SafeAreaProvider>
   );
@@ -48,3 +116,7 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
   },
 });
+
+// wnsgud2020!
+// qweQWE123!@#
+// wnsgud0895

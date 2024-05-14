@@ -1,10 +1,10 @@
 import { View, SafeAreaView, StyleSheet, Alert, Text } from 'react-native';
-import SettingTopBar from '../../components/setting/SettingTopBar';
 import ReactNativePinView from 'react-native-pin-view';
 import { useEffect, useState, useRef } from 'react';
 import KeyService from '../../utils/pinCode';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
+import DetailTopBar from '../../components/common/DetailTopBar';
 
 const PINChangeScreen = ({navigation}) => {
   const pinView = useRef(null)
@@ -76,7 +76,7 @@ const PINChangeScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <SettingTopBar navigation={navigation} title='간편 비밀번호 변경' />
+      <DetailTopBar navigation={navigation} title='간편 비밀번호 변경' />
       <View style={styles.pinContainer}>
         <Text style={styles.description}>{description}</Text>
         <ReactNativePinView

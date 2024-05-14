@@ -1,23 +1,44 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 import Colors from "../../constants/Colors";
 
-const StackHeader = ({ title, screenName }) => {
+const StackHeader = ({ title, screenName, color, search, onPress }) => {
   const Navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        color ? { backgroundColor: color } : { backgroundColor: "white" },
+      ]}
+    >
       <View style={styles.iconContainer}>
         <Ionicons
           name="chevron-back"
           size={26}
-          color="black"
+          color={color ? "white" : "black"}
           onPress={() => Navigation.navigate(screenName)}
         />
       </View>
-      <Text>{title}</Text>
+      <View>
+        <Text
+          style={[
+            styles.title,
+            color ? { color: "white" } : { color: "black" },
+          ]}
+        >
+          {title}
+        </Text>
+      </View>
+      {search ? (
+        <Pressable style={styles.iconContainer} onPress={onPress}>
+          <Ionicons name="search" size={24} color={color ? "white" : "black"} />
+        </Pressable>
+      ) : (
+        <View></View>
+      )}
     </View>
   );
 };
@@ -26,19 +47,18 @@ export default StackHeader;
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    flexDirection: "row",
     backgroundColor: "white",
     height: 70,
-    justifyContent: "center",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   title: {
     fontFamily: "pretendard-bold",
+    fontSize: 20,
   },
   iconContainer: {
-    flex: 1,
-    width: 60,
-    marginTop: 20,
-    marginLeft: 15,
+    marginHorizontal: 15,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

@@ -17,7 +17,7 @@ const AuthRouters = () => {
     // <AuthStack.Navigator screenOptions={{ headerShown: false }} >
     <AuthStack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="Splash"
+      initialRouteName="Routers"
     >
       <AuthStack.Screen name="Splash" component={SplashScreen} />
       <AuthStack.Screen name="Onboarding" component={OnboardingScreen} />
