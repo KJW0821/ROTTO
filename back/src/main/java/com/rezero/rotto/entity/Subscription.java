@@ -42,5 +42,6 @@ public class Subscription {
     @Column(name = "total_token_count")
     private int totalTokenCount;
 
-
+    @Column(name = "partner_farm_rate")
+    private int partnerFarmRate;
 }
