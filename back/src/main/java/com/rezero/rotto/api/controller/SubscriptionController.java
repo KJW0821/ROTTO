@@ -31,9 +31,15 @@ public class SubscriptionController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
     @GetMapping
-    public ResponseEntity<?> getSubscriptionList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public ResponseEntity<?> getSubscriptionList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+                                                 @RequestParam(name = "subs-status", required = false) Integer subsStatus,
+                                                 @RequestParam(name = "min-price", required = false) Integer minPrice,
+                                                 @RequestParam(name = "max-price", required = false) Integer maxPrice,
+                                                 @RequestParam(name = "bean-type", required = false) String beanType,
+                                                 @RequestParam(required = false) String sort,
+                                                 @RequestParam(required = false) String keyword) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return subscriptionService.getSubscriptionList(userCode);
+        return subscriptionService.getSubscriptionList(userCode, subsStatus, minPrice, maxPrice, beanType, sort, keyword);
     }
 
 
