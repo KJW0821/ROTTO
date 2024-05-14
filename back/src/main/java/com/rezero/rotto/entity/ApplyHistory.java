@@ -32,6 +32,6 @@ public class ApplyHistory {
     private int isDelete;
 
     @Column(name = "apply_count")
-    private  int applyCount;
+    private int applyCount;
 
 }
