@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, Pressable, Button } from "react-native";
 import { useAccount, useBalance, useDisconnect } from "wagmi";
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Colors from "../../constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import { setWalletModal } from "../../stores/mySlice";
@@ -15,16 +15,36 @@ const MyWallet = () => {
   const { disconnect } = useDisconnect();
 
   const { address, isConnected, isDisconnected } = useAccount();
-  const { data, isLoading } = useBalance({ address, chainId: 31221, watch: true });
+  // const { data, isLoading } = useBalance({ address, chainId: 1, watch: true });
+  // const { data, isLoading } = useBalance({ address: "0x85c41a930ddEc0f37BAED79BEd3047Af190c4f98" });
+  
+  // const walletAddress = '0x37938458dFE27A60439dDf0d70de28FA5d16D088'; // 유정
+  // const walletAddress = '0xe93BA6314C6f296Eb4bDc78ad9db68dd7f7D7346'; // 준형
+  // const adminWalletAddress = '0x6077611485470F3AaF7B8B941Be7d20B967B676c'; // 스마트 컨트랙트 소유자
+  const tokenAddress = '0x85c41a930ddEc0f37BAED79BEd3047Af190c4f98';
+
+  const { data, isError, isLoading } = useBalance({
+    address,
+    chainId: 31221,
+    token: tokenAddress,
+    onSuccess: () => {
+      console.log(data);
+    },
+  })
 
   const modalHandler = () => {
     dispatch(setWalletModal(!isModalOpen));
   };
-
+  
   const disconnectWallet = () => {
     disconnect();
     dispatch(setWalletModal(false));
   };
+  
+  useEffect(() => {
+    console.log("주소", address)
+    console.log("토큰 조회 데이터", data)    
+  }, [data])
 
   return (
     <View style={styles.container}>
