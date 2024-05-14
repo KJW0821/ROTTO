@@ -9,6 +9,7 @@ import Animated, {
 import Colors from "../../constants/Colors";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+// SCREEN_HEIGHT = 700
 const MAX_TRANSLATE_Y = SCREEN_HEIGHT / 1.5;
 const MIN_TRANSLATE_Y = SCREEN_HEIGHT / 5;
 
@@ -44,7 +45,7 @@ const MyBottomSheet = ({ children, isOpen }) => {
 
   useEffect(() => {
     // scrollTo(-SCREEN_HEIGHT / 3);
-    scrollTo(isOpen ? -SCREEN_HEIGHT / 3 : SCREEN_HEIGHT);
+    scrollTo(isOpen ? -SCREEN_HEIGHT / 2 : SCREEN_HEIGHT);
   }, [isOpen]);
 
   return (

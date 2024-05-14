@@ -49,7 +49,7 @@ let beanData = [
   { index: 12, name: "엘살바도르", value: "엘살바도르" },
 ];
 
-let deviceWidth
+let deviceWidth;
 
 const FarmListScreen = () => {
   const { width, height } = useWindowDimensions();
@@ -64,7 +64,7 @@ const FarmListScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState(null); // 바텀 시트 표시 내용 선택
   const [keyword, setKeyword] = useState("");
 
-  deviceWidth = width
+  deviceWidth = width;
 
   const getList = async (
     sort,
@@ -241,7 +241,7 @@ const FarmListScreen = () => {
                     keyboardType="number-pad"
                     value={minPrice}
                   />
-                  <Text>  원</Text>   
+                  <Text> 원</Text>
                 </View>
                 <Text> ~ </Text>
                 <View style={styles.inputContainer}>
@@ -254,21 +254,24 @@ const FarmListScreen = () => {
                     keyboardType="number-pad"
                     value={maxPrice}
                   />
-                  <Text>  원</Text>
+                  <Text> 원</Text>
                 </View>
               </View>
             </View>
           )}
           {selectedCategory === "search" && (
-            <View>
-              <Text>검색</Text>
-              <TextInput
-                maxLength={10}
-                autoCapitalize="none"
-                autoCorrect={false}
-                onChangeText={(keyword) => setKeyword(keyword)}
-                value={keyword}
-              />
+            <View style={styles.searchContainer}>
+              <View style={styles.searchInputContainer}>
+                <Ionicons name="search" size={24} color={Colors.fontGray} style={{marginRight: 10}} />
+                <TextInput
+                  maxLength={10}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  onChangeText={(keyword) => setKeyword(keyword)}
+                  value={keyword}
+                  placeholder="검색"
+                />
+              </View>
             </View>
           )}
         </ScrollView>
@@ -338,18 +341,31 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 5,
     paddingHorizontal: 15,
-    width:  150,
-    justifyContent:'space-between'
+    width: 150,
+    justifyContent: "space-between",
   },
   inputsContainer: {
     width: deviceWidth,
     marginTop: 20,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between"
-    },
+    justifyContent: "space-between",
+  },
   priceContainer: {
     marginTop: 10,
     marginHorizontal: 20,
-  }
+  },
+  searchContainer: {
+    marginTop: 10,
+    marginHorizontal: 20,
+  },
+  searchInputContainer: {
+    flexDirection: "row",
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: Colors.borderGray,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    alignItems: 'center'
+  },
 });

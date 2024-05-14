@@ -116,7 +116,3 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
   },
 });
-
-// wnsgud2020!
-// qweQWE123!@#
-// wnsgud0895
