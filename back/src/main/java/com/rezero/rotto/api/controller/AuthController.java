@@ -1,7 +1,9 @@
 package com.rezero.rotto.api.controller;
 
+import com.rezero.rotto.dto.request.DecryptRequest;
 import com.rezero.rotto.dto.request.LoginRequest;
 import com.rezero.rotto.dto.request.LogoutRequest;
+import com.rezero.rotto.dto.response.DecryptResponse;
 import com.rezero.rotto.dto.response.TokenResponse;
 import com.rezero.rotto.entity.BlackList;
 import com.rezero.rotto.entity.RefreshToken;
@@ -181,6 +183,35 @@ public class AuthController {
             return ResponseEntity.ok(tokenResponse);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("오류 발생: " + e.getMessage());
+        }
+    }
+
+
+    @Operation(summary = "복호화",
+            description = "DB에 저장된 해쉬, AES 암호 코드 복호화")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(implementation = DecryptResponse.class))),
+            @ApiResponse(responseCode = "500", description = "실패")
+    })
+    @PostMapping("/decrypt")
+    public ResponseEntity<?> decrypt(@RequestBody DecryptRequest request) {
+        try {
+            String requestPhoneNum = request.getPhoneNum();
+            String requestJuminNo = request.getJuminNo();
+            String decryptedPhoneNum = null;
+            String decryptedJuminNo = null;
+            if (requestPhoneNum != null) {
+                decryptedPhoneNum = AESUtil.decrypt(requestPhoneNum, aesKey);
+            }
+            if (requestJuminNo != null) {
+                decryptedJuminNo = AESUtil.decrypt(requestJuminNo, aesKey);
+            }
+            DecryptResponse response = new DecryptResponse(decryptedPhoneNum, decryptedJuminNo);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("실패");
         }
     }
 }

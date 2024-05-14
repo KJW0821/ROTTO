@@ -35,7 +35,7 @@ public class SubscriptionSpecification {
 
             Predicate statusPredicate;
             if (subsStatus == 0) { // 청약예정
-                statusPredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("startedTime"), criteriaBuilder.currentTimestamp());
+                statusPredicate = criteriaBuilder.greaterThan(root.get("startedTime"), criteriaBuilder.currentTimestamp());
             } else if (subsStatus == 1){ // 청약진행중
                 statusPredicate = criteriaBuilder.and(
                         criteriaBuilder.lessThanOrEqualTo(root.get("startedTime"), criteriaBuilder.currentTimestamp()),
@@ -96,8 +96,8 @@ public class SubscriptionSpecification {
                 query.orderBy(criteriaBuilder.desc(root.get("returnRate")));
             } else if ("deadline".equals(sort) || "highApplyPercent".equals(sort)) {
                 query.where(criteriaBuilder.and(
-                        criteriaBuilder.lessThan(root.get("startedTime"), criteriaBuilder.currentTimestamp()),
-                        criteriaBuilder.greaterThan(root.get("endedTime"), criteriaBuilder.currentTimestamp())
+                        criteriaBuilder.lessThanOrEqualTo(root.get("startedTime"), criteriaBuilder.currentTimestamp()),
+                        criteriaBuilder.greaterThanOrEqualTo(root.get("endedTime"), criteriaBuilder.currentTimestamp())
                 ));
                 // 청약 마감 기한 빠른 순
                 if ("deadline".equals(sort)) {
