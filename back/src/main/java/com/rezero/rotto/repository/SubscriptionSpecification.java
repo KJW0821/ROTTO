@@ -137,6 +137,7 @@ public class SubscriptionSpecification {
                 query.orderBy(criteriaBuilder.asc(root.get("confirmPrice")));
             // 기본 정렬
             } else {
+                query.orderBy(criteriaBuilder.desc(root.get("subscriptionCode")));
             }
 
             return query.getRestriction();
