@@ -64,6 +64,8 @@ public class FarmSpecification {
                         criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
                         criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
                 );
+            } else if (subsStatus == 2) { // 청약 종료
+                statusPredicate = criteriaBuilder.lessThan(subscriptionRoot.get("endTime"), criteriaBuilder.currentTimestamp());
             } else {
                 statusPredicate = null;
             }
