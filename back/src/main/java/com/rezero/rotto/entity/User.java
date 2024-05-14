@@ -58,4 +58,7 @@ public class User {
 
     @Column(name = "user_key")
     private String userKey;
+
+    @Column(name = "bc_address")
+    private String bcAddress;
 }
