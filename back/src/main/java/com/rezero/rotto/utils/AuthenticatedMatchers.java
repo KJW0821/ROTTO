@@ -8,6 +8,7 @@ public class AuthenticatedMatchers {
             "/",
             "/user/signup",
             "/user/phone-num-check",
+            "/user/email-check",
             "/auth/login",
             "/auth/logout",
             "/auth/refresh",
