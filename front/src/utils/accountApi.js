@@ -72,3 +72,13 @@ export const getAccountHistory = async (accountCode) => {
     return err;
   }
 };
+
+export const getAccountDeposit = async (accountCode) => {
+  try {
+    const res = await API.get(`/account-history/deposit/${accountCode}`);
+    return res.data;
+  } catch (err) {
+    console.error('입금내역 조회 실패' + err)
+    return err;
+  }
+};
