@@ -88,6 +88,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
 
         Subscription subscriptionDetail = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
+        Integer applyCount = applyHistoryRepository.sumApplyCountBySubscriptionCode(subscriptionCode);
+        applyCount = (applyCount != null) ? applyCount : 0;
         Farm farm = farmRepository.findByFarmCode(subscriptionDetail.getFarmCode());
         SubscriptionDetailResponse subscriptionDetailResponse = SubscriptionDetailResponse.builder()
                 .subscriptionCode(subscriptionDetail.getSubscriptionCode())
@@ -98,7 +100,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 .endTime(subscriptionDetail.getEndedTime())
                 .returnRate(subscriptionDetail.getReturnRate())
                 .limitNum(subscriptionDetail.getLimitNum())
-                .applyCount(subscriptionDetail.getApplyCount())
+                .applyCount(applyCount)
                 .totalTokenCount(subscriptionDetail.getTotalTokenCount())
                 .build();
 
