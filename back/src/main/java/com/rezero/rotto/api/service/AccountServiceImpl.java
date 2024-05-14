@@ -80,6 +80,7 @@ public class AccountServiceImpl implements AccountService{
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("Header", headerMap);
         // 은행코드(은행이름으로 불리는 코드), 계좌번호
+        System.out.println( accountRepository.findByUserCodeAndAccountType(userCode, 0).getBankName());
         bodyMap.put("bankCode", accountRepository.findByUserCodeAndAccountType(userCode, 0).getBankName());
         bodyMap.put("accountNo", accountRepository.findByUserCodeAndAccountType(userCode, 0).getAccountNum());
 
@@ -398,13 +399,22 @@ public class AccountServiceImpl implements AccountService{
     // 진짜계좌에서 공모계좌로 입금하기
     @Override
     public ResponseEntity<?> patchAccountDeposit(int userCode,  AccountDepositRequest accountDepositRequest) {
-
-
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
-        int checkMoney = Integer.parseInt(accountDepositRequest.getTransactionBalance());
+
+        String transactionBalanceStr = accountDepositRequest.getTransactionBalance();
+        if (transactionBalanceStr == null || transactionBalanceStr.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("입금액이 지정되지 않았습니다.");
+        }
+
+        int checkMoney;
+        try {
+            checkMoney = Integer.parseInt(transactionBalanceStr);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("입금액이 올바른 숫자 형식이 아닙니다.");
+        }
 
         Account currentAccount = accountRepository.findByUserCodeAndAccountType(userCode, 1);
         Account toGoAccount = accountRepository.findByUserCodeAndAccountType(userCode, 0);
@@ -412,7 +422,6 @@ public class AccountServiceImpl implements AccountService{
         if (checkMoney > currentAccount.getBalance()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잔액이 부족합니다.");
         }
-
 
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
