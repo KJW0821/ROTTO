@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   name: "",
   personId: "",
-  phoneNumber: ""
+  phoneNumber: "",
+  eamil: ""
 }
 
 export const signUpSlice = createSlice({
@@ -18,10 +19,13 @@ export const signUpSlice = createSlice({
     },
     inputPhoneNumber: (state, action) => {
       state.phoneNumber = action.payload;
+    },
+    inputEmail: (state, action) => {
+      state.email = action.payload;
     }
   }
 });
 
-export const { inputName, inputPersonId, inputPhoneNumber } = signUpSlice.actions;
+export const { inputName, inputPersonId, inputPhoneNumber, inputEmail } = signUpSlice.actions;
 
 export default signUpSlice.reducer;

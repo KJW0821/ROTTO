@@ -34,7 +34,7 @@ const PhoneNumberInputScreen = ({navigation}) => {
 
   const pressNextHandler = () => {
     dispatch(inputPhoneNumber('010' + phoneNumber.replace(/-/g, '')));
-    navigation.navigate('PasswordInput');
+    navigation.navigate('EmailInput');
   };
 
   return (
