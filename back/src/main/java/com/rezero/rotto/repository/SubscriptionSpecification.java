@@ -11,63 +11,43 @@ import java.util.Date;
 public class SubscriptionSpecification {
 
     // 가격 범위에 따른 필터링을 하는 스펙
-    public static Specification<Subscription> priceBetween(Integer minPrice, Integer maxPrice, Integer subStatus){
+    public static Specification<Subscription> priceBetween(Integer minPrice, Integer maxPrice){
         return (root, query, criteriaBuilder) -> {
-            // 청약 진행중인 상태를 필터링하는 Specification
-            Specification<Subscription> ongoingSubSpec = SubscriptionSpecification.filterBySubscriptionStatus(subStatus);
-            Predicate ongoingPredicate = ongoingSubSpec.toPredicate(root, query, criteriaBuilder);
-            query.where(ongoingPredicate);
-
-            // 가격 조건에 맞는 Sub을 찾는 서브쿼리임다
-            Subquery<Integer> priceSubquery = query.subquery(Integer.class);
-            Root<Subscription> subscriptionRoot = priceSubquery.from(Subscription.class);
-
 
             Predicate priceRangePredicate = criteriaBuilder.conjunction(); // 초기설정
             if (minPrice != null) {
                 priceRangePredicate = criteriaBuilder.and(priceRangePredicate,
-                        criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("confirmPrice"), minPrice));
+                        criteriaBuilder.greaterThanOrEqualTo(root.get("confirmPrice"), minPrice));
             }
             if(maxPrice != null){
                 priceRangePredicate = criteriaBuilder.and(priceRangePredicate,
-                        criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("confirmPrice"), maxPrice));
+                        criteriaBuilder.lessThanOrEqualTo(root.get("confirmPrice"), maxPrice));
             }
 
-            priceSubquery.where(
-                    criteriaBuilder.and(
-                            priceRangePredicate,
-                            criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode")),
-                            criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
-                            criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
-                    )
-            );
-
-            return criteriaBuilder.in(root.get("subscriptionCode")).value(priceSubquery);
+            return priceRangePredicate;
         };
     }
 
+
+    // 청약 상태에 따른 필터링
     public static Specification<Subscription> filterBySubscriptionStatus(Integer subsStatus){
         return (root, query, criteriaBuilder) -> {
-            Subquery<Subscription> subscriptionSubquery = query.subquery(Subscription.class);
-            Root<Subscription> subscriptionRoot = subscriptionSubquery.from(Subscription.class);
-            subscriptionSubquery.select(subscriptionRoot);
-            System.out.println(subsStatus + "더잘 들어와");
 
             Predicate statusPredicate;
-            if(subsStatus == 0) { // 청약예정
-                statusPredicate = criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("startedTime"), criteriaBuilder.currentTimestamp());
+            if (subsStatus == 0) { // 청약예정
+                statusPredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("startedTime"), criteriaBuilder.currentTimestamp());
             } else if (subsStatus == 1){ // 청약진행중
                 statusPredicate = criteriaBuilder.and(
-                        criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
-                        criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
+                        criteriaBuilder.lessThanOrEqualTo(root.get("startedTime"), criteriaBuilder.currentTimestamp()),
+                        criteriaBuilder.greaterThanOrEqualTo(root.get("endedTime"), criteriaBuilder.currentTimestamp())
                 );
             } else if (subsStatus == 2) { // 청약 종료
-                statusPredicate = criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp());
+                statusPredicate = criteriaBuilder.greaterThan(criteriaBuilder.currentTimestamp(), root.get("endedTime"));
             } else {
                 statusPredicate = null;
             }
 
-            return  criteriaBuilder.exists(subscriptionSubquery.where(statusPredicate));
+            return  statusPredicate;
         };
     }
 
