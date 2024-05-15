@@ -2,6 +2,7 @@ package com.rezero.rotto.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.checkerframework.checker.units.qual.C;
 
 import java.time.LocalDateTime;
 
@@ -36,12 +37,12 @@ public class Subscription {
     @Column(name = "return_rate")
     private int returnRate;
 
-    @Column(name = "apply_count")
-    private int applyCount;
-
     @Column(name = "total_token_count")
     private int totalTokenCount;
 
     @Column(name = "partner_farm_rate")
     private int partnerFarmRate;
+
+    @Column(name = "total_proceed")
+    private int totalProceed;
 }
