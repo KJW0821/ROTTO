@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   more: {
-    fontFamily: "pretendard",
+    fontFamily: "pretendard-regular",
     fontSize: 16,
     paddingBottom: 20,
   },
