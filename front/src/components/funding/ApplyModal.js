@@ -1,9 +1,10 @@
-import { View, Pressable, Text, StyleSheet, Modal, TextInput } from 'react-native';
+import { View, Pressable, Text, StyleSheet, Modal, TextInput, TouchableWithoutFeedback, Alert } from 'react-native';
 import Colors from '../../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
 import { setApplyModal } from '../../stores/fundingSlice';
 import CustomButton from '../common/CustomButton';
 import { useState } from 'react';
+import { applyFunding } from '../../utils/fundingApi';
 
 const ApplyModal = () => {
   const dispatch = useDispatch();
@@ -22,7 +23,17 @@ const ApplyModal = () => {
     }
   };
 
+  const applyHandler = async () => {
+    const res = await applyFunding(fundingData.subscriptionCode, amount);
+    return Alert.alert(res.status === 200 ? '청약 신청이 완료되었습니다.' : '청약 신청에 실패하셨습니다.', '', 
+    [{
+      text: '확인',
+      onPress: () => dispatch(setApplyModal(false))
+    }]);
+  };
+
   return (
+    fundingData &&
     <Modal
       animationType='fade'
       transparent={true}
@@ -31,19 +42,21 @@ const ApplyModal = () => {
     >  
       <Pressable style={styles.modalBack} onPress={() => dispatch(setApplyModal(false))}>
         <View style={styles.modal}>
-          <View style={styles.applyContainer}>
-            <Text style={styles.title}>신청 수량</Text>
-            <View style={styles.inputContainer}>
-              <TextInput 
-                style={styles.inputText}
-                keyboardType='number-pad'
-                value={amount}
-                onChangeText={amountHandler}
-              />
-              <Text style={[styles.infoText, isValidAmount === false && { color: 'red' }]}> / {fundingData.limitNum} ROTTO</Text>
+          <TouchableWithoutFeedback>
+            <View style={styles.applyContainer}>
+              <Text style={styles.title}>신청 수량</Text>
+              <View style={styles.inputContainer}>
+                <TextInput 
+                  style={styles.inputText}
+                  keyboardType='number-pad'
+                  value={amount}
+                  onChangeText={amountHandler}
+                />
+                <Text style={[styles.infoText, isValidAmount === false && { color: 'red' }]}> / {fundingData.limitNum} ROTTO</Text>
+              </View>
+              <CustomButton onPress={applyHandler} disabled={!isValidAmount || !amount}>신청</CustomButton>
             </View>
-            <CustomButton disabled={!isValidAmount || !amount}>신청</CustomButton>
-          </View>
+          </TouchableWithoutFeedback>
           <View style={styles.line} />
           <Pressable onPress={() => dispatch(setApplyModal(false))}>
             <Text style={styles.modalCloseMenu}>닫기</Text>
