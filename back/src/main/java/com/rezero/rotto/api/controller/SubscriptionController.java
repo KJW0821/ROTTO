@@ -50,8 +50,8 @@ public class SubscriptionController {
                     content = @Content(schema = @Schema(implementation = SubscriptionDetailResponse.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
-    @GetMapping("/{subscription-code}")
-    public ResponseEntity<?> getSubscriptionDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int subscriptionCode) {
+    @GetMapping("/{subscriptionCode}")
+    public ResponseEntity<?> getSubscriptionDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,@PathVariable int subscriptionCode) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return subscriptionService.getSubscriptionDetail(userCode, subscriptionCode);
     }
