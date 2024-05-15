@@ -98,6 +98,9 @@ dependencies {
 
 	// Selenium
 	implementation 'org.seleniumhq.selenium:selenium-java:4.6.0'
+
+	// Jsoup
+	implementation 'org.jsoup:jsoup:1.15.3'
 }
 
 //test {
