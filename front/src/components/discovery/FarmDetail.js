@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import Colors from "../../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
+import { S3URL } from "@env";
 
 const FarmDetail = ({ data }) => {
   const Navigation = useNavigation();
@@ -29,7 +30,7 @@ const FarmDetail = ({ data }) => {
     >
       <Image
         source={{
-          uri: "https://www.grandculture.net/Image?localName=buan&id=GC080P02116&t=middle",
+          uri: `${S3URL}/farm_img/1/${data.farmLogoPath}`,
         }}
         style={styles.farmLogo}
       />
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: 0,
     flexDirection: "row",
-    alignItems: 'center',
+    alignItems: "center",
   },
   title: {
     color: "black",
@@ -59,9 +60,9 @@ const styles = StyleSheet.create({
     width: 50,
     resizeMode: "stretch",
     borderRadius: 25,
-    marginRight: 10
+    marginRight: 10,
   },
-  profit : {
-    color: 'red'
-  }
+  profit: {
+    color: "red",
+  },
 });

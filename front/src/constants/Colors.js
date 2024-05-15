@@ -4,7 +4,8 @@ const Colors = {
   iconGray: '#70798C',
   fontGray: '#888888',
   borderGray: '#DDDDDD',
-  btnYellow: '#F2BF5E'
+  btnYellow: '#F2BF5E',
+  bgGray: '#F8F8F8'
 }
 
 export default Colors;

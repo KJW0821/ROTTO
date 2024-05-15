@@ -18,6 +18,7 @@ import MyBottomSheet from "../../components/common/MyBottomSheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FarmDetail from "../../components/discovery/FarmDetail";
 import FilterButton from "../../components/discovery/FilterButton";
+import ResetButton from "../../components/discovery/ResetButton";
 
 let sortData = [
   { index: 0, name: "기본순", value: null },
@@ -130,6 +131,15 @@ const FarmListScreen = () => {
     }
   };
 
+  const handlePressResetButton = () => {
+    setSelectedSort(sortData[0]);
+    setFundingStatus(fundingData[0]);
+    setSelectedBean(beanData[0]);
+    setIsLiked(null);
+    setMinPrice(null);
+    setMaxPrice(null);
+  };
+
   return (
     <View style={styles.screen}>
       <StackHeader
@@ -163,6 +173,9 @@ const FarmListScreen = () => {
               color={Colors.iconGray}
             />
           </Pressable>
+          { (selectedSort != sortData[0] || selectedBean != beanData[0] || minPrice != null ||
+          maxPrice != null || fundingStatus != fundingData[0] || isLiked == true) &&
+            <ResetButton filterName={"초기화"} onPress={handlePressResetButton} />}
           <FilterButton
             filterName={fundingStatus.index != 0 ? fundingStatus.name : "청약"}
             onPress={() => {
@@ -185,7 +198,12 @@ const FarmListScreen = () => {
             }}
           />
           <FilterButton
-            filterName={"가격"}
+            filterName={
+              (!minPrice && !maxPrice) ? "가격" 
+              : (!minPrice) ? `가격 ${maxPrice}원 이하`
+              : (!maxPrice) ? `가격 ${minPrice}원 이상`
+              : `가격 ${minPrice}원 ~ ${maxPrice}원`}
+            isChecked={minPrice || maxPrice}
             onPress={() => {
               setIsBottomSheetOpen(true);
               setSelectedCategory("price");
@@ -200,7 +218,10 @@ const FarmListScreen = () => {
         keyExtractor={(item) => item.farmCode}
         renderItem={renderFarmList}
       />
-      <MyBottomSheet isOpen={isBottomSheetOpen} onGestureEvent={handleGestureEvent}>
+      <MyBottomSheet
+        isOpen={isBottomSheetOpen}
+        onGestureEvent={handleGestureEvent}
+      >
         <ScrollView>
           {selectedCategory === "sort" &&
             sortData.map((sortItem) => (
@@ -269,7 +290,12 @@ const FarmListScreen = () => {
           {selectedCategory === "search" && (
             <View style={styles.searchContainer}>
               <View style={styles.searchInputContainer}>
-                <Ionicons name="search" size={24} color={Colors.fontGray} style={{marginRight: 10}} />
+                <Ionicons
+                  name="search"
+                  size={24}
+                  color={Colors.fontGray}
+                  style={{ marginRight: 10 }}
+                />
                 <TextInput
                   maxLength={10}
                   autoCapitalize="none"
@@ -373,6 +399,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.borderGray,
     paddingVertical: 5,
     paddingHorizontal: 10,
-    alignItems: 'center'
+    alignItems: "center",
   },
 });
