@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.service;
 
 import com.rezero.rotto.dto.dto.SubscriptionListDto;
+import com.rezero.rotto.dto.request.SubscriptionProduceRequest;
 import com.rezero.rotto.dto.response.SubscriptionDetailResponse;
 import com.rezero.rotto.dto.response.SubscriptionListResponse;
 import com.rezero.rotto.entity.ApplyHistory;
@@ -120,5 +121,45 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
         // beanType 이 null 이 아니면서 허용 리스트에 포함되지 않는 값이면 false 처리
         return beanType == null || VALID_BEAN_TYPES.contains(beanType);
+    }
+
+    @Override
+    public ResponseEntity<?> postSubscription(int userCode, SubscriptionProduceRequest subscriptionProduceRequest) {
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        // admin 값이 0이면
+        if (!user.getAdmin()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("접근권한이 없습니다.");
+        }
+
+        // SubscriptionProduceRequest 유효성 검사
+        if (subscriptionProduceRequest.getFarmCode() <= 0 ||
+                subscriptionProduceRequest.getConfirmPrice() <= 0 ||
+                subscriptionProduceRequest.getLimitNum() <= 0 ||
+                subscriptionProduceRequest.getReturnRate() <= 0 ||
+                subscriptionProduceRequest.getPartnerFarmRate() <= 0 ||
+                subscriptionProduceRequest.getTotalTokenCount() <= 0 ||
+                subscriptionProduceRequest.getStartedTime() == null ||
+                subscriptionProduceRequest.getEndedTime() == null ||
+                subscriptionProduceRequest.getStartedTime().isAfter(subscriptionProduceRequest.getEndedTime())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
+        }
+
+        Subscription subscription = new Subscription();
+        subscription.setFarmCode(subscriptionProduceRequest.getFarmCode());
+        subscription.setConfirmPrice(subscriptionProduceRequest.getConfirmPrice());
+        subscription.setStartedTime(subscriptionProduceRequest.getStartedTime());
+        subscription.setEndedTime(subscriptionProduceRequest.getEndedTime());
+        subscription.setLimitNum(subscriptionProduceRequest.getLimitNum());
+        subscription.setReturnRate(subscription.getReturnRate());
+        subscription.setTotalTokenCount(subscription.getTotalTokenCount());
+        subscription.setPartnerFarmRate(subscription.getPartnerFarmRate());
+        subscriptionRepository.save(subscription);
+
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(subscription);
     }
 }
