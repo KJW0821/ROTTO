@@ -5,4 +5,5 @@ import org.springframework.http.ResponseEntity;
 public interface TradeHistoryService {
 
     ResponseEntity<?> getTradeHistory(int userCode);
-}
+    ResponseEntity<?> getExpenseDetailOfSub(int userCode, int subscriptionCode);
+ }

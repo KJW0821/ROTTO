@@ -40,6 +40,7 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
         }
 
         ApplyHistory applyHistory = new ApplyHistory();
+        ApplyHistory applyHistoryRepo = applyHistoryRepository.findByUserCodeAndSubscriptionCode(userCode, subscriptionCode);
         Subscription subscription = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
         Account userAccount = accountRepository.findByUserCodeAndAccountType(userCode, 0);
 
@@ -51,6 +52,11 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
+
+        // 이미 신청한 청약이라면 안되지 ㅋ
+        if (subscriptionCode == applyHistoryRepo.getSubscriptionCode()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 신청한 청약입니다.");
+        }
 
         // 현재 시간이 시작 시간과 종료 시간 사이에 있는지 확인합니다.
         if (!now.isBefore(startedTime) && !now.isAfter(endedTime) && applyCount <= limitNum) {
@@ -147,6 +153,10 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
         ApplyHistory applyHistory = applyHistoryRepository.findByUserCodeAndSubscriptionCode(userCode, subscriptionCode);
         if (applyHistory == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("신청내역이 없습니다.");
+        }
+
+        if (applyHistory.getIsDelete() == 1){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 취소한 내역입니다.");
         }
 
         Subscription subscription = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
@@ -252,6 +262,7 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
         for (ApplyHistory applyHistory : applyHistories) {
             Subscription subscription = subscriptionRepository.findBySubscriptionCode(applyHistory.getSubscriptionCode());
             Farm farm = farmRepository.findByFarmCode(subscription.getFarmCode());
+            Integer totalApplyCount = applyHistoryRepository.sumApplyCountBySubscriptionCode(subscription.getSubscriptionCode());
             ApplyHistoryListGetDto applyHistoryListDto = ApplyHistoryListGetDto.builder()
                     .applyHistoryCode(applyHistory.getApplyHistoryCode())
                     .subscriptionCode(applyHistory.getSubscriptionCode())
@@ -263,6 +274,9 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
                     .startedTime(subscription.getStartedTime())
                     .endedTime(subscription.getEndedTime())
                     .applyCount(applyHistory.getApplyCount())
+                    .totalTokenCount(subscription.getTotalTokenCount())
+                    .applyCount(applyHistory.getApplyCount())
+                    .totalApplyCount(totalApplyCount)
                     .build();
 
             applyHistoryListDtos.add(applyHistoryListDto);
