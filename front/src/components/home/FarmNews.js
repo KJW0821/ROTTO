@@ -9,6 +9,7 @@ const FarmNews = () => {
   const getList = async () => {
     try{
       const res = await getFarmNewsList();
+      console.log(res);
       setfarmNewsList(res);
     }
     catch(err){
@@ -24,16 +25,22 @@ const FarmNews = () => {
     <View style={styles.screen}>
       <Text style={styles.header}>농장 소식</Text>
       {farmNewsList &&
-        farmNewsList.map((item) => {
-          return (
-            <View key={item.newsCode}>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.content}>{item.content}</Text>
+        farmNewsList.map((item, index) => index < 3 && (
+            <View key={item.newsCode} style={styles.itemStyle}>
+              <View style={{flexShrink: 1}}>
+                <Text style={styles.title}>{item.title}</Text>
+              </View>
+              <View style={{backgroundColor: "grey", width: 60, height: 60, borderRadius: 15, marginLeft: 10}}>
+              </View>
             </View>
-          );
-        })}
+          ))
+        }
+      <View style={{flexDirection:"row", alignItems: "center", justifyContent:"center", margin: 20}}>
+        <Text style={{fontFamily: "pretendard-bold", fontSize: 18, color: "#778F8C"}}>더 보기</Text>
+      </View>
     </View>
   );
+  
 };
 
 export default FarmNews;
@@ -41,52 +48,21 @@ export default FarmNews;
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+    margin: 10,
     backgroundColor: "white",
   },
   header: {
+    margin: 10,
     fontFamily: "pretendard-extraBold",
     fontSize: 23,
-    paddingBottom: 20,
+  },
+  itemStyle: {
+    margin: 10,
+    flexDirection: "row"
   },
   title: {
     fontFamily: "pretendard-bold",
-    fontSize: 18,
-    marginTop: 20
+    fontSize: 16,
+    marginRight: 20
   },
-  content: {
-    marginTop: 5
-  },
-
-  carouselContainer: {
-    // 새로운 스타일
-    marginTop: 10,
-    position: "relative",
-  },
-  scrollViewStyle: {
-    width: "100%",
-  },
-  text: {
-    fontFamily: "pretendard-extraBold",
-    fontSize: 30,
-    color: "white",
-  },
-  indicatorContainer: {
-    position: "absolute",
-    bottom: 10,
-    left: 20, // 왼쪽 아래 정렬을 위해 변경
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  indicator: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: "lightgray",
-    margin: 5,
-  },
-  activeIndicator: {
-    backgroundColor: "white",
-  },
-
 });

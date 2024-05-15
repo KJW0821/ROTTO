@@ -1,12 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import {
-  ScrollView,
   StyleSheet,
   View,
   Dimensions,
-  TouchableOpacity,
   Image,
-  ImageBackground,
   Pressable
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -38,11 +35,15 @@ const FarmILike = () => {
           <Text
             style={styles.header}
           >관심 농장</Text>
-          <Text
-            style={styles.editBtnStyle}
+          <Pressable
+          onPress={() => Navigation.navigate("farmILikeScreen")}
           >
-            편집하기
-          </Text>
+            <Text
+              style={styles.editBtnStyle}
+            >
+              편집하기
+            </Text>
+          </Pressable>
         </View>
         <View style={styles.container}>
           {farmILikeList.map((farm, index) => index < 3 && (

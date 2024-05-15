@@ -117,6 +117,5 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
     borderTopLeftRadius: 15,
     backgroundColor: "white",
-    height: 1000,
   },
 });

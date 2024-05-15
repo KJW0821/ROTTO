@@ -5,6 +5,7 @@ import NoticeScreen from "../screens/home/NoticeScreen";
 import AlertScreen from "../screens/home/AlertScreen";
 import AlertListScreen from "../screens/home/AlertListScreen";
 import FAQScreen from "../screens/home/FAQScreen";
+import FarmILikeListScreen from "../screens/home/FarmILikeScreen";
 
 const HomeRouters = () => {
   const HomeStack = createStackNavigator();
@@ -17,6 +18,7 @@ const HomeRouters = () => {
       <HomeStack.Screen name="alertList" component={AlertListScreen} />
       <HomeStack.Screen name="alert" component={AlertScreen} />
       <HomeStack.Screen name="faqscreen" component={FAQScreen} />
+      <HomeStack.Screen name="farmILikeScreen" component={FarmILikeListScreen} />
     </HomeStack.Navigator>
   );
 };
