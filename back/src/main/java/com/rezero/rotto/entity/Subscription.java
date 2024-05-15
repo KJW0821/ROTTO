@@ -42,4 +42,7 @@ public class Subscription {
 
     @Column(name = "partner_farm_rate")
     private int partnerFarmRate;
+
+    @Column(name = "total_proceed")
+    private int totalProceed;
 }
