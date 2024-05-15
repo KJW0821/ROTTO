@@ -1,13 +1,13 @@
 package com.rezero.rotto.api.service;
 
+import com.rezero.rotto.dto.dto.FarmDto;
 import com.rezero.rotto.dto.dto.FarmListDto;
+import com.rezero.rotto.dto.dto.MyPageFarmListDto;
 import com.rezero.rotto.dto.response.FarmDetailResponse;
 import com.rezero.rotto.dto.response.FarmListResponse;
 import com.rezero.rotto.dto.response.FarmTop10ListResponse;
-import com.rezero.rotto.entity.Farm;
-import com.rezero.rotto.entity.FarmTop10;
-import com.rezero.rotto.entity.InterestFarm;
-import com.rezero.rotto.entity.User;
+import com.rezero.rotto.dto.response.MyPageFarmListResponse;
+import com.rezero.rotto.entity.*;
 import com.rezero.rotto.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,10 +16,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.rezero.rotto.utils.Const.VALID_BEAN_TYPES;
 
 @Service
@@ -30,6 +33,7 @@ public class FarmServiceImpl implements FarmService {
     private final FarmRepository farmRepository;
     private final UserRepository userRepository;
     private final InterestFarmRepository interestFarmRepository;
+    private final SubscriptionRepository subscriptionRepository;
     private final FarmTop10Repository farmTop10Repository;
 
 
@@ -46,48 +50,14 @@ public class FarmServiceImpl implements FarmService {
             return ResponseEntity.badRequest().body("잘못된 입력값입니다.");
         }
 
-        // Specification 을 활용하여 필터링 및 정렬
-        Specification<Farm> spec = Specification.where(null);
-        if (keyword != null) spec = spec.and(FarmSpecification.nameContains(keyword));
-        if (isLiked != null && isLiked) spec = spec.and(FarmSpecification.hasInterest(userCode));
-        if (subsStatus != null) spec = spec.and(FarmSpecification.filterBySubscriptionStatus(subsStatus));
-        if (minPrice != null || maxPrice != null) spec = spec.and(FarmSpecification.priceBetween(minPrice, maxPrice));
-        if (beanType != null) spec = spec.and(FarmSpecification.filterByBeanType(beanType));
-        spec = spec.and(FarmSpecification.applySorting(sort));
+        // Specification 를 통해 필터링 및 정렬
+        Specification<Farm> spec = buildSpecification(userCode, isLiked, subsStatus, minPrice, maxPrice, beanType, sort, keyword);
 
         // 농장 목록 불러오기
         List<Farm> farms = farmRepository.findAll(spec);
-        List<FarmListDto> farmListDtos = new ArrayList<>();
+        List<? extends FarmDto> farmDtos = convertToDtoList(farms, userCode, isLiked && subsStatus == null && minPrice == null && maxPrice == null && beanType == null && sort == null && keyword == null);
 
-        // 최신것부터 보여주기 위해 리스트 뒤집기
-        Collections.reverse(farms);
-
-        // Farm 리스트를 순회
-        for (Farm farm : farms) {
-            // 관심 농장 여부 검사
-            boolean farmIsLiked = false;
-            InterestFarm interestFarm = interestFarmRepository.findByFarmCodeAndUserCode(farm.getFarmCode(), userCode);
-            if (interestFarm != null) {
-                farmIsLiked = true;
-            }
-            // Dto 에 담기
-            FarmListDto farmListDto = FarmListDto.builder()
-                    .farmCode(farm.getFarmCode())
-                    .farmName(farm.getFarmName())
-                    .farmLogoPath(farm.getFarmLogoPath())
-                    .beanName(farm.getFarmBeanName())
-                    .isLiked(farmIsLiked)
-                    .build();
-            // farmListDtos 에 담기
-            farmListDtos.add(farmListDto);
-        }
-
-        // 리스폰스 생성
-        FarmListResponse response = FarmListResponse.builder()
-                .farms(farmListDtos)
-                .build();
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(buildResponse(farmDtos));
     }
 
 
@@ -188,5 +158,71 @@ public class FarmServiceImpl implements FarmService {
 
         // beanType 이 null 이 아니면서 허용 리스트에 포함되지 않는 값이면 false 처리
         return beanType == null || VALID_BEAN_TYPES.contains(beanType);
+    }
+
+
+    private Specification<Farm> buildSpecification(int userCode, Boolean isLiked, Integer subsStatus, Integer minPrice, Integer maxPrice, String beanType, String sort, String keyword) {
+        Specification<Farm> spec = Specification.where(null);
+        if (keyword != null) spec = spec.and(FarmSpecification.nameContains(keyword));
+        if (isLiked) spec = spec.and(FarmSpecification.hasInterest(userCode));
+        if (subsStatus != null) spec = spec.and(FarmSpecification.filterBySubscriptionStatus(subsStatus));
+        if (minPrice != null || maxPrice != null)
+            spec = spec.and(FarmSpecification.priceBetween(minPrice, maxPrice));
+        if (beanType != null) spec = spec.and(FarmSpecification.filterByBeanType(beanType));
+        spec = spec.and(FarmSpecification.applySorting(sort));
+        return spec;
+    }
+
+    private List<? extends FarmDto> convertToDtoList(List<Farm> farms, int userCode, boolean isMyPage) {
+        List<FarmDto> farmDtos = new ArrayList<>();
+        Collections.reverse(farms);
+
+        for (Farm farm : farms) {
+            boolean farmIsLiked = interestFarmRepository.findByFarmCodeAndUserCode(farm.getFarmCode(), userCode) != null;
+            boolean isFunding = isFunding(farm.getFarmCode());
+
+            FarmDto farmDto;
+            if (isMyPage) {
+                farmDto = new MyPageFarmListDto(farm.getFarmCode(), farm.getFarmName(), farm.getFarmLogoPath(), farm.getFarmBeanName(), farmIsLiked, isFunding);
+            } else {
+                farmDto = new FarmListDto(farm.getFarmCode(), farm.getFarmName(), farm.getFarmLogoPath(), farm.getFarmBeanName(), farmIsLiked);
+            }
+            farmDtos.add(farmDto);
+        }
+        return farmDtos;
+    }
+
+    private Object buildResponse(List<? extends FarmDto> farmDtos) {
+        if (farmDtos.isEmpty()) {
+            return MyPageFarmListResponse.builder().farms(Collections.emptyList()).build();
+        }
+
+        if (farmDtos.get(0) instanceof MyPageFarmListDto) {
+            List<MyPageFarmListDto> myPageFarmListDtos = farmDtos.stream()
+                    .map(farmDto -> (MyPageFarmListDto) farmDto)
+                    .collect(Collectors.toList());
+            return MyPageFarmListResponse.builder().farms(myPageFarmListDtos).build();
+        } else {
+            List<FarmListDto> farmListDtos = farmDtos.stream()
+                    .map(farmDto -> (FarmListDto) farmDto)
+                    .collect(Collectors.toList());
+            return FarmListResponse.builder().farms(farmListDtos).build();
+        }
+    }
+
+
+
+    // 펀딩 진행 여부 검사
+    private boolean isFunding(int farmCode) {
+        LocalDateTime now = LocalDateTime.now();
+        List<Subscription> subscriptions = subscriptionRepository.findByFarmCode(farmCode);
+
+        for (Subscription subscription : subscriptions) {
+            if (subscription.getStartedTime().isBefore(now) && subscription.getEndedTime().isAfter(now)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
