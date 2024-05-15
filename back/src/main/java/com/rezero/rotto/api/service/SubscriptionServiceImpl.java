@@ -2,6 +2,7 @@ package com.rezero.rotto.api.service;
 
 import com.rezero.rotto.dto.dto.SubscriptionListDto;
 import com.rezero.rotto.dto.request.AccountDepositRequest;
+import com.rezero.rotto.dto.request.CreateTokenRequest;
 import com.rezero.rotto.dto.request.PayTokensRequest;
 import com.rezero.rotto.dto.response.SubscriptionDetailResponse;
 import com.rezero.rotto.dto.response.SubscriptionListResponse;
@@ -312,7 +313,11 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         subscription.setPartnerFarmRate(subscription.getPartnerFarmRate());
         subscriptionRepository.save(subscription);
 
-        
+        // 청약 ROTTO 생성
+        CreateTokenRequest request = new CreateTokenRequest();
+        request.setCode(subscription.getSubscriptionCode());
+        request.setAmount(subscription.getTotalTokenCount());
+        ResponseEntity<?> blockChainResponseEntity = blockChainService.createToken(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(subscription);
     }
