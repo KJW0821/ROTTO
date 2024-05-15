@@ -7,10 +7,12 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
+  Pressable
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Text } from "react-native-paper";
 import { getFarmILikeList } from "../../utils/FarmILikeApi";
+import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get("window");
 
@@ -25,141 +27,157 @@ const FarmILike = () => {
 
   useEffect(() => {
     getList();
-  }, []); 
+  }, []);
   const Navigation = useNavigation();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollViewRef = useRef();
-
-  const handleScroll = (event) => {
-    const contentOffsetX = event.nativeEvent.contentOffset.x;
-    const newIndex = Math.round(contentOffsetX / width);
-    setCurrentIndex(newIndex);
-  };
-
-  // return (
-  //   <View style={styles.screen}>
-  //     <Text style={styles.header}>FAQ</Text>
-  //     {farmILikeList &&
-  //       farmILikeList.map((item) => {
-  //         return (
-  //           <View key={item.farmCode}>
-  //             <Text style={styles.title}>{item.farmName}</Text>
-  //             <Text style={styles.content}>{item.beanName}</Text>
-  //           </View>
-  //         );
-  //       })}
-  //   </View>
-  // );
 
   return (
     <View style={styles.screen}>
-      <View
-        style={[
-          {
-            flexDirection: "row",
-            alignItems: "center",
-            marginHorizontal: 10,
-            justifyContent: "space-between",
-          },
-        ]}
-      >
-        <Text style={styles.header}>관심 농장</Text>
-        <Text style={styles.more}>더보기</Text>
-      </View>
-
-      <View style={styles.carouselContainer}>
-        <ScrollView
-          horizontal={true}
-          pagingEnabled={true}
-          showsHorizontalScrollIndicator={false}
-          style={styles.scrollViewStyle}
-          onScroll={handleScroll}
-          ref={scrollViewRef}
-          scrollEventThrottle={16}
-        >
-          {farmILikeList &&
-            farmILikeList.map((item) => {
-              return (
-                <TouchableOpacity
-                  key={item.farmCode}
-                  onPress={() => Navigation.navigate("announcement")}
+      {farmILikeList ? <View>
+        <View style={styles.headContainer}>
+          <Text
+            style={styles.header}
+          >관심 농장</Text>
+          <Text
+            style={styles.editBtnStyle}
+          >
+            편집하기
+          </Text>
+        </View>
+        <View style={styles.container}>
+          {farmILikeList.map((farm, index) => index < 3 && (
+            <Pressable key={farm.farmCode} style={styles.itemStyle}>
+              <View style={styles.itemContentStyle}>
+                <Image
+                  source={require("../../../assets/images/farmfarm.png")}
+                  style={{ width: 60, height: 60 }}
+                />
+                <View
+                  style={{ marginLeft: 10 }}
                 >
-                  <ImageBackground
-                    source={require("../../../assets/images/farmfarm.png")}
-                    style={{
-                      width: width,
-                      height: 150,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text style={styles.title}> {item.farmName}</Text>
-                    <Text style={styles.content}>{item.beanName}</Text>
-                  </ImageBackground>
-                </TouchableOpacity>
-              );
-            })}
-        </ScrollView>
-      </View>
+                  <Text style={styles.content}>
+                    {farm.farmName}
+                  </Text>
+                  <Text style={styles.subContent}>
+                    {farm.beanName}
+                  </Text>
+                </View>
+              </View>
+              <View>
+                <Text style={{ marginRight: 10 }}>청약 진행 중</Text>
+              </View>
+            </Pressable>
+          ))}
+          <Pressable
+            style={styles.itemStyle}
+            onPress={() => Navigation.navigate("farmList")}
+          >
+            <View style={styles.itemContentStyle}>
+              <View style={{ backgroundColor: "#F8F8F8", height: 40, width: 40, borderRadius: 25, alignItems: "center", justifyContent: "center", marginLeft: 10 }}>
+                <Ionicons name="add" size={24} color="#5492F7" />
+              </View>
+              <Text style={{ marginLeft: 20, color: "#BBBBBB", fontFamily: "pretendard-bold", fontSize: 16 }}>
+                추가하기
+              </Text>
+            </View>
+          </Pressable>
+        </View>
+      </View> :
+        <View>
+          <Text
+            style={styles.header}
+          >관심 농장</Text>
+          <View
+            style={styles.container}
+          >
+            <Image
+              source={require("../../../assets/images/farmfarm.png")}
+              style={styles.ImageStyle}
+            />
+            <Text
+              style={styles.content}
+            >수익 난 농장들을 구경해보세요</Text>
+            <Text
+              style={styles.subContent}
+            >1분이면 충분해요</Text>
+            <View
+              style={styles.btnStyle}
+            >
+              <Pressable
+                onPress={() => Navigation.navigate("farmList")}>
+                <Text
+                  style={styles.btnTextStyle}
+                >찾아 보기</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>}
     </View>
   );
 };
 
-/*
-{ {farmILikeList &&
-        farmILikeList.map((item) => {
-          return (
-            <View key={item.farmName}>
-              <Text style={styles.farmName}>{item.farmName}</Text>
-              <Text style={styles.beanName}>{item.beanName}</Text>
-            </View>
-          );
-        })} } 
-*/
 export default FarmILike;
 
 const styles = StyleSheet.create({
   screen: {
-    flex: 1,
-    backgroundColor: "white",
+    margin: 10
+  },
+  container: {
+    alignItems: "center"
   },
   header: {
     fontFamily: "pretendard-extraBold",
     fontSize: 23,
-    paddingBottom: 20,
+    margin: 10
   },
-  more: {
-    fontFamily: "pretendard-regular",
-    fontSize: 16,
-    paddingBottom: 20,
-  },
-  title: {
-    fontFamily: "pretendard-bold",
-    fontSize: 18,
-    marginTop: 20,
+  ImageStyle: {
+    width: width / 3,
+    height: width / 3,
+    resizeMode: "contain"
   },
   content: {
-    marginTop: 5,
+    fontFamily: "pretendard-bold",
+    fontSize: 16,
   },
-  carouselContainer: {
-    // 새로운 스타일
-    marginTop: 10,
-    position: "relative",
+  subContent: {
+    fontFamily: "pretendard-regular",
+    fontSize: 12,
+    color: "grey"
   },
-  scrollViewStyle: {
-    width: "100%",
-  },
-  item: {
-    width: width - 20,
-    borderRadius: 15,
+  btnStyle: {
+    width: width - 50,
     margin: 20,
-    height: 200,
-    justifyContent: "center",
+    padding: 10,
+    borderRadius: 10,
     alignItems: "center",
+    backgroundColor: "#3C80D0",
   },
-  text: {
-    fontFamily: "pretendard-extraBold",
-    fontSize: 30,
+  btnTextStyle: {
+    fontFamily: "pretendard-regular",
     color: "white",
+    fontSize: 18,
   },
+  headContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  editBtnStyle: {
+    margin: 10,
+    fontFamily: "pretendard-regular",
+    fontSize: 16,
+  },
+  itemStyle: {
+    marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: width * 0.9
+  },
+  itemContentStyle: {
+    marginHorizontal: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  }
 });
