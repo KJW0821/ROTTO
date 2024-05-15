@@ -2,21 +2,10 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { getFarmDetail } from "../../utils/farmAPi";
 import StackHeader from "../../components/common/StackHeader";
+import { addLike, removeLike } from "../../utils/FarmILikeApi";
 
 const FarmScreen = ({ route }) => {
-  const [farm, setFarm] = useState({
-    awardHistory: "공통, 특화, 자율 1, 1,1등",
-    beanGrade: 1,
-    beanName: "파나마 게이샤",
-    farmAddress: "부울경",
-    farmCode: 11,
-    farmImgPath: null,
-    farmLogoPath: null,
-    farmName: "경훈농장",
-    farmScale: 100,
-    farmStartedDate: "1993-03-21T00:00:00",
-    isLiked: false,
-  });
+  const [farm, setFarm] = useState({});
 
   const getDetail = async () => {
     const res = await getFarmDetail(route.params.farmCode);
@@ -27,10 +16,15 @@ const FarmScreen = ({ route }) => {
     getDetail();
   }, []);
 
+  const handlePressHeart = () => {
+    farm.isLiked ? removeLike(farm.farmCode) : addLike(farm.farmCode)
+    setFarm((prevFarm) => ({...prevFarm, isLiked : !farm.isLiked}))
+  }
+
   return (
     <>
       <View style={styles.screen}>
-        <StackHeader screenName="farmList" />
+        <StackHeader screenName="farmList" title={farm.farmName} detail={true} isLiked={farm.isLiked} onPressHeart={handlePressHeart}/>
         <View style={styles.info}>
         <Text>{farm.awardHistory}</Text>
         <Text>{farm.beanName}</Text>

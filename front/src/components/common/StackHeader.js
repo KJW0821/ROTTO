@@ -4,7 +4,16 @@ import { useNavigation } from "@react-navigation/native";
 
 import Colors from "../../constants/Colors";
 
-const StackHeader = ({ title, screenName, color, search, onPress }) => {
+const StackHeader = ({
+  title,
+  screenName,
+  color,
+  search,
+  onPress,
+  detail,
+  isLiked,
+  onPressHeart,
+}) => {
   const Navigation = useNavigation();
 
   return (
@@ -17,7 +26,7 @@ const StackHeader = ({ title, screenName, color, search, onPress }) => {
       <View style={styles.iconContainer}>
         <Ionicons
           name="chevron-back"
-          size={26}
+          size={20}
           color={color ? "white" : "black"}
           onPress={() => Navigation.navigate(screenName)}
         />
@@ -32,12 +41,19 @@ const StackHeader = ({ title, screenName, color, search, onPress }) => {
           {title}
         </Text>
       </View>
-      {search ? (
+      {search && (
         <Pressable style={styles.iconContainer} onPress={onPress}>
-          <Ionicons name="search" size={24} color={color ? "white" : "black"} />
+          <Ionicons name="search" size={20} color={color ? "white" : "black"} />
         </Pressable>
-      ) : (
-        <View></View>
+      )}
+      {detail && (
+        <Pressable style={styles.iconContainer} onPress={onPressHeart}>
+          {isLiked ? (
+            <Ionicons name="heart" size={20} color="red" />
+          ) : (
+            <Ionicons name="heart-outline" size={20} color="red" />
+          )}
+        </Pressable>
       )}
     </View>
   );
@@ -55,7 +71,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "pretendard-bold",
-    fontSize: 20,
+    fontSize: 15,
   },
   iconContainer: {
     marginHorizontal: 15,
