@@ -3,11 +3,24 @@ import Colors from '../../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
 import { setApplyModal } from '../../stores/fundingSlice';
 import CustomButton from '../common/CustomButton';
+import { useState } from 'react';
 
 const ApplyModal = () => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.fundingInfo.isApplyModalOpen);
   const fundingData = useSelector(state => state.fundingInfo.fundingData);
+
+  const [amount, setAmount] = useState('');
+  const [isValidAmount, setIsValidAmount] = useState();
+
+  const amountHandler = (enteredText) => {
+    setAmount(enteredText);
+    if (parseInt(enteredText) > fundingData.limitNum || parseInt(enteredText) < 1) {
+      setIsValidAmount(false);
+    } else {
+      setIsValidAmount(true);
+    }
+  };
 
   return (
     <Modal
@@ -23,10 +36,13 @@ const ApplyModal = () => {
             <View style={styles.inputContainer}>
               <TextInput 
                 style={styles.inputText}
+                keyboardType='number-pad'
+                value={amount}
+                onChangeText={amountHandler}
               />
-              <Text style={styles.infoText}> / {fundingData.limitNum} ROTTO</Text>
+              <Text style={[styles.infoText, isValidAmount === false && { color: 'red' }]}> / {fundingData.limitNum} ROTTO</Text>
             </View>
-            <CustomButton>신청</CustomButton>
+            <CustomButton disabled={!isValidAmount || !amount}>신청</CustomButton>
           </View>
           <View style={styles.line} />
           <Pressable onPress={() => dispatch(setApplyModal(false))}>
@@ -82,7 +98,8 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.fontGray,
     borderBottomWidth: 1,
     fontSize: 16,
-    fontFamily: 'pretendard-medium'
+    fontFamily: 'pretendard-medium',
+    textAlign: 'center'
   },
   infoText: {
     fontSize: 16,
