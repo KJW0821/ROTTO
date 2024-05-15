@@ -66,6 +66,8 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-
-
+    @Override
+    public ResponseEntity<?> getExpenseDetailOfSub(int userCode, int subscriptionCode) {
+        return null;
+    }
 }

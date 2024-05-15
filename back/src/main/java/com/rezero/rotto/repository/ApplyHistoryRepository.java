@@ -13,6 +13,8 @@ public interface ApplyHistoryRepository extends JpaRepository<ApplyHistory, Inte
     // 유저가 신청, 취소한 내역 조회
     List<ApplyHistory> findByUserCodeAndIsDelete(int userCode, int isDelete);
 
+    ApplyHistory findByUserCodeAndSubscriptionCodeAndIsDelete(int userCode, int subscriptionCode, int isDelete);
+
     @Query(value = "SELECT SUM(applyCount) FROM ApplyHistory WHERE subscriptionCode = :subscriptionCode")
     Integer sumApplyCountBySubscriptionCode(int subscriptionCode);
 

@@ -21,5 +21,6 @@ public class ApplyHistoryListGetDto {
     private LocalDateTime endedTime;
     private int applyCount;
     private int totalTokenCount;
+    private int totalApplyCount;
 
 }
