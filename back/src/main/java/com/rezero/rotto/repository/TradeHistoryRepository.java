@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface TradeHistoryRepository extends JpaRepository<TradeHistory, Integer> {
 
     List<TradeHistory> findByUserCode(int userCode);
+    TradeHistory findByUserCodeAndSubscriptionCode(int userCode, int subscriptionCode);
 }
 
