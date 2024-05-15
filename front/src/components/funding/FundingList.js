@@ -21,7 +21,7 @@ const FundingList = ({navigation}) => {
     switch (state) {
       case 0:
         return {
-          text: `D-${Math.floor(dayjs(startedTime).diff(dayjs(), "day", true))}`,
+          text: `D-${Math.floor(dayjs(startedTime).add(9, 'hour').diff(dayjs(), "day", true))}`,
           color: Colors.btnYellow
         };
       case 1:
