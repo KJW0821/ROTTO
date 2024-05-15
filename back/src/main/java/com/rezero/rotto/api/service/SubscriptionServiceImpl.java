@@ -186,9 +186,9 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
             // ROTTO 발급 수행
             ResponseEntity<?> responseEntity = blockChainService.distributeToken(request);
-            // if(responseEntity.getStatusCode() != HttpStatus.OK){
-            //
-            // }
+             if(responseEntity.getStatusCode() != HttpStatus.OK){
+                return responseEntity;
+             }
 
             // 받지 못한 토큰의 값어치만큼 환불
             int refundTokenCount = history.getApplyCount() - count;
@@ -200,7 +200,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         }
 
 
-        return null;
+        return ResponseEntity.ok().body("청약 ROTTO 발급 완료");
     }
 
     // 균등배분을 수행함.
@@ -312,6 +312,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         subscription.setPartnerFarmRate(subscription.getPartnerFarmRate());
         subscriptionRepository.save(subscription);
 
+        
 
         return ResponseEntity.status(HttpStatus.CREATED).body(subscription);
     }
