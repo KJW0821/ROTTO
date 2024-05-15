@@ -1,4 +1,4 @@
-import { View, FlatList, Text, StyleSheet } from 'react-native';
+import { View, FlatList, Text, StyleSheet, Pressable } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
 import { useEffect, useState } from 'react';
@@ -43,7 +43,12 @@ const FundingList = ({navigation}) => {
         data={data}
         renderItem={itemData => {
           return (
-            <View style={styles.cardContainer}>
+            <Pressable 
+              style={styles.cardContainer} 
+              onPress={() => navigation.navigate('fundingDetail', { 
+                subscriptionCode: itemData.item.subscriptionCode 
+              })}
+            >
               <View style={styles.topContainer}>
                 <Text style={styles.date}>
                   {dayjs(itemData.item.startedTime).format('YYYY.MM.DD')} - {dayjs(itemData.item.endTime).format('YYYY.MM.DD')}
@@ -74,7 +79,7 @@ const FundingList = ({navigation}) => {
                   </View>
                 }
               </View>
-            </View>
+            </Pressable>
           )
         }}
         keyExtractor={(item) => {
