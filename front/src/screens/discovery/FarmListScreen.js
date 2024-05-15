@@ -198,7 +198,12 @@ const FarmListScreen = () => {
             }}
           />
           <FilterButton
-            filterName={"가격"}
+            filterName={
+              (!minPrice && !maxPrice) ? "가격" 
+              : (!minPrice) ? `가격 ${maxPrice}원 이하`
+              : (!maxPrice) ? `가격 ${minPrice}원 이상`
+              : `가격 ${minPrice}원 ~ ${maxPrice}원`}
+            isChecked={minPrice || maxPrice}
             onPress={() => {
               setIsBottomSheetOpen(true);
               setSelectedCategory("price");
