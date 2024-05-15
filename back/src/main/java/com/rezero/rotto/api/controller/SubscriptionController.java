@@ -1,6 +1,7 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.SubscriptionService;
+import com.rezero.rotto.dto.request.SubscriptionProduceRequest;
 import com.rezero.rotto.dto.response.SubscriptionDetailResponse;
 import com.rezero.rotto.dto.response.SubscriptionListResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
@@ -31,9 +32,15 @@ public class SubscriptionController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
     @GetMapping
-    public ResponseEntity<?> getSubscriptionList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public ResponseEntity<?> getSubscriptionList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+                                                 @RequestParam(name = "subs-status", required = false) Integer subsStatus,
+                                                 @RequestParam(name = "min-price", required = false) Integer minPrice,
+                                                 @RequestParam(name = "max-price", required = false) Integer maxPrice,
+                                                 @RequestParam(name = "bean-type", required = false) String beanType,
+                                                 @RequestParam(required = false) String sort,
+                                                 @RequestParam(required = false) String keyword) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return subscriptionService.getSubscriptionList(userCode);
+        return subscriptionService.getSubscriptionList(userCode, subsStatus, minPrice, maxPrice, beanType, sort, keyword);
     }
 
 
@@ -49,9 +56,23 @@ public class SubscriptionController {
         return subscriptionService.getSubscriptionDetail(userCode, subscriptionCode);
     }
 
+
     @Operation(summary = "청약 정산")
     @PostMapping("/{subscription-code}")
-    public ResponseEntity<?> calculateSubscription(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int subscriptionCode){
+    public ResponseEntity<?> calculateSubscription(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int subscriptionCode) {
         return subscriptionService.calculateSubscription(subscriptionCode);
+    }
+
+    @Operation(summary = "청약 생성", description = "청약생성")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "생성 성공"),
+//                    content = @Content(schema = @Schema(implementation = SubscriptionDetailResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
+    })
+    @PostMapping
+    public ResponseEntity<?> postSubscription(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestBody SubscriptionProduceRequest subscriptionProduceRequest) {
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return subscriptionService.postSubscription(userCode, subscriptionProduceRequest);
+
     }
 }

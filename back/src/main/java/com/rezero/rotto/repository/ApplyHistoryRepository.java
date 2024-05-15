@@ -2,6 +2,7 @@ package com.rezero.rotto.repository;
 
 import com.rezero.rotto.entity.ApplyHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,4 +15,8 @@ public interface ApplyHistoryRepository extends JpaRepository<ApplyHistory, Inte
     List<ApplyHistory> findByUserCodeAndIsDelete(int userCode, int isDelete);
 
     Optional<List<ApplyHistory>> findBySubscriptionCodeAndIsDelete(int subscriptionCode, int isDelete);
+    ApplyHistory findByUserCodeAndSubscriptionCodeAndIsDelete(int userCode, int subscriptionCode, int isDelete);
+
+    @Query(value = "SELECT SUM(applyCount) FROM ApplyHistory WHERE subscriptionCode = :subscriptionCode")
+    Integer sumApplyCountBySubscriptionCode(int subscriptionCode);
 }

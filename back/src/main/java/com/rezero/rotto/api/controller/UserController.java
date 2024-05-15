@@ -1,9 +1,11 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.UserService;
+import com.rezero.rotto.dto.request.CheckEmailRequest;
 import com.rezero.rotto.dto.request.CheckPhoneNumRequest;
 import com.rezero.rotto.dto.request.ModifyPasswordRequest;
 import com.rezero.rotto.dto.request.SignUpRequest;
+import com.rezero.rotto.dto.response.CheckEmailResponse;
 import com.rezero.rotto.dto.response.CheckPhoneNumResponse;
 import com.rezero.rotto.dto.response.UserInfoResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
@@ -48,6 +50,15 @@ public class UserController {
     @PostMapping("/phone-num-check")
     public ResponseEntity<?> checkPhoneNum(@Valid @RequestBody CheckPhoneNumRequest request) {
         return userService.checkPhoneNum(request);
+    }
+
+
+    @Operation(summary = "이메일 중복 체크", description = "이메일 중복 체크하여 Boolean 타입으로 반환")
+    @ApiResponse(responseCode = "200", description = "중복 체크 요청 성공",
+            content = @Content(schema = @Schema(implementation = CheckEmailResponse.class)))
+    @PostMapping("/email-check")
+    public ResponseEntity<?> checkEmail(@RequestBody CheckEmailRequest request) {
+        return userService.checkEmail(request);
     }
 
 
