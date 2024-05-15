@@ -138,9 +138,12 @@ const FundingDetailScreen = ({navigation, route}) => {
           </View>
         </ScrollView>
       }
-      <View style={styles.buttonContainer}>
-        <CustomButton onPress={() => dispatch(setApplyModal(true))}>신청하기</CustomButton>
-      </View>
+      {
+        data.subsStatus === 1 &&
+        <View style={styles.buttonContainer}>
+          <CustomButton onPress={() => dispatch(setApplyModal(true))}>신청하기</CustomButton>
+        </View>
+      }
       <ApplyModal />
     </View>
   )
@@ -155,11 +158,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   scrollContainer: {
-    width: '85%'
+    width: '85%',
+    marginBottom: 16
   },
   buttonContainer: {
     width: '85%',
-    paddingVertical: 16
+    paddingBottom: 16,
+    paddingTop: 8
   },
   badgeContainer: {
     flexDirection: 'row',
