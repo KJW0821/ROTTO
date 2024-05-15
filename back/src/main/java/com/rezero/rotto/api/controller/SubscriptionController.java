@@ -56,6 +56,17 @@ public class SubscriptionController {
         return subscriptionService.getSubscriptionDetail(userCode, subscriptionCode);
     }
 
+
+    @Operation(summary = "청약 ROTTO 발급", description = "해당 청약을 신청하였던 투자자들 모두에게 ROTTO 발급")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "정산 완료"),
+
+    })
+    @PostMapping("distribute/{subscription-code}")
+    public ResponseEntity<?> calculateSubscription(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int subscriptionCode) {
+        return subscriptionService.calculateSubscription(subscriptionCode);
+    }
+
     @Operation(summary = "청약 생성", description = "청약생성")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
@@ -66,5 +77,6 @@ public class SubscriptionController {
     public ResponseEntity<?> postSubscription(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestBody SubscriptionProduceRequest subscriptionProduceRequest) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return subscriptionService.postSubscription(userCode, subscriptionProduceRequest);
+
     }
 }
