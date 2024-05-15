@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import static com.rezero.rotto.utils.Const.VALID_BEAN_TYPES;
@@ -56,6 +57,24 @@ public class SubscriptionServiceImpl implements SubscriptionService{
             int subscriptionCode = subscription.getSubscriptionCode();
             Integer applyCount = applyHistoryRepository.sumApplyCountBySubscriptionCode(subscriptionCode);
             applyCount = (applyCount != null) ? applyCount : 0;
+
+            // 현재 시각
+            LocalDateTime now = LocalDateTime.now();
+
+            // 시작 시간과 종료 시간
+            LocalDateTime startedTime = subscription.getStartedTime();
+            LocalDateTime endTime = subscription.getEndedTime();
+
+            // substatus 값을 결정하는 로직
+            int substatus;
+            if (now.isBefore(startedTime)) {
+                substatus = 0; // 현재 시각이 시작 시간보다 이전
+            } else if (now.isAfter(endTime)) {
+                substatus = 2; // 현재 시각이 종료 시간보다 이후
+            } else {
+                substatus = 1; // 현재 시각이 시작 시간과 종료 시간 사이
+            }
+
             SubscriptionListDto subscriptionListDto = SubscriptionListDto.builder()
                     .subscriptionCode(subscriptionCode)
                     .farmCode(farm.getFarmCode())
@@ -68,6 +87,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                     .beanType(farm.getFarmBeanName())
                     .returnRate(subscription.getReturnRate())
                     .totalTokenCount(subscription.getTotalTokenCount())
+                    .subsStatus(substatus)
                     .build();
 
             subscriptionListDtos.add(subscriptionListDto);

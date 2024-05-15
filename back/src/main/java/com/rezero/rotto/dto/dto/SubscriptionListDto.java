@@ -22,5 +22,6 @@ public class SubscriptionListDto {
     private int returnRate;
     private Integer applyCount;
     private int totalTokenCount;
+    private int subsStatus;
 
 }
