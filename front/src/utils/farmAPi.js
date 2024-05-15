@@ -21,7 +21,6 @@ export const getFarmList = async (sort, keyword, isLiked, subsStatus, minPrice, 
 export const getFarmDetail = async (code) => {
   try {
     const res = await API.get(`/farm/${code}`);
-    console.log(res.data)
     return res.data;
   } catch (err) {
   }
