@@ -45,87 +45,87 @@ const FarmScreen = ({ route }) => {
 
   return (
     <>
-    {farm && 
-      <ScrollView style={styles.screen}>
-        <StackHeader
-          screenName="farmList"
-          title={farm.farmName}
-          detail={true}
-          isLiked={farm.isLiked}
-          onPressHeart={handlePressHeart}
-        />
-        <View style={styles.container}>
-          <View style={styles.rowConatainer}>
-            <Image
-              source={{
-                uri: `${S3URL}/farm_img/1/${farm.farmLogoPath}`,
-              }}
-              style={styles.farmLogo}
-            />
-            <Text style={styles.title}>{farm.farmName}</Text>
-          </View>
-          <View style={styles.content}>
-            <Text>
-              안녕하세요. 농부 후안입니다. 저는 바리스타가 아니라 농장
-              주인인데요..
-            </Text>
-          </View>
-        </View>
-        <View style={styles.container}>
-          <Text style={styles.title}>농장 정보</Text>
-          <View style={styles.content}>
-            <View style={{ flexDirection: "row", marginBottom: 30 }}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.infoTitle}>지난 수익률</Text>
-                <Text style={styles.infoContent}>+43.38%</Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.infoTitle}>재배 원두</Text>
-                <Text style={styles.infoContent}>{farm.beanName}</Text>
-              </View>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.infoTitle}>농장 시작일</Text>
-                <Text style={styles.infoContent}>
-                  {farm ? farm.farmStartedDate.split("T")[0] : "" }
-                </Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.infoTitle}>규모</Text>
-                <Text style={styles.infoContent}>{farm.farmScale} ha</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View style={styles.container}>
-          <Text style={styles.title}>수상내역</Text>
-          <View style={styles.content}>
-            <Text>{farm.awardHistory}</Text>
-          </View>
-        </View>
-        <View style={styles.container}>
-          <Text style={styles.title}>주소</Text>
-          <View style={styles.content}>
-            <Text>{farm.farmAddress}</Text>
-          </View>
-        </View>
-        <View style={styles.imageContainer}>
-          <Text style={styles.imageTitle}>농장 둘러보기</Text>
-          <View style={styles.imageContent}>
-            {farmImagesCount.map((item) => (
+      {farm && (
+        <ScrollView style={styles.screen}>
+          <StackHeader
+            screenName="farmList"
+            title={farm.farmName}
+            detail={true}
+            isLiked={farm.isLiked}
+            onPressHeart={handlePressHeart}
+          />
+          <View style={styles.container}>
+            <View style={styles.rowConatainer}>
               <Image
-                source={{ uri: `${S3URL}/farm_img/1/farm${item}.jpg` }}
-                style={{
-                  width: (width / 100) * 32,
-                  height: (width / 100) * 32,
+                source={{
+                  uri: `${S3URL}/farm_img/1/${farm.farmLogoPath}`,
                 }}
+                style={styles.farmLogo}
               />
-            ))}
+              <Text style={styles.title}>{farm.farmName}</Text>
+            </View>
+            <View style={styles.content}>
+              <Text>
+                안녕하세요. 농부 후안입니다. 저는 바리스타가 아니라 농장
+                주인인데요..
+              </Text>
+            </View>
           </View>
-        </View>
-      </ScrollView>
-      }
+          <View style={styles.container}>
+            <Text style={styles.title}>농장 정보</Text>
+            <View style={styles.content}>
+              <View style={{ flexDirection: "row", marginBottom: 30 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.infoTitle}>지난 수익률</Text>
+                  <Text style={styles.infoContent}>+43.38%</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.infoTitle}>재배 원두</Text>
+                  <Text style={styles.infoContent}>{farm.beanName}</Text>
+                </View>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.infoTitle}>농장 시작일</Text>
+                  <Text style={styles.infoContent}>
+                    {farm ? farm.farmStartedDate.split("T")[0] : ""}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.infoTitle}>규모</Text>
+                  <Text style={styles.infoContent}>{farm.farmScale} ha</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+          <View style={styles.container}>
+            <Text style={styles.title}>수상내역</Text>
+            <View style={styles.content}>
+              <Text>{farm.awardHistory}</Text>
+            </View>
+          </View>
+          <View style={styles.container}>
+            <Text style={styles.title}>주소</Text>
+            <View style={styles.content}>
+              <Text>{farm.farmAddress}</Text>
+            </View>
+          </View>
+          <View style={styles.imageContainer}>
+            <Text style={styles.imageTitle}>농장 둘러보기</Text>
+            <View style={styles.imageContent}>
+              {farmImagesCount.map((item) => (
+                <Image
+                  source={{ uri: `${S3URL}/farm_img/1/farm${item}.jpg` }}
+                  style={{
+                    width: (width / 100) * 32,
+                    height: (width / 100) * 32,
+                  }}
+                />
+              ))}
+            </View>
+          </View>
+        </ScrollView>
+      )}
     </>
   );
 };
