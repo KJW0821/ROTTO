@@ -1,15 +1,19 @@
 import { View, Text, ScrollView, StyleSheet, Pressable, Image } from 'react-native';
 import DetailTopBar from '../../components/common/DetailTopBar';
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getFundingDetail } from '../../utils/fundingApi';
 import dayjs from 'dayjs';
 import Colors from '../../constants/Colors';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import CustomButton from '../../components/common/CustomButton';
+import { useDispatch } from 'react-redux';
+import { setApplyModal, setFundingData } from '../../stores/fundingSlice';
+import ApplyModal from '../../components/funding/ApplyModal';
 
 const FundingDetailScreen = ({navigation, route}) => {
   const subscriptionCode = route.params.subscriptionCode;
+  const dispatch = useDispatch();
 
   // const [data, setData] = useState();
 
@@ -39,6 +43,10 @@ const FundingDetailScreen = ({navigation, route}) => {
     totalTokenCount: 0,
     subsStatus: 1
   };
+
+  useEffect(() => {
+    dispatch(setFundingData(data));
+  }, [data])
 
   const getState = (state, startedTime, endTime) => {
     switch (state) {
@@ -131,8 +139,9 @@ const FundingDetailScreen = ({navigation, route}) => {
         </ScrollView>
       }
       <View style={styles.buttonContainer}>
-        <CustomButton>신청하기</CustomButton>
+        <CustomButton onPress={() => dispatch(setApplyModal(true))}>신청하기</CustomButton>
       </View>
+      <ApplyModal />
     </View>
   )
 }

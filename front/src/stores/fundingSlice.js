@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  isApplyModalOpen: false
+  isApplyModalOpen: false,
+  fundingData: null
 }
 
 export const fundingSlice = createSlice({
@@ -10,12 +11,16 @@ export const fundingSlice = createSlice({
   reducers: {
     setApplyModal: (state, action) => {
       state.isApplyModalOpen = action.payload;
+    },
+    setFundingData: (state, action) => {
+      state.fundingData = action.payload;
     }
   }
 });
 
 export const { 
-  setApplyModal
+  setApplyModal,
+  setFundingData
 } = fundingSlice.actions;
 
 export default fundingSlice.reducer;
