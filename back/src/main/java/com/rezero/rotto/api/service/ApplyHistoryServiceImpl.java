@@ -129,6 +129,7 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
             accountHistory.setAmount(applyBalance);
             accountHistory.setAccountTime(now);
             accountHistory.setDepositWithdrawalCode(2);
+            accountHistoryRepository.save(accountHistory);
 
 
             return ResponseEntity.status(HttpStatus.OK).body(applyHistory);
@@ -225,6 +226,7 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
                 accountHistory.setAmount(applyCountBalance);
                 accountHistory.setAccountTime(now);
                 accountHistory.setDepositWithdrawalCode(1);
+                accountHistoryRepository.save(accountHistory);
 
                 return ResponseEntity.status(HttpStatus.OK).body(applyHistory);
             } catch (Exception e) {
