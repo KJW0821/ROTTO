@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -101,6 +102,19 @@ public class FarmServiceImpl implements FarmService {
             isLiked = true;
         }
 
+        LocalDateTime now = LocalDateTime.now();
+        List<Subscription> latestEndedSubscriptions = subscriptionRepository.findLatestEndedSubscription(farmCode, now);
+        Subscription latestEndedSubscription = null;
+        if (!latestEndedSubscriptions.isEmpty()) {
+            latestEndedSubscription = latestEndedSubscriptions.get(0);
+        }
+
+        BigDecimal returnRate;
+        if (latestEndedSubscription == null) {
+            returnRate = null;
+        } else {
+            returnRate = latestEndedSubscription.getReturnRate();
+        }
 
         FarmDetailResponse response = FarmDetailResponse.builder()
                 .farmCode(farmCode)
@@ -113,6 +127,7 @@ public class FarmServiceImpl implements FarmService {
                 .awardHistory(farm.getAwardHistory())
                 .beanName(farm.getFarmBeanName())
                 .beanGrade(farm.getFarmBeanGrade())
+                .returnRate(returnRate)
                 .isLiked(isLiked)
                 .build();
 
@@ -141,11 +156,25 @@ public class FarmServiceImpl implements FarmService {
             if (interestFarm != null) {
                 isLiked = true;
             }
+            int farmCode = farm.getFarmCode();
+            LocalDateTime now = LocalDateTime.now();
+            List<Subscription> latestEndedSubscriptions = subscriptionRepository.findLatestEndedSubscription(farmCode, now);
+            Subscription latestEndedSubscription = null;
+            if (!latestEndedSubscriptions.isEmpty()) {
+                latestEndedSubscription = latestEndedSubscriptions.get(0);
+            }
+            BigDecimal returnRate;
+            if (latestEndedSubscription == null) {
+                returnRate = null;
+            } else {
+                returnRate = latestEndedSubscription.getReturnRate();
+            }
             FarmListDto farmListDto = FarmListDto.builder()
                     .farmCode(farm.getFarmCode())
                     .farmName(farm.getFarmName())
                     .farmLogoPath(farm.getFarmLogoPath())
                     .beanName(farm.getFarmBeanName())
+                    .returnRate(returnRate)
                     .isLiked(isLiked)
                     .build();
             // farms 에 하나씩 담기
@@ -194,16 +223,30 @@ public class FarmServiceImpl implements FarmService {
 
     private List<? extends FarmDto> convertToDtoList(List<Farm> farms, int userCode, Boolean isMyPage) {
         List<FarmDto> farmDtos = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
 
         for (Farm farm : farms) {
             Boolean farmIsLiked = interestFarmRepository.findByFarmCodeAndUserCode(farm.getFarmCode(), userCode) != null;
             Boolean isFunding = isFunding(farm.getFarmCode());
 
             FarmDto farmDto;
-            if (isMyPage) {
-                farmDto = new MyPageFarmListDto(farm.getFarmCode(), farm.getFarmName(), farm.getFarmLogoPath(), farm.getFarmBeanName(), farmIsLiked, isFunding);
+            int farmCode = farm.getFarmCode();
+            List<Subscription> latestEndedSubscriptions = subscriptionRepository.findLatestEndedSubscription(farmCode, now);
+            Subscription latestEndedSubscription = null;
+            if (!latestEndedSubscriptions.isEmpty()) {
+                latestEndedSubscription = latestEndedSubscriptions.get(0);
+            }
+            BigDecimal returnRate;
+            if (latestEndedSubscription == null) {
+                returnRate = null;
             } else {
-                farmDto = new FarmListDto(farm.getFarmCode(), farm.getFarmName(), farm.getFarmLogoPath(), farm.getFarmBeanName(), farmIsLiked);
+                returnRate = latestEndedSubscription.getReturnRate();
+            }
+
+            if (isMyPage) {
+                farmDto = new MyPageFarmListDto(farmCode, farm.getFarmName(), farm.getFarmLogoPath(), farm.getFarmBeanName(), farmIsLiked, returnRate, isFunding);
+            } else {
+                farmDto = new FarmListDto(farmCode, farm.getFarmName(), farm.getFarmLogoPath(), farm.getFarmBeanName(), farmIsLiked, returnRate);
             }
             farmDtos.add(farmDto);
         }
@@ -233,7 +276,6 @@ public class FarmServiceImpl implements FarmService {
                     .build();
         }
     }
-
 
 
     // 펀딩 진행 여부 검사
