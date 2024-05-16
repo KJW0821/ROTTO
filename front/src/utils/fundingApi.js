@@ -37,3 +37,13 @@ export const applyFunding = async (subscriptionCode, applyCount) => {
     return err.response;
   }
 };
+
+export const cancelFunding = async (subscriptionCode) => {
+  try {
+    const res = await API.patch(`/apply/${subscriptionCode}`);
+    return res;
+  } catch (err) {
+    console.error('청약 취소 실패' + err);
+    return err.response;
+  }
+};
