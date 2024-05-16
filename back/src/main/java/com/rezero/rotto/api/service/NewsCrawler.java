@@ -11,6 +11,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @Component
 @RequiredArgsConstructor
@@ -22,7 +26,7 @@ public class NewsCrawler {
     void crawlCoffeeNews() {
         try {
             // 커피 뉴스 크롤링할 URL
-            String url = "https://dailycoffeenews.com/latest-news";
+            String url = "https://dailycoffeenews.com/latest-news/";
 
             // 연결하기
             Document document = Jsoup.connect(url).get();
@@ -34,7 +38,10 @@ public class NewsCrawler {
             for (Element article : articles) {
                 // News 엔티티 생성
                 News news = new News();
-                
+
+                String datePart = null;
+                String headlineText = null;
+
                 // 기사 detail 링크 가져오기
                 Element link = article.selectFirst("h2 > a");
                 if (link != null) {
@@ -60,7 +67,7 @@ public class NewsCrawler {
                 if (dateElement != null) {
                     String dateText = dateElement.ownText().trim();
                     String[] dateParts = dateText.split("\\|");
-                    String datePart = dateParts[2].trim();
+                    datePart = dateParts[2].trim();
                     news.setPostTime(datePart);
                 } else {
                     continue;
@@ -69,7 +76,7 @@ public class NewsCrawler {
                 // 헤드라인 가져오기
                 Element headlineLink = article.selectFirst("h2 > a");
                 if (headlineLink != null) {
-                    String headlineText = headlineLink.text();
+                    headlineText = headlineLink.text();
                     news.setTitle(headlineText);
                 } else {
                     continue;
@@ -90,7 +97,28 @@ public class NewsCrawler {
                     String authorText = authorLink.text();
                     news.setAuthor(authorText);
                 }
-                
+
+                // 뉴스 디테일도 추가
+                // 커피 뉴스 디테일 URL
+                String detailUrl = url + parseDateToUrl(datePart) + headlineText;
+                Document detailDocument = Jsoup.connect(detailUrl).get();
+
+                // entry 안에 있는 모든 p 태그들을 하나의 문자열로 합칠 변수
+                StringBuilder entryContent = new StringBuilder();
+
+                // 크롤링할 요소 선택
+                Elements entry = document.select("entry");
+
+                // entry 에 있는 각 p 태그에 대해 반복
+                for (Element paragraph : entry.select("p")) {
+                    // p 태그의 텍스트를 가져와서 entryContent에 추가
+                    entryContent.append(paragraph.text()).append("\n");
+                }
+
+                // News - content 에 넣기
+                String combinedText = entryContent.toString();
+                news.setContent(combinedText);
+
                 // 데이터 저장
                 newsRepository.save(news);
                 
@@ -112,4 +140,22 @@ public class NewsCrawler {
         return imageUrl;
     }
 
+    public static String parseDateToUrl(String dateString) {
+        try {
+            // 날짜 문자열을 LocalDate 객체로 파싱
+            LocalDate date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("MMM dd, yyyy"));
+
+            // 년도와 월 추출
+            int year = date.getYear();
+            Month month = date.getMonth();
+            int monthValue = month.getValue();
+            int dayOfMonth = date.getDayOfMonth();
+
+            // detailUrl을 구성하여 반환
+            return year + "/" + String.format("%02d", monthValue) + "/" + String.format("%02Dd", dayOfMonth) + "/";
+        } catch (DateTimeParseException e) {
+            e.printStackTrace();
+            return null; // 파싱 실패 시 null 반환
+        }
+    }
 }
