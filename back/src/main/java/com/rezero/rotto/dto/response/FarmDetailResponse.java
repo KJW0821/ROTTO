@@ -24,5 +24,6 @@ public class FarmDetailResponse {
     private Integer beanGrade;
     private BigDecimal returnRate;
     private Boolean isLiked;
+    private Long likeCount;
 
 }
