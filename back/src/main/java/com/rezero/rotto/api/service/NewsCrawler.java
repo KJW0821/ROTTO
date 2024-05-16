@@ -46,6 +46,10 @@ public class NewsCrawler {
                 Element link = article.selectFirst("h2 > a");
                 if (link != null) {
                     String href = link.attr("href");
+                    // 이미 db에 존재하면 크롤링하지 않음
+                    if (newsRepository.existsByNewsDetailLink(href)) {
+                        continue;
+                    }
                     news.setNewsDetailLink(href);
                 } else {
                     continue;
