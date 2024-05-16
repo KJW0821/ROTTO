@@ -20,4 +20,7 @@ public class SubscriptionDetailResponse {
     private int returnRate;
     private int applyCount;
     private int totalTokenCount;
+    private int subsStatus;
+    private String farmImg;
+    private int isApply;
 }
