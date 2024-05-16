@@ -22,5 +22,5 @@ public class ApplyHistoryListGetDto {
     private int applyCount;
     private int totalTokenCount;
     private int totalApplyCount;
-
+    private LocalDateTime refundDate;
 }

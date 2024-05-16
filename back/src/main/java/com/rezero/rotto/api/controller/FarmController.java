@@ -33,6 +33,7 @@ public class FarmController {
     })
     @GetMapping
     public ResponseEntity<?> getFarmList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+                                         @RequestParam(required = false) Integer page,
                                          @RequestParam(name = "is-liked", required = false) Boolean isLiked,
                                          @RequestParam(name = "subs-status", required = false) Integer subsStatus,
                                          @RequestParam(name = "min-price", required = false) Integer minPrice,
@@ -41,7 +42,7 @@ public class FarmController {
                                          @RequestParam(required = false) String sort,
                                          @RequestParam(required = false) String keyword) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return farmService.getFarmList(userCode, isLiked, subsStatus, minPrice, maxPrice, beanType, sort, keyword);
+        return farmService.getFarmList(userCode, page, isLiked, subsStatus, minPrice, maxPrice, beanType, sort, keyword);
     }
 
 

@@ -13,5 +13,6 @@ import java.util.List;
 public class MyPageFarmListResponse {
 
     private List<MyPageFarmListDto> farms;
+    private int totalPages;
 
 }
