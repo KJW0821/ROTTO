@@ -43,6 +43,8 @@ public class TokenManager extends Contract {
 
     private static String librariesLinkedBinary;
 
+    public static final String FUNC_CHECKWHITELIST = "checkWhiteList";
+
     public static final String FUNC_CREATETOKEN = "createToken";
 
     public static final String FUNC_DELETETOKEN = "deleteToken";
@@ -117,6 +119,14 @@ public class TokenManager extends Contract {
         return ownershipTransferredEventFlowable(filter);
     }
 
+    public RemoteFunctionCall<TransactionReceipt> checkWhiteList(String _wallet) {
+        final Function function = new Function(
+                FUNC_CHECKWHITELIST, 
+                Arrays.<Type>asList(new Address(160, _wallet)),
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
     public RemoteFunctionCall<TransactionReceipt> createToken(Subscription subscription, BigInteger amount) {
         final Function function = new Function(
                 FUNC_CREATETOKEN, 
@@ -168,14 +178,6 @@ public class TokenManager extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> renounceOwnership() {
-        final Function function = new Function(
-                FUNC_RENOUNCEOWNERSHIP, 
-                Arrays.<Type>asList(), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
-    }
-
     public RemoteFunctionCall<TransactionReceipt> setStorageAddress(String _addr) {
         final Function function = new Function(
                 FUNC_SETSTORAGEADDRESS, 
@@ -188,14 +190,6 @@ public class TokenManager extends Contract {
         final Function function = new Function(
                 FUNC_SETWHITELIST, 
                 Arrays.<Type>asList(new Address(160, _addr)),
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
-    }
-
-    public RemoteFunctionCall<TransactionReceipt> transferOwnership(String newOwner) {
-        final Function function = new Function(
-                FUNC_TRANSFEROWNERSHIP, 
-                Arrays.<Type>asList(new Address(160, newOwner)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -235,6 +229,7 @@ public class TokenManager extends Contract {
     public static RemoteCall<TokenManager> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         return deployRemoteCall(TokenManager.class, web3j, transactionManager, gasPrice, gasLimit, getDeploymentBinary(), "");
     }
+
     public static String getDeploymentBinary() {
         if (librariesLinkedBinary != null) {
             return librariesLinkedBinary;

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -94,4 +95,15 @@ public class BlockChainController {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("요청 권한이 없습니다.");
 	}
 
+	@Operation(summary = "whiteList 체크", description = "입력받은 지갑 주소가 whiteList에 있는지 체크한다.")
+	@GetMapping("/checkList")
+	public ResponseEntity<?> checkWhiteList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestBody WhiteListRequest wallet){
+		int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+		User user = userRepository.findByUserCode(userCode);
+		if(user.getAdmin()) {
+			String address = wallet.getWallet();
+			return blockChainService.checkWhiteList(address);
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("요청 권한이 없습니다.");
+	}
 }
