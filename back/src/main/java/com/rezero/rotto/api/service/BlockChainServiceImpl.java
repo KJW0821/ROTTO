@@ -128,7 +128,7 @@ public class BlockChainServiceImpl implements BlockChainService{
 				history.setUserCode(user.get().getUserCode());
 				history.setRefund(0);
 				history.setTradeNum(request.getAmount());
-				history.set
+				history.setTokenPrice(subscription.getConfirmPrice());
 
 				return ResponseEntity.status(HttpStatus.OK).body("ROTTO 발급 완료");
 			}
