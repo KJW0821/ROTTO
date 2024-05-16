@@ -39,7 +39,8 @@ public class NewsServiceImpl implements NewsService {
         Collections.reverse(allNews);
         // stream 을 통해 allNews 를 순회하며 dto 리스트에 값을 담는다.
         List<NewsListDto> newsList = allNews.stream()
-                .map(news -> new NewsListDto(news.getNewsCode(), news.getTitle()))
+                .map(news -> new NewsListDto(news.getNewsCode(), news.getTitle(), news.getAuthor(), news.getCategory(),
+                        news.getImgLink(), news.getNewsDetailLink(), news.getPostTime()))
                 .toList();
 
         // 리스폰스 생성
@@ -64,8 +65,11 @@ public class NewsServiceImpl implements NewsService {
                 .newsCode(news.getNewsCode())
                 .title(news.getTitle())
                 .content(news.getContent())
+                .author(news.getAuthor())
+                .category(news.getCategory())
+                .imgLink(news.getImgLink())
+                .newsDetailLink(news.getNewsDetailLink())
                 .postTime(news.getPostTime())
-                .imgPath(news.getImgPath())
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
