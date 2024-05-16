@@ -21,6 +21,8 @@ contract TokenManager is Ownable {
         _;
     }
 
+    event resultCheck(bool);
+
     function setStorageAddress(address _addr) public validAddress(_addr) onlyOwner {
         tokenStorageAddress = _addr;
     }
@@ -56,7 +58,9 @@ contract TokenManager is Ownable {
 
     // 입력받은 지갑 주소가 whitelist에 존재 여부 확인
     function checkWhiteList(address _wallet) external validAddress(_wallet) onlyOwner returns(bool) {
-        return IWhitelist(whitelistAddress).checkWhiteList(_wallet);
+        bool result = IWhitelist(whitelistAddress).checkWhiteList(_wallet);
+        emit resultCheck(result);
+        return result;
     } 
 
 
