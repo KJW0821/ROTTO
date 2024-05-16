@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 @Slf4j
 @Component
@@ -26,7 +27,7 @@ public class NewsCrawler {
 
     @Scheduled(fixedRate = 3600000) // 1시간마다 크롤링 수행
     void crawlCoffeeNews() {
-        log.info("크롤링 시작");
+        log.info("Crawling Start");
         try {
             // 커피 뉴스 크롤링할 URL
             String url = "https://dailycoffeenews.com/latest-news/";
@@ -108,14 +109,20 @@ public class NewsCrawler {
                 try {
                     // 뉴스 디테일도 추가
                     // 커피 뉴스 디테일 URL
-                    String detailUrl = url + parseDateToUrl(datePart) + headlineText;
+                    String parseDate = parseDateToUrl(datePart);
+                    String parseHeadline = removeSpecialCharacters(headlineText);
+                    String detailUrl = url + parseDate + "/" + parseHeadline;
+
+                    if (parseDate == null) {
+                        continue;
+                    }
                     Document detailDocument = Jsoup.connect(detailUrl).get();
 
                     // entry 안에 있는 모든 p 태그들을 하나의 문자열로 합칠 변수
                     StringBuilder entryContent = new StringBuilder();
 
                     // 크롤링할 요소 선택
-                    Elements entry = document.select("entry");
+                    Elements entry = detailDocument.select(".entry");
 
                     // entry 에 있는 각 p 태그에 대해 반복
                     for (Element paragraph : entry.select("p")) {
@@ -136,7 +143,7 @@ public class NewsCrawler {
         } catch (IOException e) {
             log.error("뉴스 크롤링 실패", e);
         }
-        log.info("크롤링 성공");
+        log.info("Crawling Success");
     }
 
     // 스타일 속성 값에서 이미지 URL을 추출하는 메서드
@@ -153,19 +160,37 @@ public class NewsCrawler {
     public static String parseDateToUrl(String dateString) {
         try {
             // 날짜 문자열을 LocalDate 객체로 파싱
-            LocalDate date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("MMM dd, yyyy"));
+            DateTimeFormatter inputFormatter1 = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH);
+            LocalDate date1 = null;
+            try {
+                date1 = LocalDate.parse(dateString, inputFormatter1);
+            } catch (DateTimeParseException ignored) {}
 
-            // 년도와 월 추출
-            int year = date.getYear();
-            Month month = date.getMonth();
-            int monthValue = month.getValue();
-            int dayOfMonth = date.getDayOfMonth();
+            DateTimeFormatter inputFormatter2 = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH);
+            LocalDate date2 = null;
+            try {
+                date2 = LocalDate.parse(dateString, inputFormatter2);
+            } catch (DateTimeParseException ignored) {}
 
-            // detailUrl을 구성하여 반환
-            return year + "/" + String.format("%02d", monthValue) + "/" + String.format("%02Dd", dayOfMonth) + "/";
+            // 두 날짜 중 하나를 선택
+            LocalDate date = (date1 != null) ? date1 : date2;
+
+            if (date == null) {
+                throw new DateTimeParseException("Failed to parse date", dateString, 0);
+            }
+
+            // 원하는 형식으로 변환
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+            return date.format(outputFormatter);
         } catch (DateTimeParseException e) {
             e.printStackTrace();
             return null; // 파싱 실패 시 null 반환
         }
+    }
+
+    public static String removeSpecialCharacters(String input) {
+        // 특수 문자를 제거하고 공백을 '-'로 변경하는 정규 표현식
+        String result = input.replaceAll("[^a-zA-Z0-9\\s-]", "").replaceAll("\\s", "-");
+        return result;
     }
 }
