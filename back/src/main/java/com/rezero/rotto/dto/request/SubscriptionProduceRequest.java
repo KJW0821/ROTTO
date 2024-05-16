@@ -2,6 +2,7 @@ package com.rezero.rotto.dto.request;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,7 +16,7 @@ public class SubscriptionProduceRequest {
     private LocalDateTime startedTime;
     private LocalDateTime endedTime;
     private int limitNum;
-    private int returnRate;
+    private BigDecimal returnRate;
     private int partnerFarmRate;
     private int totalTokenCount;
 }
