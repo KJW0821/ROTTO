@@ -18,6 +18,7 @@ import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.Response;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
@@ -47,9 +48,6 @@ public class BlockChainServiceImpl implements BlockChainService{
 
 	@Autowired
 	private final SubscriptionRepository subscriptionRepository;
-
-	@Autowired
-	private final TradeHistoryRepository tradeHistoryRepository;
 
 	private TokenManager tokenManager = null;
 
@@ -100,11 +98,15 @@ public class BlockChainServiceImpl implements BlockChainService{
 		else if(request.getAmount() > subscription.getLimitNum())
 			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("요청하신 수량이 1인당 가질 수 있는 개수를 초과하였습니다.");
 
-		// 이전에 금융망을 통해 사용자 ssafy 계좌 이체 요청 필요
-
-		// BigInteger code = BigInteger.valueOf(subscription.getSubscriptionCode());
 		TokenManager.Subscription requestSubscription = changeVariable(subscription);
 		BigInteger amount = BigInteger.valueOf(request.getAmount());
+
+		ResponseEntity<?> check = checkWhiteList(request.getAddress());
+		if(check.getStatusCode() == HttpStatus.OK){
+			boolean isWhitelisted = (boolean)check.getBody();
+			if(!isWhitelisted)  InsertWhiteList(request.getAddress());
+		}
+		else ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("작업 중 오류가 발생하였습니다.");
 
 		CompletableFuture<TransactionReceipt> transactionReceiptFuture
 			= tokenManager.distributeToken(requestSubscription, request.getAddress(), amount).sendAsync();
@@ -141,6 +143,13 @@ public class BlockChainServiceImpl implements BlockChainService{
 
 		BigInteger code = BigInteger.valueOf(subscription.getSubscriptionCode());
 
+		ResponseEntity<?> check = checkWhiteList(request.getAddress());
+		if(check.getStatusCode() == HttpStatus.OK){
+			boolean isWhitelisted = (boolean)check.getBody();
+			if(!isWhitelisted)  InsertWhiteList(request.getAddress());
+		}
+		else ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("작업 중 오류가 발생하였습니다.");
+
 		CompletableFuture<TransactionReceipt> transactionReceiptFuture
 			= tokenManager.deleteToken(code, request.getAddress()).sendAsync();
 		try {
@@ -160,10 +169,6 @@ public class BlockChainServiceImpl implements BlockChainService{
 			String errorMessage = (cause != null ? cause.getMessage() : ex.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
 		}
-		// 거래 장부에 거래 내역 추가
-
-		// 금융망에 사용자의 계좌에 입금 필요
-
 	}
 
 	@Override
