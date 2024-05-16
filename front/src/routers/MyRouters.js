@@ -6,6 +6,7 @@ import BioAuthScreen from "../screens/my/BioAuthScreen";
 import PinAuthScreen from "../screens/my/PinAuthScreen";
 import TransactionResultScreen from "../screens/my/TransactionResultScreen";
 import TransactionScreen from "../screens/my/TransactionScreen";
+import OwnDetailScreen from "../screens/my/OwnDetailScreen";
 
 
 const MyRouters = () => {
@@ -20,6 +21,7 @@ const MyRouters = () => {
       <MyStack.Screen name="transactionResult" component={TransactionResultScreen} />
       <MyStack.Screen name="transactionBioAuth" component={BioAuthScreen} />
       <MyStack.Screen name="transactionPinAuth" component={PinAuthScreen} />
+      <MyStack.Screen name="ownDetail" component={OwnDetailScreen} />
     </MyStack.Navigator>
   );
 };

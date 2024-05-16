@@ -42,7 +42,7 @@ const InvestmentList = ({navigation}) => {
         </Pressable>
       </View>
       <View style={{flex: 1}}>
-        {ComponentToShow && <ComponentToShow />}
+        {ComponentToShow && <ComponentToShow navigation={navigation} />}
       </View>
     </View>
   )

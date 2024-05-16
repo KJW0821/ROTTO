@@ -5,7 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { getOwnHistory } from '../../utils/investApi';
 
-const OwnList = () => {
+const OwnList = ({navigation}) => {
   const [data, setData] = useState();
 
   useFocusEffect(
@@ -28,7 +28,10 @@ const OwnList = () => {
           <View style={styles.cardContainer}>
             <View style={styles.topContainer}>
               <Text style={styles.farmName}>{itemData.item.farmName}</Text>
-              <Pressable style={styles.buttonContainer}>
+              <Pressable 
+                style={styles.buttonContainer} 
+                onPress={() => navigation.navigate('ownDetail', { subscriptionCode: itemData.item.subscriptionCode })}
+              >
                 <Text style={styles.menu}>상세 내역</Text>
                 <MaterialIcons name="arrow-forward-ios" size={14} color={Colors.fontGray} />
               </Pressable>
