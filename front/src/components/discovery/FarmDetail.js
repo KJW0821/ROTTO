@@ -56,10 +56,10 @@ const styles = StyleSheet.create({
     color: "black",
   },
   farmLogo: {
-    height: 50,
-    width: 50,
+    height: 52,
+    width: 52,
     resizeMode: "stretch",
-    borderRadius: 25,
+    borderRadius: 26,
     marginRight: 10,
   },
   profit: {

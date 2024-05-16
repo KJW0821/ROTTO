@@ -119,7 +119,9 @@ const FarmScreen = ({ route }) => {
                   style={{
                     width: (width / 100) * 32,
                     height: (width / 100) * 32,
-                  }}
+                  }
+
+                }
                 />
               ))}
             </View>
