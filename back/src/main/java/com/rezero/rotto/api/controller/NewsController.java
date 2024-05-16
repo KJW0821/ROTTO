@@ -37,9 +37,10 @@ public class NewsController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
     @GetMapping
-    public ResponseEntity<?> getNewsList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public ResponseEntity<?> getNewsList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+                                         @RequestParam(required = false) Integer page) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return newsService.getNewsList(userCode);
+        return newsService.getNewsList(userCode, page);
     }
 
 

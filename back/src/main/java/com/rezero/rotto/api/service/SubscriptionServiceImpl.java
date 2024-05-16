@@ -25,6 +25,7 @@ import com.rezero.rotto.repository.SubscriptionRepository;
 import com.rezero.rotto.repository.TradeHistoryRepository;
 import com.rezero.rotto.repository.UserRepository;
 import com.rezero.rotto.repository.*;
+import com.rezero.rotto.utils.Pagination;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -48,6 +49,7 @@ import java.util.Random;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import static com.rezero.rotto.utils.Const.VALID_BEAN_TYPES;
 
@@ -65,8 +67,10 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     private final AccountRepository accountRepository;
     private final AccountHistoryRepository accountHistoryRepository;
     private final ExpenseDetailRepository expenseDetailRepository;
+    private final Pagination pagination;
 
-    public ResponseEntity<?> getSubscriptionList(int userCode, Integer subsStatus, Integer minPrice, Integer maxPrice, String beanType, String sort, String keyword){
+
+    public ResponseEntity<?> getSubscriptionList(int userCode, Integer page, Integer subsStatus, Integer minPrice, Integer maxPrice, String beanType, String sort, String keyword){
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
@@ -85,9 +89,24 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         spec = spec.and(SubscriptionSpecification.applySorting(sort));
 
         List<Subscription> subscriptions = subscriptionRepository.findAll(spec);
+        // 인덱스 선언
+        int startIdx = 0;
+        int endIdx = 0;
+        // 총 페이지 수 선언
+        int totalPages = 1;
+
+        // 페이지네이션
+        List<Integer> indexes = pagination.pagination(page, 10, subscriptions.size());
+        startIdx = indexes.get(0);
+        endIdx = indexes.get(1);
+        totalPages = indexes.get(2);
+        // 최신순으로 보여주기 위해 리스트 뒤집기
+        Collections.reverse(subscriptions);
+        // 페이지네이션
+        List<Subscription> pageSubscriptions = subscriptions.subList(startIdx, endIdx);
         List<SubscriptionListDto> subscriptionListDtos = new ArrayList<>();
 
-        for (Subscription subscription : subscriptions) {
+        for (Subscription subscription : pageSubscriptions) {
             Farm farm = farmRepository.findByFarmCode(subscription.getFarmCode());
             int subscriptionCode = subscription.getSubscriptionCode();
             Integer applyCount = applyHistoryRepository.sumApplyCountBySubscriptionCode(subscriptionCode);
@@ -130,6 +149,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
         SubscriptionListResponse response = SubscriptionListResponse.builder()
                 .subscriptions(subscriptionListDtos)
+                .totalPages(totalPages)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

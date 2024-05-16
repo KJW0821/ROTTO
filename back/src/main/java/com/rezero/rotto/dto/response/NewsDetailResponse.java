@@ -16,7 +16,10 @@ public class NewsDetailResponse {
     private int newsCode;
     private String title;
     private String content;
-    private LocalDateTime postTime;
-    private String imgPath;
+    private String author;
+    private String category;
+    private String imgLink;
+    private String newsDetailLink;
+    private String postTime;
 
 }
