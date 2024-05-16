@@ -70,10 +70,10 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
 
         Subscription subscription = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
         TradeHistory tradeHistory = tradeHistoryRepository.findByUserCodeAndSubscriptionCode(userCode, subscriptionCode);
-        List<ExpenseDetail> expenseDetails = expenseDetailRepository.findByFarmCode(subscription.getFarmCode());
+        List<ExpenseDetail> expenseDetails = expenseDetailRepository.findBySubscriptionCode(subscriptionCode);
         Farm farm =farmRepository.findByFarmCode(subscription.getFarmCode());
 
-        Integer sum = expenseDetailRepository.sumExpenseDetailByFarmCode(farm.getFarmCode());
+        Integer sum = expenseDetailRepository.sumExpenseDetailBySubscriptionCode(subscriptionCode);
         int totalExpenses = (sum != null) ? sum.intValue() : 0;
         List<TradeHistoryExpenseDetailOfSubDto> tradeHistoryExpenseDetailOfSubDtos = new ArrayList<>();
 
@@ -89,7 +89,7 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
         TradeHistoryExpenseDetailOfSubResponse tradeHistoryExpenseDetailOfSubResponse =TradeHistoryExpenseDetailOfSubResponse.builder()
                 .subscriptionCode(subscription.getSubscriptionCode())
                 .farmName(farm.getFarmName())
-                .totalSoldPrice(farm.getTotalSales())
+                .totalSoldPrice(subscription.getTotalSales())
                 .totalExpense(totalExpenses)
                 .tradeTime(tradeHistory.getTradeTime())
                 .tradeNum(tradeHistory.getTradeNum())
@@ -102,5 +102,16 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
 
 
     return ResponseEntity.status(HttpStatus.OK).body(tradeHistoryExpenseDetailOfSubResponse);
+    }
+
+    @Override
+    public ResponseEntity<?> getHomeInvestInfo(int userCode) {
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+
+        return ResponseEntity.status(HttpStatus.OK).body("");
     }
 }
