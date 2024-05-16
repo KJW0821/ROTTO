@@ -9,6 +9,7 @@ import com.rezero.rotto.dto.response.FarmTop10ListResponse;
 import com.rezero.rotto.dto.response.MyPageFarmListResponse;
 import com.rezero.rotto.entity.*;
 import com.rezero.rotto.repository.*;
+import com.rezero.rotto.utils.Pagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,10 +35,11 @@ public class FarmServiceImpl implements FarmService {
     private final InterestFarmRepository interestFarmRepository;
     private final SubscriptionRepository subscriptionRepository;
     private final FarmTop10Repository farmTop10Repository;
+    private final Pagination pagination;
 
 
     // 농장 목록 조회
-    public ResponseEntity<?> getFarmList(int userCode, Boolean isLiked, Integer subsStatus, Integer minPrice, Integer maxPrice, String beanType, String sort, String keyword) {
+    public ResponseEntity<?> getFarmList(int userCode, Integer page, Boolean isLiked, Integer subsStatus, Integer minPrice, Integer maxPrice, String beanType, String sort, String keyword) {
         // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
@@ -55,9 +56,26 @@ public class FarmServiceImpl implements FarmService {
 
         // 농장 목록 불러오기
         List<Farm> farms = farmRepository.findAll(spec);
-        List<? extends FarmDto> farmDtos = convertToDtoList(farms, userCode,  isLiked != null && isLiked && subsStatus == null && minPrice == null && maxPrice == null && beanType == null && sort == null && keyword == null);
+        // 인덱스 선언
+        int startIdx = 0;
+        int endIdx = 0;
+        // 총 페이지 수 선언
+        int totalPages = 1;
 
-        return ResponseEntity.status(HttpStatus.OK).body(buildResponse(farmDtos));
+        // 페이지네이션
+        List<Integer> indexes = pagination.pagination(page, 10, farms.size());
+        startIdx = indexes.get(0);
+        endIdx = indexes.get(1);
+        totalPages = indexes.get(2);
+
+        // 최신순으로 보여주기 위해 리스트 뒤집기
+        Collections.reverse(farms);
+        // 페이지네이션
+        List<Farm> pageFarms = farms.subList(startIdx, endIdx);
+
+        List<? extends FarmDto> farmDtos = convertToDtoList(pageFarms, userCode,  isLiked != null && isLiked && subsStatus == null && minPrice == null && maxPrice == null && beanType == null && sort == null && keyword == null);
+
+        return ResponseEntity.status(HttpStatus.OK).body(buildResponse(farmDtos, totalPages));
     }
 
 
@@ -175,7 +193,6 @@ public class FarmServiceImpl implements FarmService {
 
     private List<? extends FarmDto> convertToDtoList(List<Farm> farms, int userCode, Boolean isMyPage) {
         List<FarmDto> farmDtos = new ArrayList<>();
-        Collections.reverse(farms);
 
         for (Farm farm : farms) {
             Boolean farmIsLiked = interestFarmRepository.findByFarmCodeAndUserCode(farm.getFarmCode(), userCode) != null;
@@ -192,7 +209,7 @@ public class FarmServiceImpl implements FarmService {
         return farmDtos;
     }
 
-    private Object buildResponse(List<? extends FarmDto> farmDtos) {
+    private Object buildResponse(List<? extends FarmDto> farmDtos, int totalPages) {
         if (farmDtos.isEmpty()) {
             return MyPageFarmListResponse.builder().farms(Collections.emptyList()).build();
         }
@@ -201,12 +218,18 @@ public class FarmServiceImpl implements FarmService {
             List<MyPageFarmListDto> myPageFarmListDtos = farmDtos.stream()
                     .map(farmDto -> (MyPageFarmListDto) farmDto)
                     .collect(Collectors.toList());
-            return MyPageFarmListResponse.builder().farms(myPageFarmListDtos).build();
+            return MyPageFarmListResponse.builder()
+                    .farms(myPageFarmListDtos)
+                    .totalPages(totalPages)
+                    .build();
         } else {
             List<FarmListDto> farmListDtos = farmDtos.stream()
                     .map(farmDto -> (FarmListDto) farmDto)
                     .collect(Collectors.toList());
-            return FarmListResponse.builder().farms(farmListDtos).build();
+            return FarmListResponse.builder()
+                    .farms(farmListDtos)
+                    .totalPages(totalPages)
+                    .build();
         }
     }
 
