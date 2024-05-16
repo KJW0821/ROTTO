@@ -15,34 +15,19 @@ const FundingDetailScreen = ({navigation, route}) => {
   const subscriptionCode = route.params.subscriptionCode;
   const dispatch = useDispatch();
 
-  // const [data, setData] = useState();
+  const [data, setData] = useState();
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     const getDetailedData = async () => {
-  //       const res = await getFundingDetail(subscriptionCode);
-  //       console.log(res);
-  //       setData(res);
-  //     };
+  useFocusEffect(
+    useCallback(() => {
+      const getDetailedData = async () => {
+        const res = await getFundingDetail(subscriptionCode);
+        console.log(res);
+        setData(res);
+      };
 
-  //     getDetailedData();
-  //   }, [])
-  // )
-
-  const data = {
-    subscriptionCode: 455,
-    farmCode: 11,
-    farmName: "섀넌 농장",
-    confirmPrice: 10000,
-    startedTime: "2024-05-14T17:03:57",
-    endTime: "2024-05-19T17:03:57",
-    beanType: "과테말라 안티구아",
-    limitNum: 5,
-    returnRate: 0,
-    applyCount: 0,
-    totalTokenCount: 0,
-    subsStatus: 1
-  };
+      getDetailedData();
+    }, [])
+  );
 
   useEffect(() => {
     dispatch(setFundingData(data));
@@ -139,9 +124,19 @@ const FundingDetailScreen = ({navigation, route}) => {
         </ScrollView>
       }
       {
-        data.subsStatus === 1 &&
+        data && data.subsStatus === 1 &&
         <View style={styles.buttonContainer}>
-          <CustomButton onPress={() => dispatch(setApplyModal(true))}>신청하기</CustomButton>
+          <CustomButton 
+            onPress={() => dispatch(setApplyModal(true))}
+            disabled={!!data.isApply}
+          >
+            {
+              data.isApply ?
+              '이미 신청하셨습니다'
+              :
+              '신청하기'
+            }
+          </CustomButton>
         </View>
       }
       <ApplyModal />

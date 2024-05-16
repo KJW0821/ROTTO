@@ -1,21 +1,24 @@
 import { View, FlatList, Text, StyleSheet, Pressable } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getFundingList } from '../../utils/fundingApi';
 import dayjs from 'dayjs';
+import { useFocusEffect } from '@react-navigation/native';
 
 const FundingList = ({navigation}) => {
   const [data, setData] = useState();
 
-  useEffect(() => {
-    const getFundingData = async () => {
-      const res = await getFundingList();
-      setData(res.subscriptions);
-    };
-
-    getFundingData();
-  }, [navigation])
+  useFocusEffect(
+    useCallback(() => {
+      const getFundingData = async () => {
+        const res = await getFundingList();
+        setData(res.subscriptions);
+      };
+  
+      getFundingData();
+    }, [])
+  );
 
   const getState = (state, startedTime) => {
     switch (state) {
