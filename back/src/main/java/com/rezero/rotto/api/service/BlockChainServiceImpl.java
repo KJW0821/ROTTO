@@ -3,6 +3,7 @@ package com.rezero.rotto.api.service;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
@@ -12,8 +13,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.web3j.abi.EventEncoder;
+import org.web3j.abi.FunctionReturnDecoder;
+import org.web3j.abi.datatypes.Type;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.gas.StaticGasProvider;
@@ -196,6 +201,41 @@ public class BlockChainServiceImpl implements BlockChainService{
 				return ResponseEntity.ok().body("list 제거 작업 완료");
 			else
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("list 제거 작업 실패");
+		} catch (Exception ex) {
+			Throwable cause = ex.getCause();
+			if(cause instanceof TransactionException){
+				String revertReason = getRevertReason((TransactionException)cause);
+				logger.info("[RemoveWhiteList] revertReason: " + revertReason);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(revertReason);
+			}
+			String errorMessage = (cause != null ? cause.getMessage() : ex.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+		}
+	}
+
+	@Override
+	public ResponseEntity<?> checkWhiteList(String address) {
+		if(tokenManager == null) initContract();
+		CompletableFuture<TransactionReceipt> transactionReceiptFuture = tokenManager.checkWhiteList(address).sendAsync();
+
+		try{
+			TransactionReceipt transactionReceipt = transactionReceiptFuture.join();
+			if(transactionReceipt.isStatusOK()){
+				List<Log> logs = transactionReceipt.getLogs();
+				boolean result = false;
+				for(Log log : logs){
+					String eventSignature = EventEncoder.encode(tokenManager.RESULTCHECK_EVENT);
+					if(log.getTopics().get(0).equals(eventSignature)){
+						List<Type> results = FunctionReturnDecoder.decode(log.getData(), tokenManager.RESULTCHECK_EVENT.getParameters());
+						result = (Boolean) results.get(0).getValue();
+						break;
+					}
+				}
+				return ResponseEntity.ok().body(result);
+			}
+			else
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("list 확인 실패");
 		} catch (Exception ex) {
 			Throwable cause = ex.getCause();
 			if(cause instanceof TransactionException){

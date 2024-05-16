@@ -16,4 +16,6 @@ public interface BlockChainService {
 	ResponseEntity<?> InsertWhiteList(String wallet);
 
 	ResponseEntity<?> RemoveWhiteList(String wallet);
+
+	ResponseEntity<?> checkWhiteList(String address);
 }

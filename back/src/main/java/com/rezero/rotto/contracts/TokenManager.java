@@ -9,6 +9,7 @@ import java.util.List;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.StaticStruct;
@@ -43,6 +44,8 @@ public class TokenManager extends Contract {
 
     private static String librariesLinkedBinary;
 
+    public static final String FUNC_CHECKWHITELIST = "checkWhiteList";
+
     public static final String FUNC_CREATETOKEN = "createToken";
 
     public static final String FUNC_DELETETOKEN = "deleteToken";
@@ -65,6 +68,10 @@ public class TokenManager extends Contract {
 
     public static final Event OWNERSHIPTRANSFERRED_EVENT = new Event("OwnershipTransferred", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}));
+    ;
+
+    public static final Event RESULTCHECK_EVENT = new Event("resultCheck", 
+            Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
     ;
 
     @Deprecated
@@ -115,6 +122,44 @@ public class TokenManager extends Contract {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(OWNERSHIPTRANSFERRED_EVENT));
         return ownershipTransferredEventFlowable(filter);
+    }
+
+    public static List<ResultCheckEventResponse> getResultCheckEvents(TransactionReceipt transactionReceipt) {
+        List<EventValuesWithLog> valueList = staticExtractEventParametersWithLog(RESULTCHECK_EVENT, transactionReceipt);
+        ArrayList<ResultCheckEventResponse> responses = new ArrayList<ResultCheckEventResponse>(valueList.size());
+        for (EventValuesWithLog eventValues : valueList) {
+            ResultCheckEventResponse typedResponse = new ResultCheckEventResponse();
+            typedResponse.log = eventValues.getLog();
+            typedResponse.param0 = (Boolean) eventValues.getNonIndexedValues().get(0).getValue();
+            responses.add(typedResponse);
+        }
+        return responses;
+    }
+
+    public static ResultCheckEventResponse getResultCheckEventFromLog(Log log) {
+        EventValuesWithLog eventValues = staticExtractEventParametersWithLog(RESULTCHECK_EVENT, log);
+        ResultCheckEventResponse typedResponse = new ResultCheckEventResponse();
+        typedResponse.log = log;
+        typedResponse.param0 = (Boolean) eventValues.getNonIndexedValues().get(0).getValue();
+        return typedResponse;
+    }
+
+    public Flowable<ResultCheckEventResponse> resultCheckEventFlowable(EthFilter filter) {
+        return web3j.ethLogFlowable(filter).map(log -> getResultCheckEventFromLog(log));
+    }
+
+    public Flowable<ResultCheckEventResponse> resultCheckEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        filter.addSingleTopic(EventEncoder.encode(RESULTCHECK_EVENT));
+        return resultCheckEventFlowable(filter);
+    }
+
+    public RemoteFunctionCall<TransactionReceipt> checkWhiteList(String _wallet) {
+        final Function function = new Function(
+                FUNC_CHECKWHITELIST, 
+                Arrays.<Type>asList(new Address(160, _wallet)),
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> createToken(Subscription subscription, BigInteger amount) {
@@ -168,14 +213,6 @@ public class TokenManager extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> renounceOwnership() {
-        final Function function = new Function(
-                FUNC_RENOUNCEOWNERSHIP, 
-                Arrays.<Type>asList(), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
-    }
-
     public RemoteFunctionCall<TransactionReceipt> setStorageAddress(String _addr) {
         final Function function = new Function(
                 FUNC_SETSTORAGEADDRESS, 
@@ -188,14 +225,6 @@ public class TokenManager extends Contract {
         final Function function = new Function(
                 FUNC_SETWHITELIST, 
                 Arrays.<Type>asList(new Address(160, _addr)),
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
-    }
-
-    public RemoteFunctionCall<TransactionReceipt> transferOwnership(String newOwner) {
-        final Function function = new Function(
-                FUNC_TRANSFEROWNERSHIP, 
-                Arrays.<Type>asList(new Address(160, newOwner)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -235,6 +264,7 @@ public class TokenManager extends Contract {
     public static RemoteCall<TokenManager> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         return deployRemoteCall(TokenManager.class, web3j, transactionManager, gasPrice, gasLimit, getDeploymentBinary(), "");
     }
+
     public static String getDeploymentBinary() {
         if (librariesLinkedBinary != null) {
             return librariesLinkedBinary;
@@ -271,5 +301,9 @@ public class TokenManager extends Contract {
         public String previousOwner;
 
         public String newOwner;
+    }
+
+    public static class ResultCheckEventResponse extends BaseEventResponse {
+        public Boolean param0;
     }
 }
