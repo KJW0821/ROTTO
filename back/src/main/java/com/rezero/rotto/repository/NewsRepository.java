@@ -9,4 +9,6 @@ public interface NewsRepository extends JpaRepository<News, Integer> {
 
     News findByNewsCode(int newsCode);
 
+    Boolean existsByNewsDetailLink(String newsDetailLink);
+
 }
