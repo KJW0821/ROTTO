@@ -45,4 +45,7 @@ public class Subscription {
 
     @Column(name = "total_proceed")
     private int totalProceed;
+
+    @Column(name = "total_sales")
+    private int totalSales;
 }

@@ -16,8 +16,8 @@ public class ExpenseDetail {
     @Column(name = "expense_detail_code")
     private int expenseDetailCode;
 
-    @Column(name = "farm_code")
-    private int farmCode;
+    @Column(name = "subscription_code")
+    private int subscriptionCode;
 
     @Column(name = "expenditure _content")
     private String expenditureContent;
