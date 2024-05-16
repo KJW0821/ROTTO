@@ -3,6 +3,7 @@ package com.rezero.rotto.api.service;
 import com.rezero.rotto.entity.News;
 import com.rezero.rotto.repository.NewsRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,6 +17,7 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class NewsCrawler {
@@ -24,6 +26,7 @@ public class NewsCrawler {
 
     @Scheduled(fixedRate = 3600000) // 1시간마다 크롤링 수행
     void crawlCoffeeNews() {
+        log.info("크롤링 시작");
         try {
             // 커피 뉴스 크롤링할 URL
             String url = "https://dailycoffeenews.com/latest-news/";
@@ -102,35 +105,38 @@ public class NewsCrawler {
                     news.setAuthor(authorText);
                 }
 
-                // 뉴스 디테일도 추가
-                // 커피 뉴스 디테일 URL
-                String detailUrl = url + parseDateToUrl(datePart) + headlineText;
-                Document detailDocument = Jsoup.connect(detailUrl).get();
+                try {
+                    // 뉴스 디테일도 추가
+                    // 커피 뉴스 디테일 URL
+                    String detailUrl = url + parseDateToUrl(datePart) + headlineText;
+                    Document detailDocument = Jsoup.connect(detailUrl).get();
 
-                // entry 안에 있는 모든 p 태그들을 하나의 문자열로 합칠 변수
-                StringBuilder entryContent = new StringBuilder();
+                    // entry 안에 있는 모든 p 태그들을 하나의 문자열로 합칠 변수
+                    StringBuilder entryContent = new StringBuilder();
 
-                // 크롤링할 요소 선택
-                Elements entry = document.select("entry");
+                    // 크롤링할 요소 선택
+                    Elements entry = document.select("entry");
 
-                // entry 에 있는 각 p 태그에 대해 반복
-                for (Element paragraph : entry.select("p")) {
-                    // p 태그의 텍스트를 가져와서 entryContent에 추가
-                    entryContent.append(paragraph.text()).append("\n");
+                    // entry 에 있는 각 p 태그에 대해 반복
+                    for (Element paragraph : entry.select("p")) {
+                        // p 태그의 텍스트를 가져와서 entryContent에 추가
+                        entryContent.append(paragraph.text()).append("\n");
+                    }
+
+                    // News - content 에 넣기
+                    String combinedText = entryContent.toString();
+                    news.setContent(combinedText);
+
+                    // 데이터 저장
+                    newsRepository.save(news);
+                } catch (IOException e) {
+                    log.error("뉴스 디테일 크롤링 실패" + news.getNewsDetailLink(), e);
                 }
-
-                // News - content 에 넣기
-                String combinedText = entryContent.toString();
-                news.setContent(combinedText);
-
-                // 데이터 저장
-                newsRepository.save(news);
-                
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("뉴스 크롤링 실패", e);
         }
-
+        log.info("크롤링 성공");
     }
 
     // 스타일 속성 값에서 이미지 URL을 추출하는 메서드
