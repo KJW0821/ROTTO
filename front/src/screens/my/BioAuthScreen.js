@@ -25,6 +25,9 @@ const BioAuthScreen = ({navigation, route}) => {
             navigation.navigate('transactionResult', { amount });
           } else if (bioAuth.error === 'user_cancel') {
             navigation.goBack();
+          } else {
+            console.log('생체 인증 실패');
+            navigation.navigate('transactionPinAuth', { amount });
           }
         } else {
           navigation.navigate('transactionPinAuth', { amount });
