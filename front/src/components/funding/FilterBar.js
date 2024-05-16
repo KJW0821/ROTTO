@@ -3,7 +3,8 @@ import Colors from "../../constants/Colors";
 import { Ionicons } from '@expo/vector-icons';
 import FilterButton from "../discovery/FilterButton";
 import { useDispatch, useSelector } from "react-redux";
-import { setFilterData, setFilterModal, setSortBy } from "../../stores/fundingSlice";
+import { setFilterData, setFilterModal, setFilter, setSortBy, setSubsStatus, setBeanType, setMinPrice, setMaxPrice } from "../../stores/fundingSlice";
+import ResetButton from "../discovery/ResetButton";
 
 const FilterBar = () => {
   const { 
@@ -12,7 +13,7 @@ const FilterBar = () => {
     minPrice, 
     maxPrice, 
     beanType,
-  } = useSelector(state => state.filterInfo);
+  } = useSelector(state => state.fundingInfo);
 
   const dispatch = useDispatch();
 
@@ -48,6 +49,13 @@ const FilterBar = () => {
     ]
   };
 
+  const resetHandler = () => {
+    dispatch(setSubsStatus(null));
+    dispatch(setBeanType(null));
+    dispatch(setMinPrice(null));
+    dispatch(setMaxPrice(null));
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
@@ -56,10 +64,11 @@ const FilterBar = () => {
             style={styles.sortButton}
             onPress={() => {
               dispatch(setFilterData(filters.sortBy));
+              dispatch(setFilter('sortBy'));
               dispatch(setFilterModal(true));
             }}
           >
-            <Text style={styles.filterFont}>{sortBy ? sortBy : '기본순'}</Text>
+            <Text style={styles.filterFont}>{sortBy ? filters.sortBy.find(el => el.value === sortBy).text : '기본순'}</Text>
             <Ionicons
               style={styles.filterIcon}
               name="chevron-down"
@@ -67,19 +76,25 @@ const FilterBar = () => {
               color={Colors.iconGray}
             />
           </Pressable>
+          {
+            (subsStatus || beanType || minPrice || maxPrice) &&
+            <ResetButton filterName={"초기화"} onPress={resetHandler} />
+          }
           <FilterButton 
-            filterName={subsStatus ? subsStatus : '진행 여부'} 
-            isChecked={subsStatus} 
+            filterName={subsStatus !== null ? filters.subsStatus.find(el => el.value === subsStatus).text : '진행 여부'} 
+            isChecked={subsStatus !== null} 
             onPress={() => {
               dispatch(setFilterData(filters.subsStatus));
+              dispatch(setFilter('subsStatus'));
               dispatch(setFilterModal(true));
             }} 
           />
           <FilterButton 
-            filterName={beanType ? beanType : '원두'} 
+            filterName={beanType ? filters.beanType.find(el => el.value === beanType).text : '원두'} 
             isChecked={beanType} 
             onPress={() => {
               dispatch(setFilterData(filters.beanType));
+              dispatch(setFilter('beanType'));
               dispatch(setFilterModal(true));
             }} 
           />
@@ -93,6 +108,7 @@ const FilterBar = () => {
             isChecked={minPrice || maxPrice} 
             onPress={() => {
               dispatch(setFilterData(null));
+              dispatch(setFilter('price'));
               dispatch(setFilterModal(true));
             }} 
           />
