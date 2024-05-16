@@ -89,7 +89,6 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
         TradeHistoryExpenseDetailOfSubResponse tradeHistoryExpenseDetailOfSubResponse =TradeHistoryExpenseDetailOfSubResponse.builder()
                 .subscriptionCode(subscription.getSubscriptionCode())
                 .farmName(farm.getFarmName())
-                .totalSoldPrice(farm.getTotalSales())
                 .totalExpense(totalExpenses)
                 .tradeTime(tradeHistory.getTradeTime())
                 .tradeNum(tradeHistory.getTradeNum())

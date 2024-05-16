@@ -46,6 +46,4 @@ public class Farm {
     @Column(name = "farm_bean_grade")
     private int farmBeanGrade;
 
-    @Column(name = "total_sales")
-    private int totalSales;
 }
