@@ -1,9 +1,11 @@
-import { View, Text, FlatList, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Pressable, Alert } from 'react-native';
 import Colors from '../../constants/Colors';
 import dayjs from 'dayjs';
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { getApplyHistory } from '../../utils/investApi';
+import { Ionicons } from '@expo/vector-icons';
+import { cancelFunding as cancel } from '../../utils/fundingApi';
 
 const ApplyList = () => {
   const [data, setData] = useState();
@@ -19,44 +21,70 @@ const ApplyList = () => {
     }, [])
   );
 
+  const cancelFunding = async (subscriptionCode) => {
+    const res = await cancel(subscriptionCode);
+    if (res.status === 200) {
+      setData(pre => pre.filter(el => el.subscriptionCode !== subscriptionCode));
+      return Alert.alert('해지 완료되었습니다.');
+    } else {
+      return Alert.alert('해지에 실패하셨습니다. 다시시도 해주세요.')
+    }
+  };
+
+  const cancelHandler = async (subscriptionCode) => {
+    Alert.alert('', '정말 해지하시겠습니까?', 
+      [
+        { text: '해지', onPress: () => cancelFunding(subscriptionCode), style: 'destructive' },
+        { text: '취소', onPress: () => {}, style: 'cancel' }
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => {}
+      }
+    );
+  };
+
   return(
     data &&
     <FlatList 
       data={data}
       renderItem={itemData => {
         return (
-          <TouchableWithoutFeedback>
-            <View style={styles.cardContainer}>
-              <View style={styles.topContainer}>
-                <Text style={styles.farmName}>{itemData.item.farmName}</Text>
+          <View style={styles.cardContainer}>
+            <View style={styles.topContainer}>
+              <Text style={styles.farmName}>{itemData.item.farmName}</Text>
+              <View style={styles.rightContainer}>
                 <Text style={styles.menu}>{dayjs(itemData.item.startedTime).add(9, 'hour').format('YYYY.MM.DD')} - {dayjs(itemData.item.endTime).add(9, 'hour').format('YYYY.MM.DD')}</Text>
-              </View>
-              <View style={styles.midContainer}>
-                <View style={styles.contentContainer}>
-                  <Text style={styles.menu}>신청률</Text>
-                  <Text style={styles.content}>{itemData.item.totalApplyCount} / {itemData.item.totalTokenCount} ROT ({Math.round(itemData.item.totalApplyCount / itemData.item.totalTokenCount * 100 * 100) / 100}%)</Text>
-                </View>
-                <View style={styles.contentContainer}>
-                  <Text style={styles.menu}>배정 수량</Text>
-                  <Text style={styles.content}>미정 / {itemData.item.applyCount} ROT</Text>
-                </View>
-              </View>
-              <View style={styles.bottomContainer}>
-                <View style={styles.contentContainer}>
-                  <Text style={styles.menu}>잔여 수량 환불 예정일</Text>
-                  <Text style={styles.content}>{itemData.item.refundDate ? dayjs(itemData.item.refundDate).add(9, 'hour').format('YYYY.MM.DD') : '미정' }</Text>
-                </View>
-                <Text style={styles.state}>
-                  {
-                    dayjs(itemData.item.endTime) >= dayjs() ? 
-                    '청약 진행중'
-                    :
-                    '청약 마감'
-                  }
-                </Text>
+                <Pressable onPress={() => cancelHandler(itemData.item.subscriptionCode)}>
+                  <Ionicons name="close-circle-outline" size={20} color={Colors.fontGray} />
+                </Pressable>
               </View>
             </View>
-          </TouchableWithoutFeedback>
+            <View style={styles.midContainer}>
+              <View style={styles.contentContainer}>
+                <Text style={styles.menu}>신청률</Text>
+                <Text style={styles.content}>{itemData.item.totalApplyCount} / {itemData.item.totalTokenCount} ROT ({Math.round(itemData.item.totalApplyCount / itemData.item.totalTokenCount * 100 * 100) / 100}%)</Text>
+              </View>
+              <View style={styles.contentContainer}>
+                <Text style={styles.menu}>배정 수량</Text>
+                <Text style={styles.content}>미정 / {itemData.item.applyCount} ROT</Text>
+              </View>
+            </View>
+            <View style={styles.bottomContainer}>
+              <View style={styles.contentContainer}>
+                <Text style={styles.menu}>잔여 수량 환불 예정일</Text>
+                <Text style={styles.content}>{itemData.item.refundDate ? dayjs(itemData.item.refundDate).add(9, 'hour').format('YYYY.MM.DD') : '미정' }</Text>
+              </View>
+              <Text style={styles.state}>
+                {
+                  dayjs(itemData.item.endTime) >= dayjs() ? 
+                  '청약 진행중'
+                  :
+                  '청약 마감'
+                }
+              </Text>
+            </View>
+          </View>
         )
       }}
       keyExtractor={(item) => {
@@ -87,8 +115,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   farmName: {
-    fontSize: 12,
-    fontFamily: 'pretendard-medium'
+    fontSize: 14,
+    fontFamily: 'pretendard-semiBold'
   },
   contentContainer: {
     gap: 3
@@ -98,12 +126,12 @@ const styles = StyleSheet.create({
     gap: 24
   },
   menu: {
-    fontSize: 8,
+    fontSize: 10,
     color: Colors.fontGray,
     fontFamily: 'pretendard-medium'
   },
   content: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: 'pretendard-medium'
   },
   bottomContainer: {
@@ -114,5 +142,10 @@ const styles = StyleSheet.create({
   state: {
     fontSize: 12,
     fontFamily: 'pretendard-medium'
+  },
+  rightContainer: {
+    flexDirection: 'row',
+    gap: 6,
+    alignItems: 'center'
   }
 });

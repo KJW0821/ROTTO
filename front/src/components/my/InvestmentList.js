@@ -3,6 +3,7 @@ import Colors from '../../constants/Colors';
 import { useState } from 'react';
 import TradeList from './TradeList';
 import ApplyList from './ApplyList';
+import CancelList from './CancelList';
 
 const InvestmentList = ({navigation}) => {
   const [selectedMenu, setSelectedMenu] = useState('보유 내역');
@@ -19,7 +20,7 @@ const InvestmentList = ({navigation}) => {
       ComponentToShow = TradeList;
       break;
     case '해지 내역':
-      ComponentToShow = TradeList;
+      ComponentToShow = CancelList;
   }
 
   return (
