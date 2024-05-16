@@ -26,11 +26,23 @@ public class News {
     @Column(name = "content")
     private String content;
 
-    @CreationTimestamp
-    @Column(name = "post_time")
-    private LocalDateTime postTime;
+    @Column(name = "author")
+    private String author;
 
-    @Column(name = "img_path")
-    private String imgPath;
+    @Column(name = "category")
+    private String category;
+
+    @Column(name = "img_link")
+    private String imgLink;
+
+    @Column(name = "news_detail_link")
+    private String newsDetailLink;
+
+    @Column(name = "post_time")
+    private String postTime;
+
+    @CreationTimestamp
+    @Column(name = "create_time")
+    private LocalDateTime createTime;
 
 }
