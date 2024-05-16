@@ -70,6 +70,7 @@ public class FarmServiceImpl implements FarmService {
 
         // 최신순으로 보여주기 위해 리스트 뒤집기
         Collections.reverse(farms);
+
         // 페이지네이션
         List<Farm> pageFarms = farms.subList(startIdx, endIdx);
 

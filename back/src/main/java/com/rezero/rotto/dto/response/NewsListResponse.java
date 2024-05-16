@@ -15,5 +15,6 @@ import java.util.List;
 public class NewsListResponse {
 
     private List<NewsListDto> newsList;
+    private int totalPages;
 
 }
