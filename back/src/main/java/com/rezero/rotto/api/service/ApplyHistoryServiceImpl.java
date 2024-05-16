@@ -277,6 +277,7 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
                     .totalTokenCount(subscription.getTotalTokenCount())
                     .applyCount(applyHistory.getApplyCount())
                     .totalApplyCount(totalApplyCount)
+                    .refundDate(subscription.getEndedTime().plusDays(1))
                     .build();
 
             applyHistoryListDtos.add(applyHistoryListDto);
