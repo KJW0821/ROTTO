@@ -11,12 +11,13 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @AllArgsConstructor
-public class TradeHistoryListDto {
+public class TradeHistoryOwnListDto {
     private int subscriptionCode;
     private String farmName;
     private int confirmPrice;
     private LocalDateTime tradeTime;
     private int tradeNum;
     private int refund;
+    private int proceed;
     private int totalTokenCount;
 }
