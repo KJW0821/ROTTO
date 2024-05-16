@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { StyleSheet, SafeAreaView, Alert } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { store } from "./src/stores/Store";
 import { Provider } from "react-redux";
@@ -20,6 +20,8 @@ import {
 } from "@web3modal/wagmi-react-native";
 import { defineChain } from "viem";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+// import messaging from "@react-native-firebase/messaging";
+import { useEffect } from "react";
 
 const customChain = {
   id: 31221,
@@ -27,7 +29,7 @@ const customChain = {
   rpcUrls: {
     public: {
       http: ["https://rpc.ssafy-blockchain.com"],
-    }
+    },
   },
   nativeCurrency: {
     name: "Ether",
@@ -67,7 +69,7 @@ createWeb3Modal({
   projectId,
   chains,
   wagmiConfig,
-  enableAnalytics: true
+  enableAnalytics: true,
 });
 
 export default function App() {
@@ -84,6 +86,39 @@ export default function App() {
   });
   const statusBarStyle = "light";
   const statusBarColor = Colors.bgOrg;
+
+  // const requestUserPermission = async () => {
+  //   const authStatus = await messaging().requestPermission();
+  //   const enabled =
+  //     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+  //     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  //   if (enabled) {
+  //     return getToken();
+  //   }
+  // };
+
+  // const getToken = async () => {
+  //   const fcmToken = await messaging().getToken();
+  //   console.log("디바이스 토큰값");
+  //   console.log(fcmToken);
+  //   dispatch(set_deviceToken(fcmToken));
+  // };
+  // useEffect(() => {
+  //   const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+  //     Alert.alert("A new FCM message arrived!", JSON.stringify(remoteMessage));
+  //   });
+
+  //   return unsubscribe;
+  // }, []);
+  // useEffect(() => {
+  //   const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+  //     console.log(remoteMessage);
+  //   });
+  //   requestUserPermission();
+
+  //   return unsubscribe;
+  // }, []);
 
   return (
     <SafeAreaProvider>
