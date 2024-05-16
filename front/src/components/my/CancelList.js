@@ -1,8 +1,23 @@
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import Colors from '../../constants/Colors';
 import dayjs from 'dayjs';
+import { useCallback, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { getCancelHistory } from '../../utils/investApi';
 
 const CancelList = () => {
+  const [data, setData] = useState();
+
+  useFocusEffect(
+    useCallback(() => {
+      const getCancelData = async () => {
+        const res = await getCancelHistory();
+        setData(res.userApplyHistoryListCancelDtos);
+      };
+
+      getCancelData();
+    }, [])
+  );
 
   return(
     data &&
@@ -13,7 +28,7 @@ const CancelList = () => {
           <View style={styles.cardContainer}>
             <View style={styles.innerContainer}>
               <Text style={styles.farmName}>{itemData.item.farmName}</Text>
-              <Text style={styles.menu}>{dayjs(itemData.item.applyTime).add(9, 'hour').format(YYYY.MM.DD)}</Text>
+              <Text style={styles.menu}>{dayjs(itemData.item.applyTime).add(9, 'hour').format('YYYY.MM.DD')}</Text>
             </View>
             <View style={styles.innerContainer}>
               <View style={styles.contentContainer}>
@@ -26,7 +41,7 @@ const CancelList = () => {
         )
       }}
       keyExtractor={(item) => {
-        return item.applyHistoryCode
+        return item.subscriptionCode
       }}
       contentContainerStyle={{ flexGrow: 1 }}
     />
