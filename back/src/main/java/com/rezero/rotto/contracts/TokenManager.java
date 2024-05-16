@@ -9,6 +9,7 @@ import java.util.List;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.StaticStruct;
@@ -69,6 +70,10 @@ public class TokenManager extends Contract {
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}));
     ;
 
+    public static final Event RESULTCHECK_EVENT = new Event("resultCheck", 
+            Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+    ;
+
     @Deprecated
     protected TokenManager(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit);
@@ -117,6 +122,36 @@ public class TokenManager extends Contract {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(OWNERSHIPTRANSFERRED_EVENT));
         return ownershipTransferredEventFlowable(filter);
+    }
+
+    public static List<ResultCheckEventResponse> getResultCheckEvents(TransactionReceipt transactionReceipt) {
+        List<EventValuesWithLog> valueList = staticExtractEventParametersWithLog(RESULTCHECK_EVENT, transactionReceipt);
+        ArrayList<ResultCheckEventResponse> responses = new ArrayList<ResultCheckEventResponse>(valueList.size());
+        for (EventValuesWithLog eventValues : valueList) {
+            ResultCheckEventResponse typedResponse = new ResultCheckEventResponse();
+            typedResponse.log = eventValues.getLog();
+            typedResponse.param0 = (Boolean) eventValues.getNonIndexedValues().get(0).getValue();
+            responses.add(typedResponse);
+        }
+        return responses;
+    }
+
+    public static ResultCheckEventResponse getResultCheckEventFromLog(Log log) {
+        EventValuesWithLog eventValues = staticExtractEventParametersWithLog(RESULTCHECK_EVENT, log);
+        ResultCheckEventResponse typedResponse = new ResultCheckEventResponse();
+        typedResponse.log = log;
+        typedResponse.param0 = (Boolean) eventValues.getNonIndexedValues().get(0).getValue();
+        return typedResponse;
+    }
+
+    public Flowable<ResultCheckEventResponse> resultCheckEventFlowable(EthFilter filter) {
+        return web3j.ethLogFlowable(filter).map(log -> getResultCheckEventFromLog(log));
+    }
+
+    public Flowable<ResultCheckEventResponse> resultCheckEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        filter.addSingleTopic(EventEncoder.encode(RESULTCHECK_EVENT));
+        return resultCheckEventFlowable(filter);
     }
 
     public RemoteFunctionCall<TransactionReceipt> checkWhiteList(String _wallet) {
@@ -266,5 +301,9 @@ public class TokenManager extends Contract {
         public String previousOwner;
 
         public String newOwner;
+    }
+
+    public static class ResultCheckEventResponse extends BaseEventResponse {
+        public Boolean param0;
     }
 }

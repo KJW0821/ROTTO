@@ -354,6 +354,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         return ResponseEntity.status(HttpStatus.CREATED).body(subscription);
     }
 
+
     // 사업자 → 이용자 가상계좌
     private boolean RefundMoney(User user, Integer amount) {
         // 이용자 가상계좌
