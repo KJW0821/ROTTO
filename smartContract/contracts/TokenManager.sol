@@ -54,6 +54,11 @@ contract TokenManager is Ownable {
         IWhitelist(whitelistAddress).removeList(_wallet);
     }
 
+    // 입력받은 지갑 주소가 whitelist에 존재 여부 확인
+    function checkWhiteList(address _wallet) external validAddress(_wallet) onlyOwner returns(bool) {
+        return IWhitelist(whitelistAddress).checkWhiteList(_wallet);
+    } 
+
 
     // 컨트랙트 소유권 관련 function 접근 block
     function transferOwnership(address newOwner) public pure override {
