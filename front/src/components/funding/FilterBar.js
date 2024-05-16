@@ -77,7 +77,7 @@ const FilterBar = () => {
             />
           </Pressable>
           {
-            (subsStatus || beanType || minPrice || maxPrice) &&
+            (subsStatus !== null || beanType || minPrice || maxPrice) &&
             <ResetButton filterName={"초기화"} onPress={resetHandler} />
           }
           <FilterButton 
