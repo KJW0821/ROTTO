@@ -1,23 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  isWalletModalOpen: false,
   isBankModalOpen: false,
   selectedBank: null,
   connectedAccount: null,
   transactionMode: null,
   isFilterModalOpen: null,
   selectedFilter: '전체',
-  fundingAccount: null
+  fundingAccount: null,
+  isDisconnectModalOpen: false
 }
 
 export const mySlice = createSlice({
   name: "myPageInfo",
   initialState,
   reducers: {
-    setWalletModal: (state, action) => {
-      state.isWalletModalOpen = action.payload;
-    },
     setBankModal: (state, action) => {
       state.isBankModalOpen = action.payload;
     },
@@ -38,19 +35,22 @@ export const mySlice = createSlice({
     },
     setFundingAccount: (state, action) => {
       state.fundingAccount = action.payload;
+    },
+    setDisconnectModal: (state, action) => {
+      state.isDisconnectModalOpen = action.payload;
     }
   }
 });
 
 export const { 
-  setWalletModal, 
   setBankModal, 
   setSelectedBank, 
   setConnectedAccount, 
   setTransactionMode, 
   setFilterModal,
   setSelectedFilter,
-  setFundingAccount
+  setFundingAccount,
+  setDisconnectModal
 } = mySlice.actions;
 
 export default mySlice.reducer;

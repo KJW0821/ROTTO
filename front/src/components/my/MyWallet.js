@@ -4,12 +4,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
 import Colors from "../../constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
-import { setWalletModal } from "../../stores/mySlice";
+import { setDisconnectModal } from "../../stores/mySlice";
 import { useWeb3Modal } from "@web3modal/wagmi-react-native";
 import { updateWalletAddress } from "../../utils/userApi";
+import DisconnectModal from "./DisconnectModal";
 
 const MyWallet = () => {
-  const isModalOpen = useSelector(state => state.myPageInfo.isWalletModalOpen);
   const dispatch = useDispatch();
 
   const { open } = useWeb3Modal();
@@ -27,14 +27,10 @@ const MyWallet = () => {
       console.log(data);
     },
   })
-
-  const modalHandler = () => {
-    dispatch(setWalletModal(!isModalOpen));
-  };
   
   const disconnectWallet = () => {
     disconnect();
-    dispatch(setWalletModal(false));
+    dispatch(setDisconnectModal(false));
   };
   
   useEffect(() => {
@@ -53,19 +49,15 @@ const MyWallet = () => {
               <Ionicons name="wallet-outline" size={16} />
               <Text style={styles.addressText} numberOfLines={1} ellipsizeMode="tail">{address}</Text>
             </View>
-            <Pressable onPress={modalHandler}>
+            <Pressable onPress={() => dispatch(setDisconnectModal(true))}>
               <Ionicons name="ellipsis-vertical-outline" size={16} />
             </Pressable>
-            <View style={[styles.modal, {display: isModalOpen ? 'block' : 'none'}]}>
-              <Pressable onPress={disconnectWallet}>
-                <Text style={styles.modalMenuText}>연결 끊기</Text>
-              </Pressable>
-            </View>
           </View>
           <View style={styles.balanceContainer}>
             <Text style={styles.balanceText}>{data?.formatted}</Text>
             <Text style={styles.symbolText}>{data?.symbol}</Text>
           </View>
+          <DisconnectModal onDisconnect={disconnectWallet} />
         </>
         :
         <Pressable onPress={() => open()}>

@@ -1,7 +1,7 @@
 import { View, Pressable, Text, StyleSheet, Modal, TextInput, TouchableWithoutFeedback, Alert } from 'react-native';
 import Colors from '../../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
-import { setApplyModal } from '../../stores/fundingSlice';
+import { setApplyModal, setFundingData } from '../../stores/fundingSlice';
 import CustomButton from '../common/CustomButton';
 import { useState } from 'react';
 import { applyFunding } from '../../utils/fundingApi';
@@ -28,7 +28,14 @@ const ApplyModal = () => {
     return Alert.alert(res.status === 200 ? '청약 신청이 완료되었습니다.' : '청약 신청에 실패하셨습니다.', '', 
     [{
       text: '확인',
-      onPress: () => dispatch(setApplyModal(false))
+      onPress: () => {
+        dispatch(setApplyModal(false));
+        dispatch(setFundingData({
+          ...fundingData,
+          "isApply": 1
+        }));
+        console.log(fundingData);
+      }
     }]);
   };
 
