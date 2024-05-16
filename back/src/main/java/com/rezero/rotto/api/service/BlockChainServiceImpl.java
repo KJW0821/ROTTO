@@ -52,6 +52,7 @@ public class BlockChainServiceImpl implements BlockChainService{
 
 	private final SubscriptionRepository subscriptionRepository;
 	private final UserRepository userRepository;
+	private final TradeHistoryRepository tradeHistoryRepository;
 
 	private TokenManager tokenManager = null;
 
@@ -131,6 +132,7 @@ public class BlockChainServiceImpl implements BlockChainService{
 				history.setRefund(0);
 				history.setTradeNum(request.getAmount());
 				history.setTokenPrice(subscription.getConfirmPrice());
+				tradeHistoryRepository.save(history);
 
 				return ResponseEntity.status(HttpStatus.OK).body("ROTTO 발급 완료");
 			}

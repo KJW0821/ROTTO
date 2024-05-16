@@ -28,6 +28,9 @@ import com.rezero.rotto.repository.*;
 import com.rezero.rotto.utils.Pagination;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,6 +72,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     private final ExpenseDetailRepository expenseDetailRepository;
     private final Pagination pagination;
 
+    private final Logger logger = LoggerFactory.getLogger(SubscriptionServiceImpl.class);
 
     public ResponseEntity<?> getSubscriptionList(int userCode, Integer page, Integer subsStatus, Integer minPrice, Integer maxPrice, String beanType, String sort, String keyword){
         User user = userRepository.findByUserCode(userCode);
@@ -413,10 +417,16 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         }
 
         // 경매가 - 농장 운영 비용
+        logger.info("refundSubscription 시작");
         int price = subscription.getTotalSales() - TotalExpense;
+        logger.info("[refundSubscription] price: " + price);
         int FarmIncome = (int)Math.ceil(price * (subscription.getPartnerFarmRate()) / 100.0); // 농장 수익
+        logger.info("[refundSubscription] FarmIncome: " + FarmIncome);
         int totalProceed = (price - FarmIncome) - (int)Math.floor((price - FarmIncome) * 0.011); // 총 청약수익금액
+        logger.info("[refundSubscription] totalProceed: " + totalProceed);
+
         subscription.setTotalProceed(totalProceed);
+        subscriptionRepository.save(subscription);
 
         int ROTTOprice = (int)Math.ceil((double)totalProceed / subscription.getTotalTokenCount());
         Optional<List<ApplyHistory>> applyHistories = applyHistoryRepository.findBySubscriptionCodeAndIsDelete(

@@ -66,7 +66,7 @@ public class SubscriptionController {
             @ApiResponse(responseCode = "400", description = "환불 과정에서 오류 발생"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 청약 or 신청자를 찾을 수 없음"),
     })
-    @PostMapping("distribute/{subscription-code}")
+    @PostMapping("distribute/{subscriptionCode}")
     public ResponseEntity<?> calculateSubscription(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int subscriptionCode) {
         return subscriptionService.calculateSubscription(subscriptionCode);
     }
