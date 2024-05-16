@@ -44,4 +44,7 @@ public class TradeHistory {
 
 	@Column(name = "bc_address")
 	private String bcAddress;
+
+	@Column(name = "token_price")
+	private int tokenPrice;
 }
