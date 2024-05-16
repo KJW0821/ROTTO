@@ -99,4 +99,15 @@ public class UserController {
         return userService.deleteUser(userCode);
     }
 
+    @Operation(summary = "ROTTO 지갑 업데이트", description = "DB 상에 있는 사용자의 블록체인 지갑 주소를 변경한다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "지갑 주소 업데이트 완료"),
+        @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자"),
+        @ApiResponse(responseCode = "400", description = "유효하지 않는 지갑 주소")
+    })
+    @PatchMapping("/updateAddress")
+    public ResponseEntity<?> updateBCAddress(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestBody String wallet){
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return userService.updateBCAddress(userCode, wallet);
+    }
 }

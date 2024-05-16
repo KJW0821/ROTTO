@@ -22,4 +22,5 @@ public interface UserService {
 
     ResponseEntity<?> modifyPassword(int userCode, ModifyPasswordRequest request);
 
+    ResponseEntity<?> updateBCAddress(int userCode, String address);
 }

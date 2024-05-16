@@ -3,6 +3,7 @@ package com.rezero.rotto.api.service;
 //import com.rezero.rotto.dto.request.RegisterPinRequest;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.api.Http;
 import com.rezero.rotto.dto.request.*;
 import com.rezero.rotto.dto.response.CheckEmailResponse;
 import com.rezero.rotto.dto.response.CheckPhoneNumResponse;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.web3j.crypto.WalletUtils;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
@@ -158,6 +160,23 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body("비밀번호 수정 성공");
     }
 
+    @Override
+    public ResponseEntity<?> updateBCAddress(int userCode, String address) {
+        // 해당 유저가 존재하는지 검사
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        if(!WalletUtils.isValidAddress(address)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않는 지갑 주소입니다.");
+        }
+
+        user.setBcAddress(address);
+        userRepository.save(user);
+
+        return ResponseEntity.ok().body("지갑 주소 업데이트 완료.");
+    }
 
     // 회원 탈퇴
     public ResponseEntity<String> deleteUser(int userCode) {
