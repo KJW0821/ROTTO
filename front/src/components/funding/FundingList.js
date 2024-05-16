@@ -1,21 +1,33 @@
 import { View, FlatList, Text, StyleSheet, Pressable } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getFundingList } from '../../utils/fundingApi';
 import dayjs from 'dayjs';
+import { useFocusEffect } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 const FundingList = ({navigation}) => {
+  const { sortBy, subsStatus, beanType, minPrice, maxPrice } = useSelector(state => state.fundingInfo);
+
   const [data, setData] = useState();
 
-  useEffect(() => {
-    const getFundingData = async () => {
-      const res = await getFundingList();
-      setData(res.subscriptions);
-    };
-
-    getFundingData();
-  }, [navigation])
+  useFocusEffect(
+    useCallback(() => {
+      const getFundingData = async () => {
+        const res = await getFundingList({
+          'sort': sortBy,
+          'subs-status': subsStatus,
+          'bean-type': beanType,
+          'min-price': minPrice,
+          'max-price': maxPrice
+        });
+        setData(res.subscriptions);
+      };
+  
+      getFundingData();
+    }, [sortBy, subsStatus, beanType, minPrice, maxPrice])
+  );
 
   const getState = (state, startedTime) => {
     switch (state) {

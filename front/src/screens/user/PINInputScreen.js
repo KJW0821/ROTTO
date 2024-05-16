@@ -77,10 +77,10 @@ const PINInputScreen = ({navigation}) => {
           customLeftButton={showRemoveButton ? <Ionicons name={"arrow-back-outline"} size={36} color={"black"} /> : undefined}
           customRightButton={showCompletedButton ? <Ionicons name={"checkmark-outline"} size={36} color={"black"} /> : undefined}
         />
-        <Pressable style={styles.bioButton} onPress={() => navigation.navigate('BioAuth')}>
+        {/* <Pressable style={styles.bioButton} onPress={() => navigation.navigate('BioAuth')}>
           <MaterialCommunityIcons name={ Platform.OS === 'android' ? 'fingerprint' : 'face-recognition' } size={12} />
           <Text style={styles.bioText}>생체 인증</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
     </SafeAreaView>
   )

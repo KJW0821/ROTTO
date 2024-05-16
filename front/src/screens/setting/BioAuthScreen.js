@@ -24,6 +24,9 @@ const BioAuthScreen = ({navigation}) => {
             navigation.navigate('passwordChange');
           } else if (bioAuth.error === 'user_cancel') {
             navigation.navigate('setting');
+          } else {
+            console.log('생체 인증 실패');
+            navigation.navigate('pinAuth')
           }
         } else {
           navigation.navigate('pinAuth');
