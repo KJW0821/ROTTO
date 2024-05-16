@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -21,6 +22,7 @@ public class FarmDetailResponse {
     private String awardHistory;
     private String beanName;
     private Integer beanGrade;
+    private BigDecimal returnRate;
     private Boolean isLiked;
 
 }
