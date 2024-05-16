@@ -1,5 +1,6 @@
 package com.rezero.rotto.api.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.rezero.rotto.dto.dto.SubscriptionListDto;
 import com.rezero.rotto.dto.request.AccountDepositRequest;
 import com.rezero.rotto.dto.request.CreateTokenRequest;
@@ -10,7 +11,7 @@ import com.rezero.rotto.entity.Account;
 
 import com.rezero.rotto.dto.request.SubscriptionProduceRequest;
 
-
+import com.rezero.rotto.entity.AccountHistory;
 import com.rezero.rotto.entity.ApplyHistory;
 import com.rezero.rotto.entity.Farm;
 import com.rezero.rotto.entity.Subscription;
@@ -28,7 +29,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +61,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     private final BlockChainService blockChainService;
     private final TradeHistoryRepository tradeHistoryRepository;
     private final AccountService accountService;
+    private final AccountRepository accountRepository;
+    private final AccountHistoryRepository accountHistoryRepository;
 
     public ResponseEntity<?> getSubscriptionList(int userCode, Integer subsStatus, Integer minPrice, Integer maxPrice, String beanType, String sort, String keyword){
         User user = userRepository.findByUserCode(userCode);
@@ -194,9 +199,10 @@ public class SubscriptionServiceImpl implements SubscriptionService{
             // 받지 못한 토큰의 값어치만큼 환불
             int refundTokenCount = history.getApplyCount() - count;
             if(refundTokenCount > 0){ // 환불을 받아야 할 경우
-                String refundValue = String.valueOf(subscription.getConfirmPrice() * refundTokenCount);
-                AccountDepositRequest depositRequest = new AccountDepositRequest(refundValue);
-                ResponseEntity<?> refundResponseEntity = accountService.patchAccountDeposit(user.getUserCode(), depositRequest);
+                int amount = refundTokenCount * subscription.getConfirmPrice(); // 환불 금액
+                if(!RefundMoney(user, amount)) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("환불 과정에서 오류가 발생하였습니다.");
+                }
             }
         }
 
@@ -320,6 +326,85 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         ResponseEntity<?> blockChainResponseEntity = blockChainService.createToken(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(subscription);
+    }
+
+    // 사업자 → 이용자 가상계좌
+    private boolean RefundMoney(User user, Integer amount) {
+        // 이용자 가상계좌
+        Account userRottoAccount = accountRepository.findByUserCodeAndAccountType(user.getUserCode(), 0);
+
+        String adminBankname = "001";
+        String adminAccountNum = "0015553944459869";
+
+        if(userRottoAccount == null) return false; // 찾지 못함.
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
+
+        // 날짜와 시간 포맷
+        String formattedDate = now.format(dateFormatter);
+        String formattedTime = now.format(timeFormatter);
+
+
+        // 랜덤 6자리 일련번호 생성
+        Random random = new Random();
+        int randomNumber = random.nextInt(999999); // 0에서 999999까지의 난수 생성
+        String formattedRandomNumber = String.format("%06d", randomNumber); // 난수를 6자리 문자열로 포맷팅
+
+        // 기관 거래 고유 번호 생성
+        String institutionTransactionUniqueNo = formattedDate + formattedTime + formattedRandomNumber;
+
+        Map<String, Object> headerMap = new HashMap<>();
+        headerMap.put("apiName", "accountTransfer");
+        // 요청날짜
+        headerMap.put("transmissionDate", formattedDate);
+        headerMap.put("transmissionTime", formattedTime);
+        // 기관코드 고정
+        headerMap.put("institutionCode", "00100");
+        //핀테크 앱 고정
+        headerMap.put("fintechAppNo", "001");
+        headerMap.put("apiServiceCode", "accountTransfer");
+        // 기관 거래 고유 번호 : 새로운 번호로 임의 채번 (YYYYMMDD + HHMMSS + 일련번호 6자리) 또는 20자리의 난수
+        headerMap.put("institutionTransactionUniqueNo", institutionTransactionUniqueNo);
+        // 개발자 키
+        headerMap.put("apiKey", "2afacf41e60a4482b5c4997d194a46f0");
+        headerMap.put("userKey", "ca55278a-89d2-4b51-bfa3-0cbbd376f9fd");
+
+
+        Map<String, Object> bodyMap = new HashMap<>();
+        bodyMap.put("Header", headerMap);
+        // 은행코드(은행이름으로 불리는 코드)
+        bodyMap.put("depositBankCode", userRottoAccount.getBankName());
+        bodyMap.put("depositAccountNo", userRottoAccount.getAccountNum());
+        bodyMap.put("depositTransactionSummary", "이용자 계좌");
+        bodyMap.put("transactionBalance", amount);
+        bodyMap.put("withdrawalBankCode", adminBankname);
+        bodyMap.put("withdrawalAccountNo", adminAccountNum);
+        bodyMap.put("withdrawalTransactionSummary", "관리자 계좌");
+
+        try {
+            JsonNode jsonNode =  WebClient.create("https://finapi.p.ssafy.io")
+                .post()
+                .uri("/ssafy/api/v1/edu/account/accountTransfer")
+                .bodyValue(bodyMap) // 구성한 Map을 bodyValue에 전달
+                .retrieve()
+                .bodyToMono(JsonNode.class)
+                .block();
+
+            // 입출금내역 저장.
+            AccountHistory accountHistory = new AccountHistory();
+            accountHistory.setAccountCode(userRottoAccount.getAccountCode());
+            accountHistory.setAmount(amount);
+            accountHistory.setAccountTime(now);
+            accountHistory.setDepositWithdrawalCode(1);
+            accountHistoryRepository.save(accountHistory);
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }
