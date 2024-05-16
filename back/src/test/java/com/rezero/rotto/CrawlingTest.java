@@ -102,13 +102,4 @@
 //        return imageUrl;
 //    }
 //
-//
-//
-//    // 스케쥴을 이용한 크롤링
-//    private List<String> cachedNews = new ArrayList<>();
-//
-//    @Scheduled(fixedRate = 3600000 * 6) // 6시간마다 크롤링 수행
-//    public void crawNews() {
-//        // db에 저장하는 로직 작성, 이미 DB에 존재하는 헤드라인이면 가져오지 않는다.
-//    }
 //}
