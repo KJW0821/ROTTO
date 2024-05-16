@@ -174,6 +174,8 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
         int totalCalculateAmount = 0;
         int totalCalculateTokenNum = 0;
 
+        Boolean flag = false;
+
         List<TradeHistory> tradeHistories = tradeHistoryRepository.findByUserCode(userCode);
         List<TradeHistoryHomeInfoDto> tradeHistoryHomeInfoDtos = new ArrayList<>();
         for (TradeHistory tradeHistory: tradeHistories) {
@@ -182,6 +184,7 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
                 totalOwnAmount += (subscription.getConfirmPrice() * tradeHistory.getTradeNum());
                 totalOwnTokenNum += tradeHistory.getTradeNum();
             } else if (tradeHistory.getRefund() == 1) {
+                flag = true;
                 totalCalculateAmount += (subscription.getConfirmPrice() * tradeHistory.getTradeNum());
                 totalCalculateTokenNum += tradeHistory.getTradeNum();
             }
@@ -213,7 +216,11 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
 
         int totalAmount = totalApplyAmount + totalOwnAmount + totalCalculateAmount;
         int totalProceedAmount = totalCalculateAmount - totalOwnAmount;
-        double totalProceedPercent = ((double) (totalCalculateAmount - totalOwnAmount) / totalOwnAmount) * 100;
+        double totalProceedPercent = 0;
+        if (flag) {
+            totalProceedPercent = ((double) (totalCalculateAmount - totalOwnAmount) / totalOwnAmount) * 100;
+        }
+
 
         // 리스트 처리를 어떻게해야할까.
         TradeHistoryHomeInfoResponse response = TradeHistoryHomeInfoResponse.builder()
