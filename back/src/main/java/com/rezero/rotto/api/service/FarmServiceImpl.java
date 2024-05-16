@@ -55,7 +55,7 @@ public class FarmServiceImpl implements FarmService {
 
         // 농장 목록 불러오기
         List<Farm> farms = farmRepository.findAll(spec);
-        List<? extends FarmDto> farmDtos = convertToDtoList(farms, userCode, isLiked && subsStatus == null && minPrice == null && maxPrice == null && beanType == null && sort == null && keyword == null);
+        List<? extends FarmDto> farmDtos = convertToDtoList(farms, userCode,  isLiked != null && isLiked && subsStatus == null && minPrice == null && maxPrice == null && beanType == null && sort == null && keyword == null);
 
         return ResponseEntity.status(HttpStatus.OK).body(buildResponse(farmDtos));
     }
@@ -164,7 +164,7 @@ public class FarmServiceImpl implements FarmService {
     private Specification<Farm> buildSpecification(int userCode, Boolean isLiked, Integer subsStatus, Integer minPrice, Integer maxPrice, String beanType, String sort, String keyword) {
         Specification<Farm> spec = Specification.where(null);
         if (keyword != null) spec = spec.and(FarmSpecification.nameContains(keyword));
-        if (isLiked) spec = spec.and(FarmSpecification.hasInterest(userCode));
+        if (isLiked != null && isLiked) spec = spec.and(FarmSpecification.hasInterest(userCode));
         if (subsStatus != null) spec = spec.and(FarmSpecification.filterBySubscriptionStatus(subsStatus));
         if (minPrice != null || maxPrice != null)
             spec = spec.and(FarmSpecification.priceBetween(minPrice, maxPrice));
@@ -173,13 +173,13 @@ public class FarmServiceImpl implements FarmService {
         return spec;
     }
 
-    private List<? extends FarmDto> convertToDtoList(List<Farm> farms, int userCode, boolean isMyPage) {
+    private List<? extends FarmDto> convertToDtoList(List<Farm> farms, int userCode, Boolean isMyPage) {
         List<FarmDto> farmDtos = new ArrayList<>();
         Collections.reverse(farms);
 
         for (Farm farm : farms) {
-            boolean farmIsLiked = interestFarmRepository.findByFarmCodeAndUserCode(farm.getFarmCode(), userCode) != null;
-            boolean isFunding = isFunding(farm.getFarmCode());
+            Boolean farmIsLiked = interestFarmRepository.findByFarmCodeAndUserCode(farm.getFarmCode(), userCode) != null;
+            Boolean isFunding = isFunding(farm.getFarmCode());
 
             FarmDto farmDto;
             if (isMyPage) {
