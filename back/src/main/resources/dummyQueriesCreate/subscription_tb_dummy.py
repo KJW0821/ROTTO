@@ -36,6 +36,8 @@ def create_dummy_data(farm_num):
         partner_farm_rate = 10
         # 총 발행 토큰 수 = 농장 규모 m^2 만큼
         total_token_count = farm_scales[f'{num}']
+        # 청약의 총 수익률 기본값
+        total_proceed = 0
 
         # 진행 예정 청약
         for i in range(subs['proceed']):
@@ -47,7 +49,7 @@ def create_dummy_data(farm_num):
             return_rate = round(random.uniform(0, 30), 2)
             
             # sql문 생성
-            sql = f"INSERT INTO subscription_tb (farm_code, confirm_price, started_time, ended_time, limit_num, return_rate, total_token_count, partner_farm_rate) VALUES ('{farm_code}', '{confirm_price}', '{started_time}', '{ended_time}', '{limit_num}', '{return_rate}', '{total_token_count}', '{partner_farm_rate}');"
+            sql = f"INSERT INTO subscription_tb (farm_code, confirm_price, started_time, ended_time, limit_num, return_rate, total_token_count, partner_farm_rate, total_proceed) VALUES ('{farm_code}', '{confirm_price}', '{started_time}', '{ended_time}', '{limit_num}', '{return_rate}', '{total_token_count}', '{partner_farm_rate}', {total_proceed});"
 
             sql_queries.append(sql)
 
@@ -62,7 +64,7 @@ def create_dummy_data(farm_num):
             return_rate = round(random.uniform(0, 30), 2)
 
             # sql문 생성
-            sql = f"INSERT INTO subscription_tb (farm_code, confirm_price, started_time, ended_time, limit_num, return_rate, total_token_count, partner_farm_rate) VALUES ('{farm_code}', '{confirm_price}', '{started_time}', '{ended_time}', '{limit_num}', '{return_rate}', '{total_token_count}', '{partner_farm_rate}');"
+            sql = f"INSERT INTO subscription_tb (farm_code, confirm_price, started_time, ended_time, limit_num, return_rate, total_token_count, partner_farm_rate, total_proceed) VALUES ('{farm_code}', '{confirm_price}', '{started_time}', '{ended_time}', '{limit_num}', '{return_rate}', '{total_token_count}', '{partner_farm_rate}', {total_proceed});"
 
             sql_queries.append(sql)
 
@@ -75,9 +77,11 @@ def create_dummy_data(farm_num):
             ended_time = (datetime.strptime(started_time, '%Y-%m-%d %H:%M:%S') + timedelta(weeks=2)).replace(hour=8, minute=59, second=59).strftime('%Y-%m-%d %H:%M:%S')
             # 수익률은 0~30.00% 소수점 두자리까지
             return_rate = round(random.uniform(0, 30), 2)
+            # 청약의 총 수익률 종료된 것은 값이 존재
+            total_proceed = random.randint(4, 21)
 
             # sql문 생성
-            sql = f"INSERT INTO subscription_tb (farm_code, confirm_price, started_time, ended_time, limit_num, return_rate, total_token_count, partner_farm_rate) VALUES ('{farm_code}', '{confirm_price}', '{started_time}', '{ended_time}', '{limit_num}', '{return_rate}', '{total_token_count}', '{partner_farm_rate}');"
+            sql = f"INSERT INTO subscription_tb (farm_code, confirm_price, started_time, ended_time, limit_num, return_rate, total_token_count, partner_farm_rate, total_proceed) VALUES ('{farm_code}', '{confirm_price}', '{started_time}', '{ended_time}', '{limit_num}', '{return_rate}', '{total_token_count}', '{partner_farm_rate}', {total_proceed});"
 
             sql_queries.append(sql)
         
