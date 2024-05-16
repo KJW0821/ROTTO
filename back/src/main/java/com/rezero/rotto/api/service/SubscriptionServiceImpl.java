@@ -347,7 +347,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         if (subscriptionProduceRequest.getFarmCode() <= 0 ||
                 subscriptionProduceRequest.getConfirmPrice() <= 0 ||
                 subscriptionProduceRequest.getLimitNum() <= 0 ||
-                subscriptionProduceRequest.getReturnRate() <= 0 ||
+                // subscriptionProduceRequest.getReturnRate() <= 0 ||
                 subscriptionProduceRequest.getPartnerFarmRate() <= 0 ||
                 subscriptionProduceRequest.getTotalTokenCount() <= 0 ||
                 subscriptionProduceRequest.getStartedTime() == null ||
@@ -362,9 +362,9 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         subscription.setStartedTime(subscriptionProduceRequest.getStartedTime());
         subscription.setEndedTime(subscriptionProduceRequest.getEndedTime());
         subscription.setLimitNum(subscriptionProduceRequest.getLimitNum());
-        subscription.setReturnRate(subscription.getReturnRate());
-        subscription.setTotalTokenCount(subscription.getTotalTokenCount());
-        subscription.setPartnerFarmRate(subscription.getPartnerFarmRate());
+        subscription.setReturnRate(subscriptionProduceRequest.getReturnRate());
+        subscription.setTotalTokenCount(subscriptionProduceRequest.getTotalTokenCount());
+        subscription.setPartnerFarmRate(subscriptionProduceRequest.getPartnerFarmRate());
         subscriptionRepository.save(subscription);
 
         // 청약 ROTTO 생성
