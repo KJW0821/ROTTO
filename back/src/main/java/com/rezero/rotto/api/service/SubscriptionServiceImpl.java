@@ -401,10 +401,10 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         // 경매가 - 농장 운영 비용
         int price = subscription.getTotalSales() - TotalExpense;
         int FarmIncome = (int)Math.ceil(price * (subscription.getPartnerFarmRate()) / 100.0); // 농장 수익
-        int totalProceed = (price - FarmIncome) - (int)Math.floor((price - FarmIncome) * 0.011); // 총 매출액
+        int totalProceed = (price - FarmIncome) - (int)Math.floor((price - FarmIncome) * 0.011); // 총 청약수익금액
+        subscription.setTotalProceed(totalProceed);
 
         int ROTTOprice = (int)Math.ceil((double)totalProceed / subscription.getTotalTokenCount());
-
         Optional<List<ApplyHistory>> applyHistories = applyHistoryRepository.findBySubscriptionCodeAndIsDelete(
             subscription.getSubscriptionCode(), 0);
 
@@ -427,6 +427,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 tradeHistory.setSubscriptionCode(subscription.getSubscriptionCode());
                 tradeHistory.setTradeNum(applyCount);
                 tradeHistory.setRefund(1);
+                tradeHistory.setTokenPrice(ROTTOprice);
                 tradeHistory.setBcAddress(user.getBcAddress());
                 tradeHistoryRepository.save(tradeHistory);
             }
