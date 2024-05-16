@@ -85,7 +85,7 @@ export const updateWalletAddress = async (data) => {
     await API.patch('/user/updateAddress', data);
     return;
   } catch (err) {
-    console.error('비밀번호 변경 에러' + err);
+    console.error('지갑 주소 업데이트 에러' + err);
     return err;
   }
 };
