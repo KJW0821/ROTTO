@@ -6,6 +6,7 @@ import Colors from "../../constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import { setWalletModal } from "../../stores/mySlice";
 import { useWeb3Modal } from "@web3modal/wagmi-react-native";
+import { updateWalletAddress } from "../../utils/userApi";
 
 const MyWallet = () => {
   const isModalOpen = useSelector(state => state.myPageInfo.isWalletModalOpen);
@@ -38,6 +39,7 @@ const MyWallet = () => {
   
   useEffect(() => {
     console.log("주소", address)
+    updateWalletAddress({ wallet : address })
     console.log("토큰 조회 데이터", data)    
   }, [data])
 
