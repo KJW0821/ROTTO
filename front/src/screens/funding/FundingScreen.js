@@ -6,12 +6,12 @@ import FilterButton from "../../components/funding/FilterButton";
 import FilterBar from "../../components/funding/FilterBar";
 import FundingList from "../../components/funding/FundingList";
 
-const FundingScreen = () => {
+const FundingScreen = ({navigation}) => {
   
   return (
     <MyHeader>
       <FilterBar />
-      <FundingList />
+      <FundingList navigation={navigation} />
     </MyHeader>
   )
 }

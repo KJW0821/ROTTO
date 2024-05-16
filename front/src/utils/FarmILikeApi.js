@@ -21,3 +21,21 @@ export const getFarmILikeDetail = async (farmCode) => {
     console.error(err);
   }
 };
+
+export const addLike = async (farmCode) => {
+  try {
+    const res = await API.post(`/like/farm/${farmCode}`);
+    return res;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const removeLike = async (farmCode) => {
+  try {
+    const res = await API.delete(`/like/farm/${farmCode}`);
+    return res;
+  } catch (err) {
+    console.error(err);
+  }
+};

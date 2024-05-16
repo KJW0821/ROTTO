@@ -3,6 +3,7 @@ import TokenService from '../../utils/token';
 import { useEffect } from 'react';
 import Colors from '../../constants/Colors';
 import LottieView from 'lottie-react-native';
+import KeyService from '../../utils/pinCode';
 
 const SplashScreen = ({navigation}) => {
   useEffect(() => {
@@ -12,9 +13,14 @@ const SplashScreen = ({navigation}) => {
         
         const accessToken = await TokenService.getAccessToken();
         const refreshToken = await TokenService.getRefreshToken();
-        
+        const pinCode = await KeyService.getPinCode();
+
         if (accessToken && refreshToken) {
-          navigation.replace('BioAuth');
+          if (pinCode) {
+            navigation.replace('BioAuth');
+          } else {
+            navigation.replace('PINSetting');
+          }
         } else {
           navigation.replace('Onboarding');
         }

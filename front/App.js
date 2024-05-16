@@ -42,10 +42,10 @@ const projectId = "41c800331b3143bdaddeef0fdefb7852";
 const metadata = {
   name: "rotto",
   description: "커피 STO 투자 증권 앱",
-  url: "exp://192.168.30.203:3000",
+  url: "rotto://",
   icons: ["../../../assets/images/skyIcon.png"],
   redirect: {
-    native: "exp://192.168.30.203:3000",
+    native: "rotto://",
   },
 };
 
@@ -116,7 +116,3 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
   },
 });
-
-// wnsgud2020!
-// qweQWE123!@#
-// wnsgud0895

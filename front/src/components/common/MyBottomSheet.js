@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import {
+  Gesture,
+  GestureDetector,
+  PanGestureHandler,
+} from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -12,24 +16,23 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const MAX_TRANSLATE_Y = SCREEN_HEIGHT / 1.5;
 const MIN_TRANSLATE_Y = SCREEN_HEIGHT / 5;
 
-const MyBottomSheet = ({ children, isOpen }) => {
-  // const [isOpen, setIsOpen] = useState(false);
+const MyBottomSheet = ({ children, isOpen, onGestureEvent }) => {
   const translateY = useSharedValue(0);
-  const context = useSharedValue({ y: 0 });
+  // const context = useSharedValue({ y: 0 });
 
-  const gesture = Gesture.Pan()
-    .onStart((e) => {
-      translateY.value = e.translationY + context.value.y;
-      translateY.value = Math.max(translateY.value, -MAX_TRANSLATE_Y);
-    })
-    .onEnd((e) => {
-      if (translateY.value > -MIN_TRANSLATE_Y) {
-        translateY.value = withSpring(SCREEN_HEIGHT);
-      }
-      if (translateY.value < -MIN_TRANSLATE_Y) {
-        translateY.value = withSpring(-MAX_TRANSLATE_Y);
-      }
-    });
+  // const gesture = Gesture.Pan()
+  //   .onStart((e) => {
+  //     translateY.value = e.translationY + context.value.y;
+  //     translateY.value = Math.max(translateY.value, -MAX_TRANSLATE_Y);
+  //   })
+  //   .onEnd((e) => {
+  //     if (translateY.value > -MIN_TRANSLATE_Y) {
+  //       translateY.value = withSpring(SCREEN_HEIGHT);
+  //     }
+  //     if (translateY.value < -MIN_TRANSLATE_Y) {
+  //       translateY.value = withSpring(-MAX_TRANSLATE_Y);
+  //     }
+  //   });
 
   const reanimatedBottomStyle = useAnimatedStyle((e) => {
     return {
@@ -37,26 +40,30 @@ const MyBottomSheet = ({ children, isOpen }) => {
     };
   });
 
-  const scrollTo = (destination) => {
-    "worklet";
-    translateY.value = withSpring(destination, { damping: 50 });
-  };
-
+  // const scrollTo = (destination) => {
+  //   "worklet";
+  //   translateY.value = withSpring(destination, { damping: 50 });
+  // };
   useEffect(() => {
-    // scrollTo(-SCREEN_HEIGHT / 3);
-    scrollTo(isOpen ? -SCREEN_HEIGHT / 3 : SCREEN_HEIGHT);
-  }, [isOpen]);
+    translateY.value = withSpring(isOpen ? -SCREEN_HEIGHT / 3 : SCREEN_HEIGHT);
+  }, [isOpen, translateY]);
+  // useEffect(() => {
+  //   // scrollTo(-SCREEN_HEIGHT / 3);
+  //   scrollTo(isOpen ? -SCREEN_HEIGHT / 2 : SCREEN_HEIGHT);
+  // }, [isOpen]);
 
   return (
     <>
-      <GestureDetector gesture={gesture}>
+      {/* <GestureDetector gesture={gesture}> */}
+      <PanGestureHandler onGestureEvent={onGestureEvent}>
         <Animated.View
           style={[styles.bottomsheet_container, reanimatedBottomStyle]}
         >
           <View style={styles.line}></View>
           {children}
         </Animated.View>
-      </GestureDetector>
+      </PanGestureHandler>
+      {/* </GestureDetector> */}
       <Pressable pointerEvents="box-none" style={styles.overlay} />
     </>
   );

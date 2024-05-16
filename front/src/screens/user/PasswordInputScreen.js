@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import UserTopBar from '../../components/user/UserTopBar';
 import { signUp, signIn } from '../../utils/userApi';
 import { useSelector } from 'react-redux';
+import TokenService from '../../utils/token';
 
 const PasswordInputScreen = ({navigation}) => {
   const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*]).{8,}$/;
@@ -39,20 +40,29 @@ const PasswordInputScreen = ({navigation}) => {
   }, [password])
 
   const pressConfirmHandler = async () => {
-    await signUp({
+    const signUpRes = await signUp({
       name: signupInfo.name,
       juminNo: signupInfo.personId.slice(0, 6),
       phoneNum: signupInfo.phoneNumber,
       sex: parseInt(signupInfo.personId.slice(-1)) % 2 === 1 ? "M" : "F",
-      password
+      password,
+      email: signupInfo.email
     });
 
-    await signIn({
-      phoneNum: signupInfo.phoneNumber,
-      password
-    });
-
-    navigation.navigate('PINSetting');
+    if (signUpRes.status === 201) {
+      const res = await signIn({
+        phoneNum: signupInfo.phoneNumber,
+        password
+      });
+      if (res.status === 200) {
+        await TokenService.setToken(res.data.accessToken, res.data.refreshToken);
+        navigation.navigate('PINSetting');   
+      } else {
+        return Alert.alert('로그인에 실패했습니다.', '', [{text: '다시하기', onPress: () => navigation.navigate('SignIn')}])
+      }
+    } else {
+      return Alert.alert('회원가입에 실패했습니다.', '', [{text: '다시하기', onPress: () => navigation.navigate('Onboarding')}])
+    }
   };
 
   return (

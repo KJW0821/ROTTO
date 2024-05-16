@@ -52,3 +52,43 @@ export const chargeAccount = async (data) => {
     return err.response;
   }
 };
+
+export const sendMoney = async (data) => {
+  try {
+    const res = await API.patch(URL + '/withdrawal', data);
+    return res;
+  } catch (err) {
+    console.error('보내기 실패' + err.response);
+    return err.response;
+  }
+};
+
+export const getAccountHistory = async (accountCode) => {
+  try {
+    const res = await API.get(`/account-history/${accountCode}`);
+    return res.data;
+  } catch (err) {
+    console.error('입출금내역 조회 실패' + err)
+    return err;
+  }
+};
+
+export const getAccountDeposit = async (accountCode) => {
+  try {
+    const res = await API.get(`/account-history/deposit/${accountCode}`);
+    return res.data;
+  } catch (err) {
+    console.error('입금내역 조회 실패' + err)
+    return err;
+  }
+};
+
+export const getAccountWithdrawal = async (accountCode) => {
+  try {
+    const res = await API.get(`/account-history/withdrawal/${accountCode}`);
+    return res.data;
+  } catch (err) {
+    console.error('출금내역 조회 실패' + err)
+    return err;
+  }
+};

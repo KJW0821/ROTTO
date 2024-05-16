@@ -27,7 +27,7 @@ const BioAuthScreen = ({navigation, route}) => {
             navigation.goBack();
           }
         } else {
-          navigation.navigate('transcationPinAuth', { amount });
+          navigation.navigate('transactionPinAuth', { amount });
         }
       };
   
