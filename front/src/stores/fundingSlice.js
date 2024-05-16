@@ -2,7 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isApplyModalOpen: false,
-  fundingData: null
+  fundingData: null,
+  sortBy: null,
+  subsStatus: null,
+  minPrice: null,
+  maxPrice: null,
+  beanType: null,
+  isFilterModalOpen: false
 }
 
 export const fundingSlice = createSlice({
@@ -14,13 +20,37 @@ export const fundingSlice = createSlice({
     },
     setFundingData: (state, action) => {
       state.fundingData = action.payload;
+    },
+    setSortBy: (state, action) => {
+      state.sortBy = action.payload;
+    },
+    setSubsStatus: (state, action) => {
+      state.subsStatus = action.payload;
+    },
+    setMinPrice: (state, action) => {
+      state.minPrice = action.payload;
+    },
+    setMaxPrice: (state, action) => {
+      state.maxPrice = action.payload;
+    },
+    setBeanType : (state, action) => {
+      state.beanType = action.payload;
+    },
+    setFilterModal: (state, action) => {
+      state.isFilterModalOpen = action.payload;
     }
   }
 });
 
 export const { 
   setApplyModal,
-  setFundingData
+  setFundingData,
+  setSortBy,
+  setSubsStatus,
+  setMinPrice,
+  setMaxPrice,
+  setBeanType,
+  setFilterModal
 } = fundingSlice.actions;
 
 export default fundingSlice.reducer;
