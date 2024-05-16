@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.checkerframework.checker.units.qual.C;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,7 +36,7 @@ public class Subscription {
     private int limitNum;
 
     @Column(name = "return_rate")
-    private int returnRate;
+    private BigDecimal returnRate;
 
     @Column(name = "total_token_count")
     private int totalTokenCount;
