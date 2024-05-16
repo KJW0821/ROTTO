@@ -69,9 +69,6 @@ public class FarmServiceImpl implements FarmService {
         endIdx = indexes.get(1);
         totalPages = indexes.get(2);
 
-        // 최신순으로 보여주기 위해 리스트 뒤집기
-        Collections.reverse(farms);
-
         // 페이지네이션
         List<Farm> pageFarms = farms.subList(startIdx, endIdx);
 
