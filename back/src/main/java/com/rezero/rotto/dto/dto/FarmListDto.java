@@ -2,6 +2,8 @@ package com.rezero.rotto.dto.dto;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
@@ -14,5 +16,6 @@ public class FarmListDto extends FarmDto {
     private String farmLogoPath;
     private String beanName;
     private Boolean isLiked;
+    private BigDecimal returnRate;
 
 }

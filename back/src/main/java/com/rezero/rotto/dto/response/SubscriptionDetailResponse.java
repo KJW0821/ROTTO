@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Builder
@@ -17,7 +18,7 @@ public class SubscriptionDetailResponse {
     private LocalDateTime startedTime;
     private LocalDateTime endTime;
     private int limitNum;
-    private int returnRate;
+    private BigDecimal returnRate;
     private int applyCount;
     private int totalTokenCount;
     private int subsStatus;
