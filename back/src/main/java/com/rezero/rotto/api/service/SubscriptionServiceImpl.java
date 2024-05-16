@@ -408,6 +408,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         logger.info("[refundSubscription] price: " + price);
         int FarmIncome = (int)Math.ceil(price * (subscription.getPartnerFarmRate()) / 100.0); // 농장 수익
         logger.info("[refundSubscription] FarmIncome: " + FarmIncome);
+        logger.info("[refundSubscription] 수수료: " + (int)Math.floor((price - FarmIncome) * 0.011));
         int totalProceed = (price - FarmIncome) - (int)Math.floor((price - FarmIncome) * 0.011); // 총 청약수익금액
         logger.info("[refundSubscription] totalProceed: " + totalProceed);
 
@@ -423,7 +424,9 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 // 사업자 → 이용자 이체
                 int applyCount = applyHistory.getApplyCount();
                 User user = userRepository.findByUserCode(applyHistory.getUserCode());
-                RefundMoney(user, ROTTOprice * applyCount);
+                if(!RefundMoney(user, ROTTOprice * applyCount)){
+                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("환급 중 에러 발생.");
+                }
 
                 // 이용자 지갑에 ROTTO 소각
                 RefundsTokenRequest refundsTokenRequest = new RefundsTokenRequest();
@@ -508,7 +511,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 .bodyValue(bodyMap) // 구성한 Map을 bodyValue에 전달
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .block();
+                .block(); // error 발생
 
             // 입출금내역 저장.
             AccountHistory accountHistory = new AccountHistory();
