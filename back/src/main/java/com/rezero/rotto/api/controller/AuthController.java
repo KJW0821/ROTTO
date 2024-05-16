@@ -173,6 +173,8 @@ public class AuthController {
 
             String newAccessToken = jwtTokenProvider.createAccessToken(String.valueOf(userCode));
             String newRefreshToken = jwtTokenProvider.createRefreshToken();
+            RefreshToken saveRefreshToken = new RefreshToken(userCode, newRefreshToken);
+            refreshTokenRepository.save(saveRefreshToken);
 
             TokenResponse tokenResponse = TokenResponse.builder()
                     .grantType("Bearer")
