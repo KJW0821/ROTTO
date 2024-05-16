@@ -1,6 +1,7 @@
 package com.rezero.rotto.repository;
 
 import com.rezero.rotto.entity.ApplyHistory;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,4 +20,5 @@ public interface ApplyHistoryRepository extends JpaRepository<ApplyHistory, Inte
 
     @Query(value = "SELECT SUM(applyCount) FROM ApplyHistory WHERE subscriptionCode = :subscriptionCode")
     Integer sumApplyCountBySubscriptionCode(int subscriptionCode);
+
 }
