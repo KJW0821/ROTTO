@@ -33,6 +33,7 @@ public class SubscriptionController {
     })
     @GetMapping
     public ResponseEntity<?> getSubscriptionList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+                                                 @RequestParam(required = false) Integer page,
                                                  @RequestParam(name = "subs-status", required = false) Integer subsStatus,
                                                  @RequestParam(name = "min-price", required = false) Integer minPrice,
                                                  @RequestParam(name = "max-price", required = false) Integer maxPrice,
@@ -40,7 +41,7 @@ public class SubscriptionController {
                                                  @RequestParam(required = false) String sort,
                                                  @RequestParam(required = false) String keyword) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return subscriptionService.getSubscriptionList(userCode, subsStatus, minPrice, maxPrice, beanType, sort, keyword);
+        return subscriptionService.getSubscriptionList(userCode, page, subsStatus, minPrice, maxPrice, beanType, sort, keyword);
     }
 
 

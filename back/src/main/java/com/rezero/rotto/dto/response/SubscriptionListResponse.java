@@ -11,5 +11,6 @@ import java.util.List;
 public class SubscriptionListResponse {
 
     private List<SubscriptionListDto> subscriptions;
+    private int totalPages;
 
 }
