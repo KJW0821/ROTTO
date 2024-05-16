@@ -2,9 +2,11 @@ import API from "./Api";
 
 const URL = '/subscription';
 
-export const getFundingList = async () => {
+export const getFundingList = async (params) => {
   try {
-    const res = await API.get(URL);
+    const res = await API.get(URL, {
+      params
+    });
     return res.data;
   } catch (err) {
     console.error(err);
