@@ -73,7 +73,8 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
         List<ExpenseDetail> expenseDetails = expenseDetailRepository.findByFarmCode(subscription.getFarmCode());
         Farm farm =farmRepository.findByFarmCode(subscription.getFarmCode());
 
-        int totalExpenses = expenseDetailRepository.sumExpenseDetailByFarmCode(farm.getFarmCode());
+        Integer sum = expenseDetailRepository.sumExpenseDetailByFarmCode(farm.getFarmCode());
+        int totalExpenses = (sum != null) ? sum.intValue() : 0;
         List<TradeHistoryExpenseDetailOfSubDto> tradeHistoryExpenseDetailOfSubDtos = new ArrayList<>();
 
         for (ExpenseDetail expenseDetail : expenseDetails ) {
