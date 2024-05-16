@@ -9,7 +9,8 @@ const initialState = {
   maxPrice: null,
   beanType: null,
   isFilterModalOpen: false,
-  filterData: null
+  filterData: null,
+  selectedFilter: null
 }
 
 export const fundingSlice = createSlice({
@@ -42,6 +43,9 @@ export const fundingSlice = createSlice({
     },
     setFilterData: (state, action) => {
       state.filterData = action.payload;
+    },
+    setFilter: (state, action) => {
+      state.selectedFilter = action.payload;
     }
   }
 });
@@ -55,7 +59,8 @@ export const {
   setMaxPrice,
   setBeanType,
   setFilterModal,
-  setFilterData
+  setFilterData,
+  setFilter
 } = fundingSlice.actions;
 
 export default fundingSlice.reducer;
