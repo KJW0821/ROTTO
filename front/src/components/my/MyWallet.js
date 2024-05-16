@@ -6,6 +6,7 @@ import Colors from "../../constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import { setWalletModal } from "../../stores/mySlice";
 import { useWeb3Modal } from "@web3modal/wagmi-react-native";
+import { CONTRACT_ADDRESS } from "@env"
 
 const MyWallet = () => {
   const isModalOpen = useSelector(state => state.myPageInfo.isWalletModalOpen);
@@ -16,7 +17,7 @@ const MyWallet = () => {
 
   const { address, isConnected, isDisconnected } = useAccount();
   
-  const tokenAddress = '0x85c41a930ddEc0f37BAED79BEd3047Af190c4f98';
+  const tokenAddress = CONTRACT_ADDRESS;
 
   const { data, isError, isLoading } = useBalance({
     address,

@@ -20,15 +20,15 @@ import {
 } from "@web3modal/wagmi-react-native";
 import { defineChain } from "viem";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
-// import messaging from "@react-native-firebase/messaging";
 import { useEffect } from "react";
+import { PROJECT_ID, RPC_URL } from "@env"
 
 const customChain = {
   id: 31221,
   name: "ssafy",
   rpcUrls: {
     public: {
-      http: ["https://rpc.ssafy-blockchain.com"],
+      http: [RPC_URL],
     },
   },
   nativeCurrency: {
@@ -39,7 +39,7 @@ const customChain = {
   testnet: false,
 };
 
-const projectId = "41c800331b3143bdaddeef0fdefb7852";
+const projectId = PROJECT_ID;
 
 const metadata = {
   name: "rotto",
