@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final SecretKey aesKey;
     private final AccountRepository accountRepository;
+    private final BlockChainService blockChainService;
 
     // 회원가입
     public ResponseEntity<?> signUp(SignUpRequest request) {
@@ -174,6 +175,9 @@ public class UserServiceImpl implements UserService {
 
         user.setBcAddress(address);
         userRepository.save(user);
+        
+        // 입력받은 지갑 주소를 whitelist에 추가
+        blockChainService.InsertWhiteList(address);
 
         return ResponseEntity.ok().body("지갑 주소 업데이트 완료.");
     }
