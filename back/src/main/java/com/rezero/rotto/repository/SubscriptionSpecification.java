@@ -101,7 +101,7 @@ public class SubscriptionSpecification {
                 ));
                 // 청약 마감 기한 빠른 순
                 if ("deadline".equals(sort)) {
-                    query.orderBy(criteriaBuilder.desc(root.get("endedTime")));
+                    query.orderBy(criteriaBuilder.asc(root.get("endedTime")));
                 // sort = highApplyPercent. 신청률 높은 순
                 } else if ("highApplyPercent".equals(sort)) {
                     Subquery<Long> applyHistoryCountSubquery = query.subquery(Long.class);
