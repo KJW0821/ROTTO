@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import org.web3j.abi.EventEncoder;
 import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.Response;
 import org.web3j.protocol.core.methods.response.Log;
@@ -31,8 +33,10 @@ import com.rezero.rotto.dto.request.PayTokensRequest;
 import com.rezero.rotto.dto.request.RefundsTokenRequest;
 import com.rezero.rotto.entity.Subscription;
 import com.rezero.rotto.entity.TradeHistory;
+import com.rezero.rotto.entity.User;
 import com.rezero.rotto.repository.SubscriptionRepository;
 import com.rezero.rotto.repository.TradeHistoryRepository;
+import com.rezero.rotto.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -46,8 +50,8 @@ public class BlockChainServiceImpl implements BlockChainService{
 	@Autowired
 	private final Credentials credentials;
 
-	@Autowired
 	private final SubscriptionRepository subscriptionRepository;
+	private final UserRepository userRepository;
 
 	private TokenManager tokenManager = null;
 
@@ -97,7 +101,9 @@ public class BlockChainServiceImpl implements BlockChainService{
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("요청하신 청약을 찾을 수 없습니다.");
 		else if(request.getAmount() > subscription.getLimitNum())
 			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("요청하신 수량이 1인당 가질 수 있는 개수를 초과하였습니다.");
-
+		else if(!WalletUtils.isValidAddress(request.getAddress())){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않는 주소입니다.");
+		}
 		TokenManager.Subscription requestSubscription = changeVariable(subscription);
 		BigInteger amount = BigInteger.valueOf(request.getAmount());
 
@@ -115,7 +121,15 @@ public class BlockChainServiceImpl implements BlockChainService{
 			TransactionReceipt transactionReceipt = transactionReceiptFuture.join();
 			if(transactionReceipt.isStatusOK()) {
 				TradeHistory history = new TradeHistory();
+				Optional<User> user = userRepository.findByBcAddress(request.getAddress());
+
 				history.setTradeHistoryCode(subscription.getSubscriptionCode());
+				history.setBcAddress(request.getAddress());
+				history.setUserCode(user.get().getUserCode());
+				history.setRefund(0);
+				history.setTradeNum(request.getAmount());
+				history.set
+
 				return ResponseEntity.status(HttpStatus.OK).body("ROTTO 발급 완료");
 			}
 			else
