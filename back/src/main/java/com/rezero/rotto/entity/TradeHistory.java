@@ -2,6 +2,8 @@ package com.rezero.rotto.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +35,7 @@ public class TradeHistory {
 	@Column(name = "subscription_code")
 	private int subscriptionCode;
 
+	@CreationTimestamp
 	@Column(name = "trade_time")
 	private LocalDateTime tradeTime;
 
