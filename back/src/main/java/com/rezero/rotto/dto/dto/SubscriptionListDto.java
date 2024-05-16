@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Builder
@@ -19,7 +20,7 @@ public class SubscriptionListDto {
     private LocalDateTime endTime;
     private String beanType;
     private int limitNum;
-    private int returnRate;
+    private BigDecimal returnRate;
     private Integer applyCount;
     private int totalTokenCount;
     private int subsStatus;
