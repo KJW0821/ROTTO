@@ -107,9 +107,32 @@ public class SubscriptionServiceImpl implements SubscriptionService{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
-
         Subscription subscriptionDetail = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
         Integer applyCount = applyHistoryRepository.sumApplyCountBySubscriptionCode(subscriptionCode);
+        ApplyHistory applyHistory1 = applyHistoryRepository.findByUserCodeAndSubscriptionCode(userCode, subscriptionCode);
+
+        int isApplies = 0;
+        if (applyHistory1 != null && subscriptionCode == applyHistory1.getSubscriptionCode()){
+            isApplies = 1;
+        }
+
+        // 현재 시각
+        LocalDateTime now = LocalDateTime.now();
+
+        // 시작 시간과 종료 시간
+        LocalDateTime startedTime = subscriptionDetail.getStartedTime();
+        LocalDateTime endTime = subscriptionDetail.getEndedTime();
+
+        // substatus 값을 결정하는 로직
+        int substatus;
+        if (now.isBefore(startedTime)) {
+            substatus = 0; // 현재 시각이 시작 시간보다 이전
+        } else if (now.isAfter(endTime)) {
+            substatus = 2; // 현재 시각이 종료 시간보다 이후
+        } else {
+            substatus = 1; // 현재 시각이 시작 시간과 종료 시간 사이
+        }
+
         applyCount = (applyCount != null) ? applyCount : 0;
         Farm farm = farmRepository.findByFarmCode(subscriptionDetail.getFarmCode());
         SubscriptionDetailResponse subscriptionDetailResponse = SubscriptionDetailResponse.builder()
@@ -123,6 +146,9 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 .limitNum(subscriptionDetail.getLimitNum())
                 .applyCount(applyCount)
                 .totalTokenCount(subscriptionDetail.getTotalTokenCount())
+                .subsStatus(substatus)
+                .farmImg(farm.getFarmLogoPath())
+                .isApply(isApplies)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(subscriptionDetailResponse);

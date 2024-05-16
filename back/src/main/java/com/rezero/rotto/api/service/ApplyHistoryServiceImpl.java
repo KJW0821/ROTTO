@@ -54,7 +54,7 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
 
         // 이미 신청한 청약이라면 안되지 ㅋ
-        if (subscriptionCode == applyHistoryRepo.getSubscriptionCode()){
+        if (applyHistoryRepo != null && subscriptionCode == applyHistoryRepo.getSubscriptionCode()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 신청한 청약입니다.");
         }
 
