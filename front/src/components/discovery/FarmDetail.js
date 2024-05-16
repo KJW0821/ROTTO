@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import Colors from "../../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
-import { S3URL } from "@env";
 
 const FarmDetail = ({ data }) => {
   const Navigation = useNavigation();
@@ -30,7 +29,7 @@ const FarmDetail = ({ data }) => {
     >
       <Image
         source={{
-          uri: `${S3URL}/farm_img/1/${data.farmLogoPath}`,
+          uri: `${process.env.EXPO_PUBLIC_S3URL}/farm_img/1/${data.farmLogoPath}`,
         }}
         style={styles.farmLogo}
       />
