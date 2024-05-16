@@ -95,13 +95,13 @@ public class BlockChainServiceImpl implements BlockChainService{
 	@Override
 	public ResponseEntity<?> distributeToken(PayTokensRequest request) {
 		if(tokenManager == null) initContract();
-
 		Subscription subscription = subscriptionRepository.findBySubscriptionCode(request.getCode());
+		Optional<User> user = userRepository.findByBcAddress(request.getAddress());
 		if(subscription == null)
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("요청하신 청약을 찾을 수 없습니다.");
 		else if(request.getAmount() > subscription.getLimitNum())
 			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("요청하신 수량이 1인당 가질 수 있는 개수를 초과하였습니다.");
-		else if(!WalletUtils.isValidAddress(request.getAddress())){
+		else if(user.isEmpty() || !WalletUtils.isValidAddress(request.getAddress())){
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않는 주소입니다.");
 		}
 		TokenManager.Subscription requestSubscription = changeVariable(subscription);
@@ -121,8 +121,6 @@ public class BlockChainServiceImpl implements BlockChainService{
 			TransactionReceipt transactionReceipt = transactionReceiptFuture.join();
 			if(transactionReceipt.isStatusOK()) {
 				TradeHistory history = new TradeHistory();
-				Optional<User> user = userRepository.findByBcAddress(request.getAddress());
-
 				history.setTradeHistoryCode(subscription.getSubscriptionCode());
 				history.setBcAddress(request.getAddress());
 				history.setUserCode(user.get().getUserCode());
