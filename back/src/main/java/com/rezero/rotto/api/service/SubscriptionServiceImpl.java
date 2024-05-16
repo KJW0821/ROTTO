@@ -5,6 +5,7 @@ import com.rezero.rotto.dto.dto.SubscriptionListDto;
 import com.rezero.rotto.dto.request.AccountDepositRequest;
 import com.rezero.rotto.dto.request.CreateTokenRequest;
 import com.rezero.rotto.dto.request.PayTokensRequest;
+import com.rezero.rotto.dto.request.RefundsTokenRequest;
 import com.rezero.rotto.dto.response.SubscriptionDetailResponse;
 import com.rezero.rotto.dto.response.SubscriptionListResponse;
 import com.rezero.rotto.entity.Account;
@@ -13,6 +14,7 @@ import com.rezero.rotto.dto.request.SubscriptionProduceRequest;
 
 import com.rezero.rotto.entity.AccountHistory;
 import com.rezero.rotto.entity.ApplyHistory;
+import com.rezero.rotto.entity.ExpenseDetail;
 import com.rezero.rotto.entity.Farm;
 import com.rezero.rotto.entity.Subscription;
 import com.rezero.rotto.entity.TradeHistory;
@@ -60,9 +62,9 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     private final FarmRepository farmRepository;
     private final BlockChainService blockChainService;
     private final TradeHistoryRepository tradeHistoryRepository;
-    private final AccountService accountService;
     private final AccountRepository accountRepository;
     private final AccountHistoryRepository accountHistoryRepository;
+    private final ExpenseDetailRepository expenseDetailRepository;
 
     public ResponseEntity<?> getSubscriptionList(int userCode, Integer subsStatus, Integer minPrice, Integer maxPrice, String beanType, String sort, String keyword){
         User user = userRepository.findByUserCode(userCode);
@@ -354,6 +356,64 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         return ResponseEntity.status(HttpStatus.CREATED).body(subscription);
     }
 
+    @Override
+    public ResponseEntity<?> refundSubscription(int userCode, int subscriptionCode) {
+        // 관리자만 요청 가능
+        boolean checkAdmin = userRepository.findByUserCode(userCode).getAdmin();
+        if(!checkAdmin){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("요청 권한이 없습니다.");
+        }
+
+        Subscription subscription = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
+        if(subscription == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("청약을 찾을 수 없습니다.");
+        }
+        else if(subscription.getTotalSales() == 0){ // 총 판매액 입력이 안되어 있는 경우
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("아직 경매가 완료되지 않은 청약입니다.");
+        }
+
+        List<ExpenseDetail> expenseDetailList = expenseDetailRepository.findBySubscriptionCode(subscription.getSubscriptionCode());
+        int TotalExpense = 0;
+        for(ExpenseDetail details : expenseDetailList){
+            TotalExpense += details.getExpenses();
+        }
+
+        // 경매가 - 농장 운영 비용
+        int price = subscription.getTotalSales() - TotalExpense;
+        int FarmIncome = (int)Math.ceil(price * (subscription.getPartnerFarmRate()) / 100.0); // 농장 수익
+        int totalProceed = (price - FarmIncome) - (int)Math.floor((price - FarmIncome) * 0.011); // 총 매출액
+
+        int ROTTOprice = (int)Math.ceil((double)totalProceed / subscription.getTotalTokenCount());
+
+        Optional<List<ApplyHistory>> applyHistories = applyHistoryRepository.findBySubscriptionCodeAndIsDelete(
+            subscription.getSubscriptionCode(), 0);
+
+        if(applyHistories.isPresent()) {
+            for (ApplyHistory applyHistory : applyHistories.get()) {
+                // 사업자 → 이용자 이체
+                int applyCount = applyHistory.getApplyCount();
+                User user = userRepository.findByUserCode(applyHistory.getUserCode());
+                RefundMoney(user, ROTTOprice * applyCount);
+
+                // 이용자 지갑에 ROTTO 소각
+                RefundsTokenRequest refundsTokenRequest = new RefundsTokenRequest();
+                refundsTokenRequest.setCode(subscription.getSubscriptionCode());
+                refundsTokenRequest.setAddress(user.getBcAddress());
+                blockChainService.RefundsToken(refundsTokenRequest);
+
+                // 거래장부 거래 내역 추가
+                TradeHistory tradeHistory = new TradeHistory();
+                tradeHistory.setUserCode(user.getUserCode());
+                tradeHistory.setSubscriptionCode(subscription.getSubscriptionCode());
+                tradeHistory.setTradeNum(applyCount);
+                tradeHistory.setRefund(1);
+                tradeHistory.setBcAddress(user.getBcAddress());
+                tradeHistoryRepository.save(tradeHistory);
+            }
+        }
+
+        return ResponseEntity.ok().body("환급 완료");
+    }
 
     // 사업자 → 이용자 가상계좌
     private boolean RefundMoney(User user, Integer amount) {

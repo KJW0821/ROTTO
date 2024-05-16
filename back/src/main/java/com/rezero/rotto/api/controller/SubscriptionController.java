@@ -4,6 +4,7 @@ import com.rezero.rotto.api.service.SubscriptionService;
 import com.rezero.rotto.dto.request.SubscriptionProduceRequest;
 import com.rezero.rotto.dto.response.SubscriptionDetailResponse;
 import com.rezero.rotto.dto.response.SubscriptionListResponse;
+import com.rezero.rotto.entity.User;
 import com.rezero.rotto.utils.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,5 +80,12 @@ public class SubscriptionController {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return subscriptionService.postSubscription(userCode, subscriptionProduceRequest);
 
+    }
+
+    @GetMapping("refund/{subscription-code}")
+    public ResponseEntity<?> refundSubscription(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+        @PathVariable(name = "subscription-code", required = true) int subscriptionCode){
+        int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
+        return subscriptionService.refundSubscription(userCode, subscriptionCode);
     }
 }

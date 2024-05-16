@@ -14,4 +14,5 @@ public interface SubscriptionService {
 
     ResponseEntity<?> postSubscription(int userCode, SubscriptionProduceRequest subscriptionProduceRequest);
 
+	ResponseEntity<?> refundSubscription(int userCode, int subscriptionCode);
 }
