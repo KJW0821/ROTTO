@@ -19,3 +19,13 @@ export const getTradeHistory = async () => {
     return err;
   }
 };
+
+export const getCancelHistory = async () => {
+  try {
+    const res = await API.get('/apply/terminated');
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
