@@ -87,7 +87,7 @@ public class SubscriptionSpecification {
         };
     }
 
-    // 요청된 정렬 기준에 따라 정렬하는 스펙, sort = null : 농장이름순, rate : 수익률 높은 순, deadline: 마감 기한 빠른순,
+    // 요청된 정렬 기준에 따라 정렬하는 스펙, sort = null : 청약 코드 순, rate : 수익률 높은 순, deadline: 마감 기한 빠른순,
     // 조각 가격순(highPrice, lowPrice), highApplyPercent : 신청률 높은순
     public static Specification<Subscription> applySorting(String sort) {
         return (root, query, criteriaBuilder) -> {
@@ -101,7 +101,7 @@ public class SubscriptionSpecification {
                 ));
                 // 청약 마감 기한 빠른 순
                 if ("deadline".equals(sort)) {
-                    query.orderBy(criteriaBuilder.desc(root.get("endedTime")));
+                    query.orderBy(criteriaBuilder.asc(root.get("endedTime")));
                 // sort = highApplyPercent. 신청률 높은 순
                 } else if ("highApplyPercent".equals(sort)) {
                     Subquery<Long> applyHistoryCountSubquery = query.subquery(Long.class);

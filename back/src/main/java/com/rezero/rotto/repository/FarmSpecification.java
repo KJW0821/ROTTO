@@ -3,11 +3,10 @@ package com.rezero.rotto.repository;
 import com.rezero.rotto.entity.Farm;
 import com.rezero.rotto.entity.InterestFarm;
 import com.rezero.rotto.entity.Subscription;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class FarmSpecification {
@@ -110,72 +109,71 @@ public class FarmSpecification {
     public static Specification<Farm> applySorting(String sort) {
         return (root, query, criteriaBuilder) -> {
             if ("rate".equals(sort)) {
-                // 가장 최근 청약의 returnRate로 정렬
-                Subquery<Integer> rateSubquery = query.subquery(Integer.class);
-                Root<Subscription> rateRoot = rateSubquery.from(Subscription.class);
-                rateSubquery.select(rateRoot.get("returnRate"));
-
-                // 가장 최근 종료 시간 찾기
-                Subquery<Date> latestDateSubquery = query.subquery(Date.class);
-                Root<Subscription> latestDateRoot = latestDateSubquery.from(Subscription.class);
-                latestDateSubquery.select(criteriaBuilder.greatest(latestDateRoot.<Date>get("endedTime")))
-                        .where(criteriaBuilder.equal(latestDateRoot.get("farmCode"), root.get("farmCode")));
-
-                rateSubquery.where(
-                        criteriaBuilder.and(
-                                criteriaBuilder.equal(rateRoot.get("farmCode"), root.get("farmCode")),
-                                criteriaBuilder.equal(rateRoot.get("endedTime"), latestDateSubquery.getSelection())
-                        )
-                );
-                query.orderBy(criteriaBuilder.asc(rateSubquery));
+                orderByRecentSubscriptionReturnRate(root, query, criteriaBuilder);
 
             } else if ("like".equals(sort)) {
                 Subquery<Long> likeCountSubquery = query.subquery(Long.class);
                 Root<InterestFarm> interestFarmRoot = likeCountSubquery.from(InterestFarm.class);
-                likeCountSubquery.select(criteriaBuilder.count(interestFarmRoot.get("farmCode")));
-                likeCountSubquery.where(criteriaBuilder.equal(interestFarmRoot.get("farmCode"), root.get("farmCode")));
-                likeCountSubquery.groupBy(interestFarmRoot.get("farmCode"));
-                query.orderBy(criteriaBuilder.asc(criteriaBuilder.count(likeCountSubquery.getSelection())));
+                likeCountSubquery.select(criteriaBuilder.count(interestFarmRoot.get("farmCode")))
+                                .where(criteriaBuilder.equal(interestFarmRoot.get("farmCode"), root.get("farmCode")));
 
+                query.orderBy(criteriaBuilder.desc(likeCountSubquery));
             } else if ("deadline".equals(sort)) {
-                // 청약 진행중인 상태를 필터링하는 Specification
-                Specification<Farm> ongoingSubsSpec = FarmSpecification.filterBySubscriptionStatus(1);
-                Predicate ongoingPredicate = ongoingSubsSpec.toPredicate(root, query, criteriaBuilder);
-                query.where(ongoingPredicate);  // 청약 진행중인 조건을 쿼리에 추가
-
                 // 마감 기한이 가장 빠른 순으로 정렬
-                Subquery<Date> deadlineSubquery = query.subquery(Date.class);
+                Subquery<Number> deadlineSubquery = query.subquery(Number.class);
                 Root<Subscription> deadlineRoot = deadlineSubquery.from(Subscription.class);
-                deadlineSubquery.select(deadlineRoot.get("endedTime"));
-                deadlineSubquery.where(
-                        criteriaBuilder.and(
-                                criteriaBuilder.equal(deadlineRoot.get("farmCode"), root.get("farmCode")),
-                                criteriaBuilder.lessThanOrEqualTo(deadlineRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
-                                criteriaBuilder.greaterThanOrEqualTo(deadlineRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
-                        )
-                );
+                deadlineSubquery.select(criteriaBuilder.min(deadlineRoot.get("endedTime")))
+                        .where(criteriaBuilder.and(
+                                        criteriaBuilder.equal(deadlineRoot.get("farmCode"), root.get("farmCode")),
+                                        criteriaBuilder.lessThanOrEqualTo(deadlineRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
+                                        criteriaBuilder.greaterThanOrEqualTo(deadlineRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
+                                )
+                        );
 
                 query.orderBy(criteriaBuilder.desc(deadlineSubquery));
             } else if ("highPrice".equals(sort) || "lowPrice".equals(sort)) {
                 Subquery<Integer> priceSubquery = query.subquery(Integer.class);
                 Root<Subscription> subscriptionRoot = priceSubquery.from(Subscription.class);
-                priceSubquery.select(subscriptionRoot.get("confirmPrice"));
-                priceSubquery.where(
-                        criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode"))
-                );
                 if ("highPrice".equals(sort)) {
                     // 가격 높은 순으로 정렬
-                    query.orderBy(criteriaBuilder.asc(priceSubquery));
+                    priceSubquery.select(criteriaBuilder.max(subscriptionRoot.get("confirmPrice")));
+                    priceSubquery.where(
+                            criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode"))
+                    );
+                    query.orderBy(criteriaBuilder.desc(priceSubquery));
                 } else if ("lowPrice".equals(sort)) {
                     // 가격 낮은 순으로 정렬
-                    query.orderBy(criteriaBuilder.desc(priceSubquery));
+                    priceSubquery.select(criteriaBuilder.min(subscriptionRoot.get("confirmPrice")));
+                    priceSubquery.where(
+                            criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode"))
+                    );
+                    query.orderBy(criteriaBuilder.asc(priceSubquery));
                 }
             }
             else {
                 // 기본 정렬 기준: 농장 이름 순
-                query.orderBy(criteriaBuilder.desc(root.get("farmName")));
+                query.orderBy(criteriaBuilder.asc(root.get("farmName")));
             }
             return query.getRestriction();
         };
+    }
+
+    private static void orderByRecentSubscriptionReturnRate(Root<Farm> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+        // 서브쿼리를 사용하여 가장 최근에 종료된 청약의 returnRate가 가장 높은 것을 조회
+        Subquery<Double> subquery = query.subquery(Double.class);
+        Root<Subscription> subscriptionRoot = subquery.from(Subscription.class);
+
+        // 서브쿼리에서 가장 높은 returnRate를 선택하기 위해 최대 값을 사용
+        Expression<Double> maxRate = criteriaBuilder.max(subscriptionRoot.get("returnRate"));
+
+        subquery.select(maxRate)
+                .where(
+                        criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode")),
+                        criteriaBuilder.lessThan(subscriptionRoot.get("endedTime"), LocalDateTime.now())
+                );
+
+        // 서브쿼리의 결과를 메인 쿼리에서 사용할 수 있도록 설정
+        Expression<Double> rateExpression = subquery.getSelection();
+        query.orderBy(criteriaBuilder.desc(rateExpression));
     }
 }

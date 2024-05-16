@@ -100,8 +100,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         startIdx = indexes.get(0);
         endIdx = indexes.get(1);
         totalPages = indexes.get(2);
-        // 최신순으로 보여주기 위해 리스트 뒤집기
-        Collections.reverse(subscriptions);
+
         // 페이지네이션
         List<Subscription> pageSubscriptions = subscriptions.subList(startIdx, endIdx);
         List<SubscriptionListDto> subscriptionListDtos = new ArrayList<>();
