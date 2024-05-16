@@ -3,8 +3,21 @@ import Colors from '../../constants/Colors';
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { getOwnHistory } from '../../utils/investApi';
 
 const OwnList = () => {
+  const [data, setData] = useState();
+
+  useFocusEffect(
+    useCallback(() => {
+      const getOwnData = async () => {
+        const res = await getOwnHistory();
+        setData(res.tradeHistoryOwnListDtoss);
+      };
+
+      getOwnData();
+    }, [])
+  );
 
   return(
     data &&
@@ -17,7 +30,7 @@ const OwnList = () => {
               <Text style={styles.farmName}>{itemData.item.farmName}</Text>
               <Pressable style={styles.buttonContainer}>
                 <Text style={styles.menu}>상세 내역</Text>
-                <MaterialIcons name="arrow-forward-ios" size={14} />
+                <MaterialIcons name="arrow-forward-ios" size={14} color={Colors.fontGray} />
               </Pressable>
             </View>
             <View style={styles.contentContainer}>
@@ -37,7 +50,7 @@ const OwnList = () => {
         )
       }}
       keyExtractor={(item) => {
-        return item.applyHistoryCode
+        return item.subscriptionCode
       }}
       contentContainerStyle={{ flexGrow: 1 }}
     />

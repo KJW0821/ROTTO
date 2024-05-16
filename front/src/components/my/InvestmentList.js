@@ -4,6 +4,7 @@ import { useState } from 'react';
 import TradeList from './TradeList';
 import ApplyList from './ApplyList';
 import CancelList from './CancelList';
+import OwnList from './OwnList';
 
 const InvestmentList = ({navigation}) => {
   const [selectedMenu, setSelectedMenu] = useState('보유 내역');
@@ -17,7 +18,7 @@ const InvestmentList = ({navigation}) => {
       ComponentToShow = ApplyList;
       break;
     case '정산 내역':
-      ComponentToShow = TradeList;
+      ComponentToShow = OwnList;
       break;
     case '해지 내역':
       ComponentToShow = CancelList;
