@@ -9,4 +9,6 @@ public interface InterestFarmRepository extends JpaRepository<InterestFarm, Inte
 
     InterestFarm findByFarmCodeAndUserCode(int farmCode, int userCode);
 
+    Long countByFarmCode(int farmCode);
+
 }

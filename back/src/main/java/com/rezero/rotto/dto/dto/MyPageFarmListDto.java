@@ -18,6 +18,7 @@ public class MyPageFarmListDto extends FarmDto {
     private Boolean isLiked;
     private BigDecimal returnRate;
     private Boolean isFunding;
+    private Long likeCount;
 
 
 }

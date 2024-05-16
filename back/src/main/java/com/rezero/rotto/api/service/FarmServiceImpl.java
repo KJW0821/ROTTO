@@ -113,6 +113,8 @@ public class FarmServiceImpl implements FarmService {
             returnRate = latestEndedSubscription.getReturnRate();
         }
 
+        Long likeCount = interestFarmRepository.countByFarmCode(farmCode);
+
         FarmDetailResponse response = FarmDetailResponse.builder()
                 .farmCode(farmCode)
                 .farmName(farm.getFarmName())
@@ -126,6 +128,7 @@ public class FarmServiceImpl implements FarmService {
                 .beanGrade(farm.getFarmBeanGrade())
                 .returnRate(returnRate)
                 .isLiked(isLiked)
+                .likeCount(likeCount)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -166,13 +169,17 @@ public class FarmServiceImpl implements FarmService {
             } else {
                 returnRate = latestEndedSubscription.getReturnRate();
             }
+
+            Long likeCount = interestFarmRepository.countByFarmCode(farmCode);
+
             FarmListDto farmListDto = FarmListDto.builder()
-                    .farmCode(farm.getFarmCode())
+                    .farmCode(farmCode)
                     .farmName(farm.getFarmName())
                     .farmLogoPath(farm.getFarmLogoPath())
                     .beanName(farm.getFarmBeanName())
                     .returnRate(returnRate)
                     .isLiked(isLiked)
+                    .likeCount(likeCount)
                     .build();
             // farms 에 하나씩 담기
             farms.add(farmListDto);
@@ -240,10 +247,12 @@ public class FarmServiceImpl implements FarmService {
                 returnRate = latestEndedSubscription.getReturnRate();
             }
 
+            Long likeCount = interestFarmRepository.countByFarmCode(farmCode);
+
             if (isMyPage) {
-                farmDto = new MyPageFarmListDto(farmCode, farm.getFarmName(), farm.getFarmLogoPath(), farm.getFarmBeanName(), farmIsLiked, returnRate, isFunding);
+                farmDto = new MyPageFarmListDto(farmCode, farm.getFarmName(), farm.getFarmLogoPath(), farm.getFarmBeanName(), farmIsLiked, returnRate, isFunding, likeCount);
             } else {
-                farmDto = new FarmListDto(farmCode, farm.getFarmName(), farm.getFarmLogoPath(), farm.getFarmBeanName(), farmIsLiked, returnRate);
+                farmDto = new FarmListDto(farmCode, farm.getFarmName(), farm.getFarmLogoPath(), farm.getFarmBeanName(), farmIsLiked, returnRate, likeCount);
             }
             farmDtos.add(farmDto);
         }
