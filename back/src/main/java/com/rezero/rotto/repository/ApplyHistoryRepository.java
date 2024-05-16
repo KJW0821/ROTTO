@@ -21,4 +21,6 @@ public interface ApplyHistoryRepository extends JpaRepository<ApplyHistory, Inte
     @Query(value = "SELECT SUM(applyCount) FROM ApplyHistory WHERE subscriptionCode = :subscriptionCode")
     Integer sumApplyCountBySubscriptionCode(int subscriptionCode);
 
+    @Query(value = "SELECT SUM(applyCount) FROM ApplyHistory WHERE subscriptionCode = :subscriptionCode AND isDelete = 0")
+    Integer sumApplyCountBySubscriptionCodeAndIsDelete(int subscriptionCode);
 }
