@@ -3,9 +3,11 @@ package com.rezero.rotto.api.service;
 import com.rezero.rotto.dto.dto.TradeHistoryExpenseDetailOfSubDto;
 import com.rezero.rotto.dto.dto.TradeHistoryHomeInfoDto;
 import com.rezero.rotto.dto.dto.TradeHistoryListDto;
+import com.rezero.rotto.dto.dto.TradeHistoryOwnListDto;
 import com.rezero.rotto.dto.response.TradeHistoryExpenseDetailOfSubResponse;
 import com.rezero.rotto.dto.response.TradeHistoryHomeInfoResponse;
 import com.rezero.rotto.dto.response.TradeHistoryListResponse;
+import com.rezero.rotto.dto.response.TradeHistoryOwnListResponse;
 import com.rezero.rotto.entity.*;
 import com.rezero.rotto.repository.*;
 import jakarta.transaction.Transactional;
@@ -36,7 +38,7 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
-        List<TradeHistory> tradeHistories = tradeHistoryRepository.findByUserCode(user.getUserCode());
+        List<TradeHistory> tradeHistories = tradeHistoryRepository.findByUserCodeAndRefund(userCode, 0);
         List<TradeHistoryListDto> tradeHistoryListDtos = new ArrayList<>();
 
         for (TradeHistory tradeHistory: tradeHistories) {
@@ -50,7 +52,6 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
                     .tradeTime(tradeHistory.getTradeTime())
                     .tradeNum(tradeHistory.getTradeNum())
                     .refund(tradeHistory.getRefund())
-                    .totalProceed(subscription.getTotalProceed())
                     .totalTokenCount(subscription.getTotalTokenCount())
                     .build();
 
@@ -63,6 +64,48 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+
+    @Override
+    public ResponseEntity<?> getTradeHistoryOwn(int userCode) {
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null || user.getIsDelete()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        List<TradeHistory> tradeHistories = tradeHistoryRepository.findByUserCodeAndRefund(userCode, 1);
+        List<TradeHistoryOwnListDto> tradeHistoryOwnListDtos = new ArrayList<>();
+
+        if (tradeHistories == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("정산내역이 없습니다.");
+        }
+
+        for (TradeHistory tradeHistory: tradeHistories) {
+            Subscription subscription = subscriptionRepository.findBySubscriptionCode(tradeHistory.getSubscriptionCode());
+            int proceeds = (tradeHistory.getTokenPrice() * tradeHistory.getTradeNum() ) - (subscription.getConfirmPrice() * tradeHistory.getTradeNum());
+            Farm farm =farmRepository.findByFarmCode(subscription.getFarmCode());
+
+            TradeHistoryOwnListDto tradeHistoryListDto = TradeHistoryOwnListDto.builder()
+                    .subscriptionCode(subscription.getSubscriptionCode())
+                    .farmName(farm.getFarmName())
+                    .confirmPrice(subscription.getConfirmPrice())
+                    .tradeTime(tradeHistory.getTradeTime())
+                    .tradeNum(tradeHistory.getTradeNum())
+                    .refund(tradeHistory.getRefund())
+                    .totalTokenCount(subscription.getTotalTokenCount())
+                    .proceed(proceeds)
+                    .build();
+
+            tradeHistoryOwnListDtos.add(tradeHistoryListDto);
+        }
+
+        TradeHistoryOwnListResponse response = TradeHistoryOwnListResponse.builder()
+                .tradeHistoryOwnListDtoss(tradeHistoryOwnListDtos)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 
     @Override
     public ResponseEntity<?> getExpenseDetailOfSub(int userCode, int subscriptionCode) {
