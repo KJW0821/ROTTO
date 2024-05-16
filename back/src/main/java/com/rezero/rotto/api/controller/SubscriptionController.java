@@ -63,7 +63,8 @@ public class SubscriptionController {
     @Operation(summary = "청약 ROTTO 발급", description = "해당 청약을 신청하였던 투자자들 모두에게 ROTTO 발급")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "정산 완료"),
-
+            @ApiResponse(responseCode = "400", description = "환불 과정에서 오류 발생"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 청약 or 신청자를 찾을 수 없음"),
     })
     @PostMapping("distribute/{subscription-code}")
     public ResponseEntity<?> calculateSubscription(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int subscriptionCode) {
@@ -83,6 +84,13 @@ public class SubscriptionController {
 
     }
 
+    @Operation(summary = "청약 환급", description = "청약에 대한 경매가 완료되었을 시, 관리자가 해당 Controller를 이용해 청약 신청자들에게 일괄 환급")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "환급 완료"),
+        @ApiResponse(responseCode = "401", description = "요청 권한 없음"),
+        @ApiResponse(responseCode = "404", description = "존재하지 않는 청약"),
+        @ApiResponse(responseCode = "400", description = "판매액 입력 부재")
+    })
     @GetMapping("refund/{subscription-code}")
     public ResponseEntity<?> refundSubscription(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
         @PathVariable(name = "subscription-code", required = true) int subscriptionCode){
