@@ -21,14 +21,13 @@ import {
 import { defineChain } from "viem";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { useEffect } from "react";
-import { PROJECT_ID, RPC_URL } from "@env"
 
 const customChain = {
   id: 31221,
   name: "ssafy",
   rpcUrls: {
     public: {
-      http: [RPC_URL],
+      http: [process.env.EXPO_PUBLIC_RPC_URL],
     },
   },
   nativeCurrency: {
@@ -39,7 +38,7 @@ const customChain = {
   testnet: false,
 };
 
-const projectId = PROJECT_ID;
+const projectId = process.env.EXPO_PUBLIC_PROJECT_ID;
 
 const metadata = {
   name: "rotto",

@@ -12,7 +12,6 @@ import { getFarmDetail } from "../../utils/farmAPi";
 import StackHeader from "../../components/common/StackHeader";
 import { addLike, removeLike } from "../../utils/FarmILikeApi";
 import Colors from "../../constants/Colors";
-import { S3URL } from "@env";
 
 const FarmScreen = ({ route }) => {
   const { width, height } = useWindowDimensions();
@@ -58,7 +57,7 @@ const FarmScreen = ({ route }) => {
             <View style={styles.rowConatainer}>
               <Image
                 source={{
-                  uri: `${S3URL}/farm_img/1/${farm.farmLogoPath}`,
+                  uri: `${process.env.EXPO_PUBLIC_S3URL}/farm_img/1/${farm.farmLogoPath}`,
                 }}
                 style={styles.farmLogo}
               />

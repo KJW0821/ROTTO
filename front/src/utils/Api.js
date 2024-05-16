@@ -1,9 +1,8 @@
 import axios from "axios";
 import TokenService from "./token";
 import { useNavigation } from "@react-navigation/native";
-import { DOMAIN_URL } from "@env"
 
-const DOMAIN = DOMAIN_URL
+const DOMAIN = process.env.EXPO_PUBLIC_DOMAIN_URL
 
 const API = axios.create({
   baseURL: DOMAIN + "/api",
