@@ -116,7 +116,7 @@ const FundingDetailScreen = ({navigation, route}) => {
               screen: '발견',
               params: {
                 screen: 'farm',
-                params: { farmCode: fundingData.farmCode }
+                params: { farmCode: fundingData.farmCode, returnTo: '펀딩' }
               }
             })}>
               <Text style={styles.contentText}>농장 상세 정보 {'>'}</Text>

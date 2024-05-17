@@ -13,6 +13,7 @@ const StackHeader = ({
   detail,
   isLiked,
   onPressHeart,
+  returnTo
 }) => {
   const Navigation = useNavigation();
 
@@ -28,7 +29,7 @@ const StackHeader = ({
           name="chevron-back"
           size={20}
           color={color ? "white" : "black"}
-          onPress={() => Navigation.navigate(screenName)}
+          onPress={() => Navigation.navigate(returnTo ? returnTo : screenName)}
         />
       </View>
       <View>

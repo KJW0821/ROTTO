@@ -66,6 +66,7 @@ const FarmScreen = ({ route }) => {
             detail={true}
             isLiked={farm.isLiked}
             onPressHeart={handlePressHeart}
+            returnTo={route.params.returnTo}
           />
           <ScrollView style={styles.scrollView}>
             <View style={styles.mainContainer}>
