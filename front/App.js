@@ -43,10 +43,10 @@ const projectId = process.env.EXPO_PUBLIC_PROJECT_ID;
 const metadata = {
   name: "rotto",
   description: "커피 STO 투자 증권 앱",
-  url: "exp://192.168.30.140:8081",
+  url: "rotto://",
   icons: ["../../../assets/images/skyIcon.png"],
   redirect: {
-    native: "exp://192.168.30.140:8081",
+    native: "rotto://",
   },
 };
 
