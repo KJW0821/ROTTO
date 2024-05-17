@@ -10,21 +10,33 @@ import { useSelector } from 'react-redux';
 const FundingList = ({navigation}) => {
   const { sortBy, subsStatus, beanType, minPrice, maxPrice } = useSelector(state => state.fundingInfo);
 
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [totalPage, setTotalPage] = useState(1);
 
+  const getFundingData = async () => {
+    if (page <= totalPage && data.length >= 10 * page) {
+      setLoading(true);
+      const res = await getFundingList({
+        'sort': sortBy,
+        'subs-status': subsStatus,
+        'bean-type': beanType,
+        'min-price': minPrice,
+        'max-price': maxPrice,
+        'page': page + 1
+      });
+      setData(pre => [...pre, ...res.subscriptions]);
+      setTotalPage(res.totalPages);
+      setPage(pre => pre + 1);
+      setLoading(false);
+    }
+  };
+  console.log(data)
   useFocusEffect(
     useCallback(() => {
-      const getFundingData = async () => {
-        const res = await getFundingList({
-          'sort': sortBy,
-          'subs-status': subsStatus,
-          'bean-type': beanType,
-          'min-price': minPrice,
-          'max-price': maxPrice
-        });
-        setData(res.subscriptions);
-      };
-  
+      setPage(0);
+      setData([]);
       getFundingData();
     }, [sortBy, subsStatus, beanType, minPrice, maxPrice])
   );
@@ -49,6 +61,12 @@ const FundingList = ({navigation}) => {
     }
   };
 
+  const onEndReached = () => {
+    if (!loading) {
+      getFundingData();
+    }
+  };
+
   return (
     <View style={styles.container}>
       <FlatList 
@@ -63,7 +81,7 @@ const FundingList = ({navigation}) => {
             >
               <View style={styles.topContainer}>
                 <Text style={styles.date}>
-                  {dayjs(itemData.item.startedTime).format('YYYY.MM.DD')} - {dayjs(itemData.item.endTime).format('YYYY.MM.DD')}
+                  {dayjs(itemData.item.startedTime).add(9, 'hour').format('YYYY.MM.DD')} - {dayjs(itemData.item.endTime).add(9, 'hour').format('YYYY.MM.DD')}
                   </Text>
                 <View style={[styles.stateContainer, { backgroundColor: getState(itemData.item.subsStatus, itemData.item.startedTime).color }]}>
                   <Text style={styles.state}>{getState(itemData.item.subsStatus, itemData.item.startedTime).text}</Text>
@@ -76,7 +94,7 @@ const FundingList = ({navigation}) => {
                     <FontAwesome5 name="coins" size={12} />
                     <Text style={styles.menu}>가격</Text>
                   </View>
-                  <Text style={styles.content}>{itemData.item.confirmPrice} / 1ROT</Text>
+                  <Text style={styles.content}>{itemData.item.confirmPrice.toLocaleString('ko-KR')} / 1ROT</Text>
                 </View>
                 {
                   itemData.item.subsStatus === 1 &&
@@ -105,6 +123,9 @@ const FundingList = ({navigation}) => {
           return item.subscriptionCode
         }}
         contentContainerStyle={{ flexGrow: 1 }}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={1}
+        ListFooterComponent={() => <View style={{height: 16}}></View>}
       />
     </View>
   )
