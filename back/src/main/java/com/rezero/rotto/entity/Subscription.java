@@ -49,4 +49,7 @@ public class Subscription {
 
     @Column(name = "total_sales")
     private int totalSales;
+
+    @Column(name = "fee")
+    private int fee;
 }
