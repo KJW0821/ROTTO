@@ -470,11 +470,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     private boolean RefundMoney(User user, Integer amount) {
         // 이용자 가상계좌
         Account userRottoAccount = accountRepository.findByUserCodeAndAccountType(user.getUserCode(), 0);
-        logger.info("[RefundMoney] userRottoAccount: " + userRottoAccount.getBankName());
-        logger.info("[RefundMoney] userRottoAccount: " + userRottoAccount.getAccountNum());
-
-        String adminBankname = "002";
-        String adminAccountNum = "0025683504300707";
+        Account adminAccount = accountRepository.findByUserCodeAndAccountType(1, 0);
 
         if(userRottoAccount == null) return false; // 찾지 못함.
 
@@ -518,8 +514,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         bodyMap.put("depositAccountNo", userRottoAccount.getAccountNum());
         bodyMap.put("depositTransactionSummary", "이용자 계좌");
         bodyMap.put("transactionBalance", String.valueOf(amount.intValue()));
-        bodyMap.put("withdrawalBankCode", adminBankname);
-        bodyMap.put("withdrawalAccountNo", adminAccountNum);
+        bodyMap.put("withdrawalBankCode", adminAccount.getBankName());
+        bodyMap.put("withdrawalAccountNo", adminAccount.getAccountNum());
         bodyMap.put("withdrawalTransactionSummary", "관리자 계좌");
 
         try {
@@ -531,7 +527,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 .bodyToMono(JsonNode.class)
                 .block(); // error 발생
 
-            // 입출금내역 저장.
+            // 입금 내역 저장
             AccountHistory accountHistory = new AccountHistory();
             accountHistory.setAccountCode(userRottoAccount.getAccountCode());
             accountHistory.setAmount(amount);
@@ -539,9 +535,20 @@ public class SubscriptionServiceImpl implements SubscriptionService{
             accountHistory.setDepositWithdrawalCode(1);
             accountHistoryRepository.save(accountHistory);
 
+            // 출금 내역 저장
+            AccountHistory adminAccountHistory = new AccountHistory();
+            adminAccountHistory.setAccountCode(adminAccount.getAccountCode());
+            adminAccountHistory.setAmount(amount);
+            adminAccountHistory.setAccountTime(now);
+            adminAccountHistory.setDepositWithdrawalCode(2);
+            accountHistoryRepository.save(adminAccountHistory);
+
             // 입금
             userRottoAccount.setBalance(userRottoAccount.getBalance() + amount.intValue());
             accountRepository.save(userRottoAccount);
+
+            adminAccount.setBalance(adminAccount.getBalance() - amount.intValue());
+            accountRepository.save(adminAccount);
 
             return true;
         } catch (Exception e) {
