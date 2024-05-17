@@ -9,11 +9,12 @@ import { useSelector } from 'react-redux';
 
 const FundingList = ({navigation}) => {
   const { sortBy, subsStatus, beanType, minPrice, maxPrice } = useSelector(state => state.fundingInfo);
-
+  
   const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [totalPage, setTotalPage] = useState(1);
+  const [refreshing, setRefreshing] = useState(false);
 
   const getFundingData = async () => {
     if (page <= totalPage && data.length >= 10 * page) {
@@ -32,14 +33,28 @@ const FundingList = ({navigation}) => {
       setLoading(false);
     }
   };
-  console.log(data)
-  useFocusEffect(
-    useCallback(() => {
-      setPage(0);
-      setData([]);
-      getFundingData();
-    }, [sortBy, subsStatus, beanType, minPrice, maxPrice])
-  );
+
+  const refreshFundingData = async () => {
+    setRefreshing(true);
+    const res = await getFundingList({
+      'sort': sortBy,
+      'subs-status': subsStatus,
+      'bean-type': beanType,
+      'min-price': minPrice,
+      'max-price': maxPrice,
+      'page': 1
+    });
+    setData(res.subscriptions);
+    setTotalPage(res.totalPages);
+    setPage(1);
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    setPage(0);
+    setData([]);
+    getFundingData();
+  }, [sortBy, subsStatus, beanType, minPrice, maxPrice])
 
   const getState = (state, startedTime) => {
     switch (state) {
@@ -66,6 +81,12 @@ const FundingList = ({navigation}) => {
       getFundingData();
     }
   };
+  
+  const onRefresh = () => {
+    if (!refreshing) {
+      refreshFundingData();
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -126,6 +147,8 @@ const FundingList = ({navigation}) => {
         onEndReached={onEndReached}
         onEndReachedThreshold={1}
         ListFooterComponent={() => <View style={{height: 16}}></View>}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
       />
     </View>
   )
