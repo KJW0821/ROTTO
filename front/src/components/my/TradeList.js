@@ -65,19 +65,19 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   farmName: {
-    fontSize: 12,
-    fontFamily: 'pretendard-medium'
+    fontSize: 14,
+    fontFamily: 'pretendard-semiBold'
   },
   contentContainer: {
     gap: 3
   },
   menu: {
-    fontSize: 8,
+    fontSize: 10,
     color: Colors.fontGray,
     fontFamily: 'pretendard-medium'
   },
   content: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: 'pretendard-medium'
   },
   bottomContainer: {
