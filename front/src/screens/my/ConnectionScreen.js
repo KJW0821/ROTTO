@@ -38,7 +38,7 @@ const ConnectionScreen = ({navigation}) => {
     } else {
       const res = await connectAccount({
         bankName: "002",
-        accountNum
+        accountNum: "0025683504300707"
       });
 
       if (res.status === 200) {
