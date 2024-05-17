@@ -1,5 +1,6 @@
 import {
   FlatList,
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -64,6 +65,7 @@ const FarmListScreen = () => {
   const [maxPrice, setMaxPrice] = useState(null); // 최고 가격 선택
   const [selectedCategory, setSelectedCategory] = useState(null); // 바텀 시트 표시 내용 선택
   const [keyword, setKeyword] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
 
   deviceWidth = width;
 
@@ -148,7 +150,8 @@ const FarmListScreen = () => {
         color={Colors.bgOrg}
         search={true}
         onPress={() => {
-          setIsBottomSheetOpen(true);
+          // setIsBottomSheetOpen(true);
+          setModalVisible(true);
           setSelectedCategory("search");
         }}
       />
@@ -161,7 +164,8 @@ const FarmListScreen = () => {
           <Pressable
             style={styles.sortButton}
             onPress={() => {
-              setIsBottomSheetOpen(true);
+              // setIsBottomSheetOpen(true);
+              setModalVisible(true);
               setSelectedCategory("sort");
             }}
           >
@@ -186,15 +190,19 @@ const FarmListScreen = () => {
           )}
           <FilterButton
             filterName={fundingStatus.index != 0 ? fundingStatus.name : "청약"}
+            isChecked={fundingStatus.name != fundingData[0].name}
             onPress={() => {
-              setIsBottomSheetOpen(true);
+              // setIsBottomSheetOpen(true);
+              setModalVisible(true);
               setSelectedCategory("funding");
             }}
           />
           <FilterButton
             filterName={selectedBean.index != 0 ? selectedBean.name : "원두"}
+            isChecked={selectedBean.name !== beanData[0].name}
             onPress={() => {
-              setIsBottomSheetOpen(true);
+              // setIsBottomSheetOpen(true);
+              setModalVisible(true);
               setSelectedCategory("bean");
             }}
           />
@@ -217,7 +225,8 @@ const FarmListScreen = () => {
             }
             isChecked={minPrice || maxPrice}
             onPress={() => {
-              setIsBottomSheetOpen(true);
+              // setIsBottomSheetOpen(true);
+              setModalVisible(true);
               setSelectedCategory("price");
             }}
           />
@@ -232,97 +241,208 @@ const FarmListScreen = () => {
           renderItem={renderFarmList}
         />
       )}
-      <MyBottomSheet
+      {/* <MyBottomSheet
         isOpen={isBottomSheetOpen}
         onGestureEvent={handleGestureEvent}
+      > */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        // onRequestClose={() => setModalVisible(false)}
       >
-        <ScrollView>
-          {selectedCategory === "sort" &&
-            sortData.map((sortItem) => (
-              <Pressable
-                key={sortItem.index}
-                onPress={() =>
-                  applyFilter("sort", sortItem.name, sortItem.index)
-                }
-                style={styles.sortItem}
-              >
-                <Text style={styles.sortItemText}>{sortItem.name}</Text>
-              </Pressable>
-            ))}
-          {selectedCategory === "funding" &&
-            fundingData.map((item) => (
-              <Pressable
-                key={item.index}
-                onPress={() => applyFilter("funding", item.name, item.index)}
-                style={styles.sortItem}
-              >
-                <Text style={styles.sortItemText}>{item.name}</Text>
-              </Pressable>
-            ))}
-          {selectedCategory === "bean" &&
-            beanData.map((item) => (
-              <Pressable
-                key={item.index}
-                onPress={() => applyFilter("bean", item.name, item.index)}
-                style={styles.sortItem}
-              >
-                <Text style={styles.sortItemText}>{item.name}</Text>
-              </Pressable>
-            ))}
-          {selectedCategory === "price" && (
-            <View style={styles.priceContainer}>
-              <Text>가격</Text>
-              <View style={styles.inputsContainer}>
-                <View style={styles.inputContainer}>
-                  <TextInput
-                    maxLength={10}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    onChangeText={(minPrice) => setMinPrice(minPrice)}
-                    placeholder="최소 가격"
-                    keyboardType="number-pad"
-                    value={minPrice}
-                  />
-                  <Text> 원</Text>
-                </View>
-                <Text> ~ </Text>
-                <View style={styles.inputContainer}>
-                  <TextInput
-                    maxLength={10}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    onChangeText={(maxPrice) => setMaxPrice(maxPrice)}
-                    placeholder="최대 가격"
-                    keyboardType="number-pad"
-                    value={maxPrice}
-                  />
-                  <Text> 원</Text>
-                </View>
-              </View>
+        <Pressable
+          style={styles.modalBack}
+          onPress={() => setModalVisible(false)}
+        >
+          <View style={styles.modal}>
+            <View style={styles.selectContainer}>
+              <ScrollView>
+                {selectedCategory === "sort" &&
+                  sortData.map((sortItem) => (
+                    <View style={styles.filterItem}>
+                      <Pressable
+                        key={sortItem.index}
+                        onPress={() =>
+                          applyFilter("sort", sortItem.name, sortItem.index)
+                        }
+                        style={styles.sortItem}
+                      >
+                        <Text
+                          style={[
+                            styles.sortItemText,
+                            sortItem.name === selectedSort.name && {
+                              fontFamily: "pretendard-bold",
+                            },
+                          ]}
+                        >
+                          {sortItem.name}
+                        </Text>
+                      </Pressable>
+                      {sortItem.name === selectedSort.name && (
+                        <Ionicons
+                          style={{ paddingRight: 25 }}
+                          name="checkmark"
+                          size={20}
+                          color="black"
+                        />
+                      )}
+                    </View>
+                  ))}
+                {selectedCategory === "funding" &&
+                  fundingData.map((item) => (
+                    <View style={styles.filterItem}>
+                      <Pressable
+                        key={item.index}
+                        onPress={() =>
+                          applyFilter("funding", item.name, item.index)
+                        }
+                        style={styles.sortItem}
+                      >
+                        <Text
+                          style={[
+                            styles.filterText,
+                            item.name === fundingStatus.name && {
+                              fontFamily: "pretendard-bold",
+                            },
+                          ]}
+                        >
+                          {item.name}
+                        </Text>
+                      </Pressable>
+                      {item.name === fundingStatus.name && (
+                        <Ionicons
+                          style={{ paddingRight: 25 }}
+                          name="checkmark"
+                          size={20}
+                          color="black"
+                        />
+                      )}
+                    </View>
+                  ))}
+                {selectedCategory === "bean" &&
+                  beanData.map((item) => (
+                    <View style={styles.filterItem}>
+                      <Pressable
+                        key={item.index}
+                        onPress={() =>
+                          applyFilter("bean", item.name, item.index)
+                        }
+                        style={styles.sortItem}
+                      >
+                        <Text
+                          style={[
+                            styles.sortItemText,
+                            item.name === selectedBean.name && {
+                              fontFamily: "pretendard-bold",
+                            },
+                          ]}
+                        >
+                          {item.name}
+                        </Text>
+                      </Pressable>
+                      {item.name === selectedBean.name && (
+                        <Ionicons
+                          style={{ paddingRight: 25 }}
+                          name="checkmark"
+                          size={20}
+                          color="black"
+                        />
+                      )}
+                    </View>
+                  ))}
+                {selectedCategory === "price" && (
+                  <View style={styles.priceContainer}>
+                    <View style={styles.titleContainer}>
+                      <Text>가격</Text>
+                    </View>
+                    <View style={styles.inputsContainer}>
+                      <View style={styles.inputContainer}>
+                        <TextInput
+                          maxLength={10}
+                          autoCapitalize="none"
+                          autoCorrect={false}
+                          onChangeText={(minPrice) => {
+                            // 입력된 값이 숫자인지 확인합니다.
+                            if (!isNaN(parseInt(minPrice))) {
+                              // 입력된 값이 숫자라면, 앞에 0을 제거하고 setMinPrice를 호출합니다.
+                              setMinPrice(parseInt(minPrice).toString());
+                            } else {
+                              // 입력된 값이 숫자가 아니라면, 빈 문자열을 setMinPrice를 호출하여 입력을 무시합니다.
+                              setMinPrice("");
+                            }
+                          }}
+                          placeholder="최소 가격"
+                          keyboardType="number-pad"
+                          value={minPrice}
+                        />
+                        <Text> 원</Text>
+                      </View>
+                      <Text> ~ </Text>
+                      <View style={styles.inputContainer}>
+                        <TextInput
+                          maxLength={10}
+                          autoCapitalize="none"
+                          autoCorrect={false}
+                          onChangeText={(maxPrice) => {
+                            // 입력된 값이 숫자인지 확인합니다.
+                            if (!isNaN(parseInt(maxPrice))) {
+                              // 입력된 값이 숫자라면, 앞에 0을 제거하고 setMinPrice를 호출합니다.
+                              setMaxPrice(parseInt(maxPrice).toString());
+                            } else {
+                              // 입력된 값이 숫자가 아니라면, 빈 문자열을 setMinPrice를 호출하여 입력을 무시합니다.
+                              setMaxPrice("");
+                            }
+                          }}
+                          placeholder="최대 가격"
+                          keyboardType="number-pad"
+                          value={maxPrice}
+                        />
+                        <Text> 원</Text>
+                      </View>
+                    </View>
+                  </View>
+                )}
+                {selectedCategory === "search" && (
+                  <View
+                    style={[styles.searchContainer, { width: width * 0.9 }]}
+                  >
+                    <View style={styles.searchInputContainer}>
+                      <Ionicons
+                        name="search"
+                        size={24}
+                        color={Colors.fontGray}
+                        style={{ marginRight: 10 }}
+                      />
+                      <TextInput
+                        maxLength={10}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        onChangeText={(keyword) => setKeyword(keyword)}
+                        value={keyword}
+                        placeholder="검색"
+                        style={{width:"83%"}}
+                      />
+                      {keyword && <Ionicons
+                        name="close-circle-outline"
+                        size={24}
+                        color={Colors.fontGray}
+                        onPress={() => setKeyword(null)}
+                      />}
+                    </View>
+                  </View>
+                )}
+              </ScrollView>
             </View>
-          )}
-          {selectedCategory === "search" && (
-            <View style={styles.searchContainer}>
-              <View style={styles.searchInputContainer}>
-                <Ionicons
-                  name="search"
-                  size={24}
-                  color={Colors.fontGray}
-                  style={{ marginRight: 10 }}
-                />
-                <TextInput
-                  maxLength={10}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  onChangeText={(keyword) => setKeyword(keyword)}
-                  value={keyword}
-                  placeholder="검색"
-                />
-              </View>
-            </View>
-          )}
-        </ScrollView>
-      </MyBottomSheet>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Text style={styles.modalCloseMenu}>
+              {selectedCategory === "price" ? "확인" : "닫기"}
+            </Text>
+          </View>
+        </Pressable>
+      </Modal>
+      {/* </MyBottomSheet> */}
     </View>
   );
 };
@@ -359,6 +479,12 @@ const styles = StyleSheet.create({
     fontFamily: "pretendard-bold",
     fontSize: 15,
   },
+  filterItem: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   filterFontEmp: {
     marginBottom: 3,
     marginLeft: 8,
@@ -372,12 +498,12 @@ const styles = StyleSheet.create({
   },
   sortItem: {
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.borderGray,
+    paddingHorizontal: 25,
+    // borderBottomWidth: 1,
+    // borderBottomColor: Colors.borderGray,
   },
   sortItemText: {
-    fontSize: 16,
+    fontSize: 15,
   },
   inputContainer: {
     flexDirection: "row",
@@ -391,7 +517,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   inputsContainer: {
-    width: deviceWidth,
+    width: "98%",
     marginTop: 20,
     flexDirection: "row",
     alignItems: "center",
@@ -399,7 +525,12 @@ const styles = StyleSheet.create({
   },
   priceContainer: {
     marginTop: 10,
-    marginHorizontal: 20,
+    marginHorizontal: 25,
+    alignItems: "center",
+  },
+  titleContainer: {
+    width: "100%",
+    alignItems: "flex-start",
   },
   searchContainer: {
     marginTop: 10,
@@ -407,11 +538,46 @@ const styles = StyleSheet.create({
   },
   searchInputContainer: {
     flexDirection: "row",
+    width: "100%",
     borderRadius: 5,
     borderWidth: 1,
     borderColor: Colors.borderGray,
     paddingVertical: 5,
     paddingHorizontal: 10,
     alignItems: "center",
+  },
+  modalCloseMenu: {
+    textAlign: "center",
+    fontSize: 14,
+    fontFamily: "pretendard-medium",
+    paddingVertical: 12,
+    color: Colors.fontGray,
+  },
+  modalBack: {
+    justifyContent: "flex-end",
+    flexGrow: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.25)",
+  },
+  modal: {
+    backgroundColor: "white",
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    alignItems: "center",
+  },
+  selectContainer: {
+    width: "100%",
+    paddingVertical: 20,
+    alignItems: "flex-start",
+    gap: 18,
+  },
+  buttonContainer: {
+    width: "100%",
+    borderTopColor: Colors.borderGray,
+    borderTopWidth: 1,
+    backgroundColor: "white",
+  },
+  filterText: {
+    fontSize: 15,
+    fontFamily: "pretendard-regular",
   },
 });
