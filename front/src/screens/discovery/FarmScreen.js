@@ -117,7 +117,16 @@ const FarmScreen = ({ route }) => {
                 <View style={{ flexDirection: "row", marginBottom: 30 }}>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.infoTitle}>지난 수익률</Text>
-                    <Text style={styles.infoContent}>+43.38%</Text>
+                    <Text
+                      style={
+                        farm.returnRate > 0
+                          ? [styles.infoContent, styles.returnRatePlus]
+                          : [styles.infoContent, styles.returnRateMinus]
+                      }
+                    >
+                      {farm.returnRate > 0 ? "+" : "-"}
+                      {farm.returnRate}%
+                    </Text>
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.infoTitle}>재배 원두</Text>
@@ -295,20 +304,26 @@ const styles = StyleSheet.create({
   },
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContainer: {
-    width: '95%',
-    height: '100%',
-    backgroundColor: '#ffffff00',
+    width: "95%",
+    height: "100%",
+    backgroundColor: "#ffffff00",
     borderRadius: 10,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   modalImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
   },
+  returnRatePlus: {
+    color: "red"
+  },
+  returnRateMinus: {
+    color: "blue"
+  }
 });

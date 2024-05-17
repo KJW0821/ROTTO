@@ -368,7 +368,6 @@ const styles = StyleSheet.create({
   farmsContainer: {
     minHeight: 800,
     alignItems: "center",
-    // justifyContent: "flex-start",
     marginTop: 0,
   },
   sortItem: {
