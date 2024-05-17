@@ -19,7 +19,7 @@ public class ExpenseDetail {
     @Column(name = "subscription_code")
     private int subscriptionCode;
 
-    @Column(name = "expenditure _content")
+    @Column(name = "expenditure_content")
     private String expenditureContent;
 
     @Column(name = "expenses")
