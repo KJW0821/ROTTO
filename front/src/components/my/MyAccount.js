@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable, Alert } from 'react-native';
 import { getAccountInfo } from '../../utils/accountApi';
 import { MaterialIcons } from '@expo/vector-icons';
 import CustomButton from '../common/CustomButton';
@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const MyAccount = ({navigation, detail}) => {
   const dispatch = useDispatch();
   const fundingAccount = useSelector(state => state.myPageInfo.fundingAccount);
+  const connectedAccount = useSelector(state => state.myPageInfo.connectedAccount);
 
   useFocusEffect(
     useCallback(() => {
@@ -48,8 +49,15 @@ const MyAccount = ({navigation, detail}) => {
               style={{ width: detail ? '48%' : '16%', height: detail ? 30 : 24 }} 
               fontFamily='pretendard-medium'
               onPress={() => {
-                dispatch(setTransactionMode('charge'));
-                navigation.navigate('transaction');
+                if (connectedAccount) {
+                  dispatch(setTransactionMode('charge'));
+                  navigation.navigate('transaction');
+                } else {
+                  return Alert.alert('', '연결 계좌가 없습니다.', [
+                    { text: '연결하기', onPress: () => navigation.navigate('connection'), style: 'destructive' },
+                    { text: '확인', onPress: () => null, style: 'cancel' }
+                  ])
+                }
               }}
             >
               채우기
@@ -59,8 +67,15 @@ const MyAccount = ({navigation, detail}) => {
               fontFamily='pretendard-medium' 
               btnColor='black'
               onPress={() => {
-                dispatch(setTransactionMode('send'));
-                navigation.navigate('transaction');
+                if (connectedAccount) {
+                  dispatch(setTransactionMode('send'));
+                  navigation.navigate('transaction');
+                } else {
+                  return Alert.alert('', '연결 계좌가 없습니다.', [
+                    { text: '연결하기', onPress: () => navigation.navigate('connection'), style: 'destructive' },
+                    { text: '확인', onPress: () => null, style: 'cancel' }
+                  ])
+                }
               }}
             >
               보내기
