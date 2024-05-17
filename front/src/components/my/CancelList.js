@@ -1,11 +1,11 @@
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Pressable } from 'react-native';
 import Colors from '../../constants/Colors';
 import dayjs from 'dayjs';
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { getCancelHistory } from '../../utils/investApi';
 
-const CancelList = () => {
+const CancelList = ({navigation}) => {
   const [data, setData] = useState();
 
   useFocusEffect(
@@ -25,7 +25,18 @@ const CancelList = () => {
       data={data}
       renderItem={itemData => {
         return (
-          <View style={styles.cardContainer}>
+          <Pressable 
+            style={styles.cardContainer}
+            onPress={() => {
+              navigation.navigate('Routers', {
+                screen: '발견',
+                params: {
+                  screen: 'farm',
+                  params: { farmCode: itemData.item.farmCode }
+                }
+              })
+            }}
+          >
             <View style={styles.topcontainer}>
               <Text style={styles.farmName}>{itemData.item.farmName}</Text>
               <Text style={styles.menu}>{dayjs(itemData.item.applyTime).add(9, 'hour').format('YYYY.MM.DD')}</Text>
@@ -37,7 +48,7 @@ const CancelList = () => {
               </View>
               <Text style={styles.state}>중도 해지</Text>
             </View>
-          </View>
+          </Pressable>
         )
       }}
       keyExtractor={(item) => {
