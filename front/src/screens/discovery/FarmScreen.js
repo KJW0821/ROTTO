@@ -56,16 +56,6 @@ const FarmScreen = ({ route }) => {
     }));
   };
 
-  const renderFarmImage = (itemData) => {
-    return (
-      <Image
-        source={{
-          uri: `${process.env.EXPO_PUBLIC_S3URL}/farm_img/1/farm${itemData.item}.jpg`,
-        }}
-      />
-    );
-  };
-
   return (
     <>
       {farm && (

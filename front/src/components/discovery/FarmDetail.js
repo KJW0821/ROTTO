@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Image,
   Pressable,
@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 const FarmDetail = ({ data }) => {
   const Navigation = useNavigation();
   const { width, height } = useWindowDimensions();
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     console.log(data);
@@ -28,15 +29,16 @@ const FarmDetail = ({ data }) => {
       style={[styles.container, { width: width * 0.9, height: 100 }]}
     >
       <Image
-        source={{
-          uri: `${process.env.EXPO_PUBLIC_S3URL}/farm_img/${data.farmCode}/${data.farmLogoPath}`,
-        }}
-        onError={(e) => {
-          e.target.src = require('../../../assets/images/defaultProfile.jpg')
-        }}
+        source={
+          error
+            ? require("../../../assets/images/farmProfile2.png")
+            : {
+                uri: `${process.env.EXPO_PUBLIC_S3URL}/farm_img/${data.farmCode}/${data.farmLogoPath}`,
+              }
+        }
+        onError={() => setError(true)}
         style={styles.farmLogo}
       />
-      {/* <Image source={{ uri: data.farmLogoPath }} /> */}
       <View>
         <Text style={styles.title}>{data.farmName}</Text>
         <Text style={styles.profit}>지난 수익률 : + 12.66%</Text>
