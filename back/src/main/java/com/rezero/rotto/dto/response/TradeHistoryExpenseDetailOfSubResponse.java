@@ -16,6 +16,7 @@ import java.util.List;
 public class TradeHistoryExpenseDetailOfSubResponse {
     private int subscriptionCode;
     private String farmName;
+    private int farmCode;
     private int totalSoldPrice;
     private int totalExpense;
     private LocalDateTime tradeTime;

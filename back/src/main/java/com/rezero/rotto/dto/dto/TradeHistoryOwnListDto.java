@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TradeHistoryOwnListDto {
     private int subscriptionCode;
+    private int farmCode;
     private String farmName;
     private int confirmPrice;
     private LocalDateTime tradeTime;
