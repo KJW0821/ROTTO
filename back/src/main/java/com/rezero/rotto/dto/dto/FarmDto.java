@@ -13,6 +13,7 @@ public abstract class FarmDto {
     private String beanName;
     private boolean isLiked;
     private BigDecimal returnRate;
+    private Boolean isFunding;
     private Long likeCount;
 
 }
