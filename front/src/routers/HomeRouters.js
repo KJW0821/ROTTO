@@ -7,9 +7,25 @@ import AlertListScreen from "../screens/home/AlertListScreen";
 import FAQScreen from "../screens/home/FAQScreen";
 import FarmILikeListScreen from "../screens/home/FarmILikeScreen";
 import NewsWebview from "../components/home/NewsWebview";
+import { Alert, BackHandler } from "react-native";
+import { useEffect } from "react";
 
 const HomeRouters = () => {
   const HomeStack = createStackNavigator();
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      Alert.alert('앱 종료', '앱을 종료하시겠습니까?', [
+        { text: '취소', onPress: () => null},
+        { text: '종료', onPress: () => BackHandler.exitApp() }
+      ]);
+      return true;
+    });
+
+    return () => {
+      BackHandler.remove();
+    }
+  }, [])
 
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
