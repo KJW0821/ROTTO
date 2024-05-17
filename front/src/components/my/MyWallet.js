@@ -35,7 +35,7 @@ const MyWallet = () => {
   
   useEffect(() => {
     console.log("주소", address)
-    updateWalletAddress({ wallet : address })
+    address && updateWalletAddress({ wallet : address })
     console.log("토큰 조회 데이터", data)    
   }, [data])
 
