@@ -70,3 +70,4 @@ print(queries)
 with open('farm_dummy_data_queries.txt', 'w', encoding='utf-8') as f:
     for query in queries:
         f.write(query + '\n')
+print('생성 완료')
