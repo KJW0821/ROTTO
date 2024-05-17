@@ -39,8 +39,8 @@ const OwnDetailScreen = ({navigation, route}) => {
             <View style={styles.line} />
             <View style={styles.contentContainer}>
               <Text style={styles.menu}>경매 결과</Text>
-              <Text style={[styles.content, { color: data.totalExpense > data.totalSoldPrice ? 'blue' : 'red' }]}>
-                {data.totalSoldPrice - data.totalExpense > 0 && '+' }{(data.totalSoldPrice - data.totalExpense).toLocaleString('ko-KR')}원
+              <Text style={[styles.content, { color: data.totalProceed < 0 ? 'blue' : 'red' }]}>
+                {data.totalProceed > 0 && '+' }{(data.totalProceed).toLocaleString('ko-KR')}원
               </Text>
             </View>
             <View style={styles.contentContainer}>
@@ -50,8 +50,8 @@ const OwnDetailScreen = ({navigation, route}) => {
             <View style={styles.line} />
             <View style={styles.contentContainer}>
               <Text style={styles.menu}>수익 금액</Text>
-              <Text style={[styles.content, { color: data.totalExpense > data.totalSoldPrice ? 'blue' : 'red' }]}>
-                {data.totalProceed > 0 && '+'}{data.totalProceed.toLocaleString('ko-KR')}원
+              <Text style={[styles.content, { color: data.myProceed < 0 ? 'blue' : 'red' }]}>
+                {data.myProceed > 0 && '+'}{data.myProceed.toLocaleString('ko-KR')}원
               </Text>
             </View>
           </View>
