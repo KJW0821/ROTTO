@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import com.rezero.rotto.dto.request.CreateTokenRequest;
 import com.rezero.rotto.dto.request.PayTokensRequest;
 import com.rezero.rotto.dto.request.RefundsTokenRequest;
+import com.rezero.rotto.entity.Subscription;
 
 public interface BlockChainService {
 	ResponseEntity<?> createToken(CreateTokenRequest request);
@@ -18,4 +19,6 @@ public interface BlockChainService {
 	ResponseEntity<?> RemoveWhiteList(String wallet);
 
 	ResponseEntity<?> checkWhiteList(String address);
+
+	ResponseEntity<?> burnToken(Subscription subscription);
 }
