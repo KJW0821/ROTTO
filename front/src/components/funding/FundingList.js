@@ -1,7 +1,7 @@
 import { View, FlatList, Text, StyleSheet, Pressable } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { getFundingList } from '../../utils/fundingApi';
 import dayjs from 'dayjs';
 import { useFocusEffect } from '@react-navigation/native';
@@ -16,8 +16,10 @@ const FundingList = ({navigation}) => {
   const [totalPage, setTotalPage] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
 
-  const getFundingData = async () => {
-    if (page <= totalPage && data.length >= 10 * page) {
+  const listRef = useRef(null);
+
+  const getFundingData = async (isInit) => {
+    if (page <= totalPage) {
       setLoading(true);
       const res = await getFundingList({
         'sort': sortBy,
@@ -25,11 +27,14 @@ const FundingList = ({navigation}) => {
         'bean-type': beanType,
         'min-price': minPrice,
         'max-price': maxPrice,
-        'page': page + 1
+        'page': isInit ? 1 : page + 1
       });
-      setData(pre => [...pre, ...res.subscriptions]);
+      setData(pre => isInit ? res.subscriptions : [...pre, ...res.subscriptions]);
       setTotalPage(res.totalPages);
-      setPage(pre => pre + 1);
+      setPage(pre => isInit ? 1 : pre + 1);
+      if (isInit) {
+        listRef.current.scrollToOffset({ animated: true, offset: 0 });
+      }
       setLoading(false);
     }
   };
@@ -50,11 +55,11 @@ const FundingList = ({navigation}) => {
     setRefreshing(false);
   };
 
-  useEffect(() => {
-    setPage(0);
-    setData([]);
-    getFundingData();
-  }, [sortBy, subsStatus, beanType, minPrice, maxPrice])
+  useFocusEffect(
+    useCallback(() => {
+      getFundingData(true);
+    }, [sortBy, subsStatus, beanType, minPrice, maxPrice])
+  );
 
   const getState = (state, startedTime) => {
     switch (state) {
@@ -78,7 +83,7 @@ const FundingList = ({navigation}) => {
 
   const onEndReached = () => {
     if (!loading) {
-      getFundingData();
+      getFundingData(false);
     }
   };
   
@@ -91,6 +96,7 @@ const FundingList = ({navigation}) => {
   return (
     <View style={styles.container}>
       <FlatList 
+        ref={listRef}
         data={data}
         renderItem={itemData => {
           return (
@@ -125,7 +131,7 @@ const FundingList = ({navigation}) => {
                       <Text style={styles.menu}>신청률</Text>
                     </View>
                     <Text style={styles.content}>
-                      {itemData.item.applyCount} / {itemData.item.totalTokenCount} ROT ({Math.round(itemData.item.applyCount / itemData.item.totalTokenCount * 100 * 100) / 100}%)
+                      {itemData.item.applyCount.toLocaleString('ko-KR')} / {itemData.item.totalTokenCount.toLocaleString('ko-KR')} ROT ({Math.round(itemData.item.applyCount / itemData.item.totalTokenCount * 100 * 100) / 100}%)
                     </Text>
                   </View>
                 }
@@ -145,7 +151,7 @@ const FundingList = ({navigation}) => {
         }}
         contentContainerStyle={{ flexGrow: 1 }}
         onEndReached={onEndReached}
-        onEndReachedThreshold={1}
+        onEndReachedThreshold={0.5}
         ListFooterComponent={() => <View style={{height: 16}}></View>}
         onRefresh={onRefresh}
         refreshing={refreshing}
