@@ -416,6 +416,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         subscriptionRepository.save(subscription);
 
         int ROTTOprice = (int)Math.ceil((double)totalProceed / subscription.getTotalTokenCount());
+        logger.info("[refundSubscription] ROTTOprice: " + ROTTOprice);
         Optional<List<ApplyHistory>> applyHistories = applyHistoryRepository.findBySubscriptionCodeAndIsDelete(
             subscription.getSubscriptionCode(), 0);
 
@@ -458,8 +459,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         logger.info("[RefundMoney] userRottoAccount: " + userRottoAccount.getBankName());
         logger.info("[RefundMoney] userRottoAccount: " + userRottoAccount.getAccountNum());
 
-        String adminBankname = "001";
-        String adminAccountNum = "0015553944459869";
+        String adminBankname = "002";
+        String adminAccountNum = "0025683504300707";
 
         if(userRottoAccount == null) return false; // 찾지 못함.
 
@@ -496,14 +497,13 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         headerMap.put("apiKey", "2afacf41e60a4482b5c4997d194a46f0");
         headerMap.put("userKey", "ca55278a-89d2-4b51-bfa3-0cbbd376f9fd");
 
-
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("Header", headerMap);
         // 은행코드(은행이름으로 불리는 코드)
         bodyMap.put("depositBankCode", userRottoAccount.getBankName());
         bodyMap.put("depositAccountNo", userRottoAccount.getAccountNum());
         bodyMap.put("depositTransactionSummary", "이용자 계좌");
-        bodyMap.put("transactionBalance", amount.toString());
+        bodyMap.put("transactionBalance", String.valueOf(amount.intValue()));
         bodyMap.put("withdrawalBankCode", adminBankname);
         bodyMap.put("withdrawalAccountNo", adminAccountNum);
         bodyMap.put("withdrawalTransactionSummary", "관리자 계좌");
@@ -524,6 +524,10 @@ public class SubscriptionServiceImpl implements SubscriptionService{
             accountHistory.setAccountTime(now);
             accountHistory.setDepositWithdrawalCode(1);
             accountHistoryRepository.save(accountHistory);
+
+            // 입금
+            userRottoAccount.setBalance(userRottoAccount.getBalance() + amount.intValue());
+            accountRepository.save(userRottoAccount);
 
             return true;
         } catch (Exception e) {
