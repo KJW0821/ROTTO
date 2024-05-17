@@ -7,7 +7,7 @@ import { getApplyHistory } from '../../utils/investApi';
 import { Ionicons } from '@expo/vector-icons';
 import { cancelFunding as cancel } from '../../utils/fundingApi';
 
-const ApplyList = () => {
+const ApplyList = ({navigation}) => {
   const [data, setData] = useState();
 
   useFocusEffect(
@@ -50,7 +50,28 @@ const ApplyList = () => {
       data={data}
       renderItem={itemData => {
         return (
-          <View style={styles.cardContainer}>
+          <Pressable 
+            style={styles.cardContainer}
+            onPress={() => {
+              if (dayjs(itemData.item.endTime) >= dayjs()) {
+                navigation.navigate('Routers', {
+                  screen: '펀딩',
+                  params: {
+                    screen: 'fundingDetail',
+                    params: { subscriptionCode: itemData.item.subscriptionCode }
+                  }
+                })
+              } else {
+                navigation.navigate('Routers', {
+                  screen: '발견',
+                  params: {
+                    screen: 'farm',
+                    params: { farmCode: itemData.item.farmCode }
+                  }
+                })
+              }
+            }}
+          >
             <View style={styles.topContainer}>
               <Text style={styles.farmName}>{itemData.item.farmName}</Text>
               <View style={styles.rightContainer}>
@@ -80,7 +101,7 @@ const ApplyList = () => {
                 }
               </Text>
             </View>
-          </View>
+          </Pressable>
         )
       }}
       keyExtractor={(item) => {
