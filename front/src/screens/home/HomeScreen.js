@@ -6,6 +6,8 @@ import {
   Button,
   Platform,
   Image,
+  BackHandler,
+  Alert,
 } from "react-native";
 
 import MyHeader from "../../components/common/MyHeader";
@@ -14,8 +16,25 @@ import MyDeposit from "../../components/home/MyDeposit";
 import FaqBanner from "../../components/home/FaqBanner";
 import FarmILike from "../../components/home/FarmILike";
 import FarmNews from "../../components/home/FarmNews";
+import { useEffect } from "react";
 
 const HomeScreen = ({ navigation }) => {
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      if (navigation.isFocused()) {
+        Alert.alert('앱 종료', '앱을 종료하시겠습니까?', [
+          { text: '취소', onPress: () => null},
+          { text: '종료', onPress: () => BackHandler.exitApp() }
+        ]);
+        return true;
+      }
+    });
+
+    return () => {
+      BackHandler.removeEventListener();
+    }
+  }, [])
 
   return (
     <MyHeader>
