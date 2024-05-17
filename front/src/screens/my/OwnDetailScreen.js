@@ -18,7 +18,7 @@ const OwnDetailScreen = ({navigation, route}) => {
       };
 
       getDetailData();
-    }, [])
+    }, [subscriptionCode])
   )
 
   return (
@@ -72,6 +72,11 @@ const OwnDetailScreen = ({navigation, route}) => {
                   </View>
                 ))
               }
+              <Text style={styles.subTitle}>수수료</Text>
+              <View style={styles.contentContainer}>
+                <Text style={styles.menu}>거래 수수료</Text>
+                <Text style={styles.content}>-{data.fee ? data.fee.toLocaleString('ko-KR') : 0 }원</Text>
+              </View>
             </ScrollView>
           </View>
         </View>

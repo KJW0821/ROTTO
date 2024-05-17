@@ -25,7 +25,7 @@ const FundingDetailScreen = ({navigation, route}) => {
       };
 
       getDetailedData();
-    }, [])
+    }, [subscriptionCode])
   );
 
   const getState = (state, startedTime, endTime) => {
@@ -105,7 +105,7 @@ const FundingDetailScreen = ({navigation, route}) => {
               <MaterialCommunityIcons name="chart-line" size={18} color="black" />
               <Text style={styles.menuText}>지난 펀딩 수익률</Text>
             </View>
-            <Text style={[styles.contentText, { color: 'red' }]}>+{fundingData.returnRate}%</Text>
+            <Text style={[styles.contentText, { color: fundingData.returnRate < 0 ? 'blue' : 'red' }]}>{fundingData.returnRate > 0 && '+'}{fundingData.returnRate}%</Text>
           </View>
           <View style={styles.contentContainer}>
             <View style={styles.menuContainer}>
