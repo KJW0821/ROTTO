@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -125,7 +126,8 @@ public class FarmServiceImpl implements FarmService {
         }
 
         if (impendingOngoingSubscription != null) {
-            deadline = impendingOngoingSubscription.getEndedTime().getYear() - now.getYear();
+            long daysBetween = ChronoUnit.DAYS.between(now.toLocalDate(), impendingOngoingSubscription.getEndedTime().toLocalDate());
+            deadline = (int) daysBetween;
         }
 
 
@@ -136,6 +138,7 @@ public class FarmServiceImpl implements FarmService {
                 .farmLogoPath(farm.getFarmLogoPath())
                 .farmAddress(farm.getFarmAddress())
                 .farmScale(farm.getFarmScale())
+                .farmIntroduce(farm.getFarmIntroduce())
                 .farmStartedDate(farm.getFarmStartedTime())
                 .awardHistory(farm.getAwardHistory())
                 .beanName(farm.getFarmBeanName())
