@@ -47,6 +47,7 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
 
             TradeHistoryListDto tradeHistoryListDto = TradeHistoryListDto.builder()
                     .subscriptionCode(subscription.getSubscriptionCode())
+                    .farmCode(farm.getFarmCode())
                     .farmName(farm.getFarmName())
                     .confirmPrice(subscription.getConfirmPrice())
                     .tradeTime(tradeHistory.getTradeTime())
@@ -86,6 +87,7 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
 
             TradeHistoryOwnListDto tradeHistoryListDto = TradeHistoryOwnListDto.builder()
                     .subscriptionCode(subscription.getSubscriptionCode())
+                    .farmCode(farm.getFarmCode())
                     .farmName(farm.getFarmName())
                     .confirmPrice(subscription.getConfirmPrice())
                     .tradeTime(tradeHistory.getTradeTime())
@@ -139,6 +141,7 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
         TradeHistoryExpenseDetailOfSubResponse tradeHistoryExpenseDetailOfSubResponse =TradeHistoryExpenseDetailOfSubResponse.builder()
                 .subscriptionCode(subscription.getSubscriptionCode())
                 .farmName(farm.getFarmName())
+                .farmCode(farm.getFarmCode())
                 .totalSoldPrice(subscription.getTotalSales())
                 .totalExpense(totalExpenses)
                 .tradeTime(tradeHistory.getTradeTime())
