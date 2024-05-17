@@ -112,7 +112,13 @@ const FundingDetailScreen = ({navigation, route}) => {
               <Ionicons name="information-circle-outline" size={18} color="black" />
               <Text style={styles.menuText}>상세 정보</Text>
             </View>
-            <Pressable>
+            <Pressable onPress={() => navigation.navigate('Routers', {
+              screen: '발견',
+              params: {
+                screen: 'farm',
+                params: { farmCode: fundingData.farmCode }
+              }
+            })}>
               <Text style={styles.contentText}>농장 상세 정보 {'>'}</Text>
             </Pressable>
           </View>
