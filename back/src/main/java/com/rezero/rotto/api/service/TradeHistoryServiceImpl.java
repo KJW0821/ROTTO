@@ -82,7 +82,6 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
 
         for (TradeHistory tradeHistory: tradeHistories) {
             Subscription subscription = subscriptionRepository.findBySubscriptionCode(tradeHistory.getSubscriptionCode());
-            int proceeds = (tradeHistory.getTokenPrice() * tradeHistory.getTradeNum() ) - (subscription.getConfirmPrice() * tradeHistory.getTradeNum());
             Farm farm =farmRepository.findByFarmCode(subscription.getFarmCode());
 
             TradeHistoryOwnListDto tradeHistoryListDto = TradeHistoryOwnListDto.builder()
@@ -93,7 +92,7 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
                     .tradeNum(tradeHistory.getTradeNum())
                     .refund(tradeHistory.getRefund())
                     .totalTokenCount(subscription.getTotalTokenCount())
-                    .proceed(proceeds)
+                    .proceed(tradeHistory.getTradeNum() * tradeHistory.getTokenPrice())
                     .build();
 
             tradeHistoryOwnListDtos.add(tradeHistoryListDto);
@@ -145,6 +144,7 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
                 .tradeTime(tradeHistory.getTradeTime())
                 .tradeNum(tradeHistory.getTradeNum())
                 .totalProceed(subscription.getTotalProceed())
+                .myProceed(tradeHistory.getTradeNum() * tradeHistory.getTokenPrice())
                 .refund(tradeHistory.getRefund())
                 .totalTokenCount(subscription.getTotalTokenCount())
                 .tradeHistoryExpenseDetailOfSubDtoList(tradeHistoryExpenseDetailOfSubDtos)
