@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -106,14 +107,29 @@ public class FarmServiceImpl implements FarmService {
             latestEndedSubscription = latestEndedSubscriptions.get(0);
         }
 
-        BigDecimal returnRate;
-        if (latestEndedSubscription == null) {
-            returnRate = null;
-        } else {
+        BigDecimal returnRate = null;
+        if (latestEndedSubscription != null) {
+            // 수익률
             returnRate = latestEndedSubscription.getReturnRate();
         }
 
         Long likeCount = interestFarmRepository.countByFarmCode(farmCode);
+        Boolean isFunding = isFunding(farmCode);
+
+        // 펀딩 종료까지 남은 기간
+        // endedTime >= 현재 시간 인 것. endedTime - 현재 시간 (일수로만)
+        Integer deadline = null;
+        List<Subscription> impendingOngoingSubscriptions = subscriptionRepository.findImpedingOngoingSubscription(farmCode, now);
+        Subscription impendingOngoingSubscription = null;
+        if (!impendingOngoingSubscriptions.isEmpty()) {
+            impendingOngoingSubscription = impendingOngoingSubscriptions.get(0);
+        }
+
+        if (impendingOngoingSubscription != null) {
+            long daysBetween = ChronoUnit.DAYS.between(now.toLocalDate(), impendingOngoingSubscription.getEndedTime().toLocalDate());
+            deadline = (int) daysBetween;
+        }
+
 
         FarmDetailResponse response = FarmDetailResponse.builder()
                 .farmCode(farmCode)
@@ -122,13 +138,16 @@ public class FarmServiceImpl implements FarmService {
                 .farmLogoPath(farm.getFarmLogoPath())
                 .farmAddress(farm.getFarmAddress())
                 .farmScale(farm.getFarmScale())
+                .farmIntroduce(farm.getFarmIntroduce())
                 .farmStartedDate(farm.getFarmStartedTime())
                 .awardHistory(farm.getAwardHistory())
                 .beanName(farm.getFarmBeanName())
                 .beanGrade(farm.getFarmBeanGrade())
                 .returnRate(returnRate)
                 .isLiked(isLiked)
+                .isFunding(isFunding)
                 .likeCount(likeCount)
+                .deadline(deadline)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -171,6 +190,7 @@ public class FarmServiceImpl implements FarmService {
             }
 
             Long likeCount = interestFarmRepository.countByFarmCode(farmCode);
+            Boolean isFunding = isFunding(farmCode);
 
             FarmListDto farmListDto = FarmListDto.builder()
                     .farmCode(farmCode)
@@ -179,6 +199,7 @@ public class FarmServiceImpl implements FarmService {
                     .beanName(farm.getFarmBeanName())
                     .returnRate(returnRate)
                     .isLiked(isLiked)
+                    .isFunding(isFunding)
                     .likeCount(likeCount)
                     .build();
             // farms 에 하나씩 담기
@@ -252,7 +273,7 @@ public class FarmServiceImpl implements FarmService {
             if (isMyPage) {
                 farmDto = new MyPageFarmListDto(farmCode, farm.getFarmName(), farm.getFarmLogoPath(), farm.getFarmBeanName(), farmIsLiked, returnRate, isFunding, likeCount);
             } else {
-                farmDto = new FarmListDto(farmCode, farm.getFarmName(), farm.getFarmLogoPath(), farm.getFarmBeanName(), farmIsLiked, returnRate, likeCount);
+                farmDto = new FarmListDto(farmCode, farm.getFarmName(), farm.getFarmLogoPath(), farm.getFarmBeanName(), farmIsLiked, returnRate, isFunding, likeCount);
             }
             farmDtos.add(farmDto);
         }
