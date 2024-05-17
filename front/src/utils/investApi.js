@@ -39,3 +39,13 @@ export const getOwnHistory = async () => {
     return err;
   }
 };
+
+export const getOwnDetail = async (subscriptionCode) => {
+  try {
+    const res = await API.get(`/trade-history/own/${subscriptionCode}`);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
