@@ -443,6 +443,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 tradeHistory.setTokenPrice(ROTTOprice);
                 tradeHistory.setBcAddress(user.getBcAddress());
                 tradeHistoryRepository.save(tradeHistory);
+
+
             }
         }
 
@@ -453,6 +455,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     private boolean RefundMoney(User user, Integer amount) {
         // 이용자 가상계좌
         Account userRottoAccount = accountRepository.findByUserCodeAndAccountType(user.getUserCode(), 0);
+        logger.info("[RefundMoney] userRottoAccount: " + userRottoAccount.getBankName());
+        logger.info("[RefundMoney] userRottoAccount: " + userRottoAccount.getAccountNum());
 
         String adminBankname = "001";
         String adminAccountNum = "0015553944459869";
@@ -499,7 +503,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         bodyMap.put("depositBankCode", userRottoAccount.getBankName());
         bodyMap.put("depositAccountNo", userRottoAccount.getAccountNum());
         bodyMap.put("depositTransactionSummary", "이용자 계좌");
-        bodyMap.put("transactionBalance", amount);
+        bodyMap.put("transactionBalance", amount.toString());
         bodyMap.put("withdrawalBankCode", adminBankname);
         bodyMap.put("withdrawalAccountNo", adminAccountNum);
         bodyMap.put("withdrawalTransactionSummary", "관리자 계좌");

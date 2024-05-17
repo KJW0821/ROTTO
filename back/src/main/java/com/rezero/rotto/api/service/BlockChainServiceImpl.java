@@ -119,26 +119,27 @@ public class BlockChainServiceImpl implements BlockChainService{
 		}
 		else ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("작업 중 오류가 발생하였습니다.");
 
-		CompletableFuture<TransactionReceipt> transactionReceiptFuture
-			= tokenManager.distributeToken(requestSubscription, request.getAddress(), amount).sendAsync();
-
 		try {
-			TransactionReceipt transactionReceipt = transactionReceiptFuture.join();
-			if(transactionReceipt.isStatusOK()) {
+			TransactionReceipt transactionReceipt = tokenManager.distributeToken(requestSubscription,
+				request.getAddress(), amount).send();
+
+			if(transactionReceipt.isStatusOK()){
 				TradeHistory history = new TradeHistory();
-				history.setTradeHistoryCode(subscription.getSubscriptionCode());
+				history.setSubscriptionCode(subscription.getSubscriptionCode());
 				history.setBcAddress(request.getAddress());
 				history.setUserCode(user.get().getUserCode());
 				history.setRefund(0);
 				history.setTradeNum(request.getAmount());
 				history.setTokenPrice(subscription.getConfirmPrice());
+
+				logger.info("[distributeToken] history: " + history);
+
 				tradeHistoryRepository.save(history);
 
 				return ResponseEntity.status(HttpStatus.OK).body("ROTTO 발급 완료");
 			}
-			else
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ROTTO 발급 실패");
-		} catch (Exception ex){
+			else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ROTTO 발급 실패");
+		} catch(Exception ex){
 			Throwable cause = ex.getCause();
 			if(cause instanceof TransactionException){
 				String revertReason = getRevertReason((TransactionException)cause);
