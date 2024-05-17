@@ -8,6 +8,7 @@ import { useState } from 'react';
 import UserTopBar from '../../components/user/UserTopBar';
 import { useDispatch } from 'react-redux';
 import { inputEmail } from '../../stores/signUpSlice';
+import { checkEmail } from '../../utils/userApi';
 
 const EmailInputScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -24,7 +25,8 @@ const EmailInputScreen = ({navigation}) => {
 
   const checkEmailValidity = async () => {
     if (email) {
-      setIsChecked(true);
+      const isExist = await checkEmail({ email}) ;
+      setIsChecked(!isExist);
     }
   };
 
