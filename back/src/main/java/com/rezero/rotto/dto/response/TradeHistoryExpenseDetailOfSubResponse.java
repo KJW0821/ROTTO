@@ -20,6 +20,7 @@ public class TradeHistoryExpenseDetailOfSubResponse {
     private int totalExpense;
     private LocalDateTime tradeTime;
     private int tradeNum;
+    private int myProceed;
     private int totalProceed;
     private int refund;
     private int totalTokenCount;
