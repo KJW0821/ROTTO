@@ -44,6 +44,8 @@ public class TokenManager extends Contract {
 
     private static String librariesLinkedBinary;
 
+    public static final String FUNC_BURNTOKEN = "burnToken";
+
     public static final String FUNC_CHECKWHITELIST = "checkWhiteList";
 
     public static final String FUNC_CREATETOKEN = "createToken";
@@ -152,6 +154,14 @@ public class TokenManager extends Contract {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(RESULTCHECK_EVENT));
         return resultCheckEventFlowable(filter);
+    }
+
+    public RemoteFunctionCall<TransactionReceipt> burnToken(BigInteger code) {
+        final Function function = new Function(
+                FUNC_BURNTOKEN, 
+                Arrays.<Type>asList(new Uint256(code)),
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> checkWhiteList(String _wallet) {
