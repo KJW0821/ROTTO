@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View, Image, Pressable } from "react-native";
+import { StyleSheet, View, Image, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { Text } from "react-native-paper";
 import { getFarmNewsList } from "../../utils/FarmNewsApi";
 
 const FarmNews = () => {
   const [farmNewsList, setfarmNewsList] = useState([]);
+  const Navigation = useNavigation();
 
   const getList = async () => {
     try {
@@ -28,7 +30,7 @@ const FarmNews = () => {
           (item, index) =>
             index < 3 && (
               <Pressable
-              onPress={() => Navigation.navigate()}
+              onPress={() => Navigation.navigate('NewsWebview', {newsDetailLink: item.newsDetailLink})}
               >
                 <View key={item.newsCode} style={styles.itemStyle}>
                 <View style={{ flexShrink: 1 }}>
