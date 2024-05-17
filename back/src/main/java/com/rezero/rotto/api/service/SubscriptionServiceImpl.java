@@ -422,6 +422,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         logger.info("[refundSubscription] price: " + price);
         int FarmIncome = (int)Math.ceil(price * (subscription.getPartnerFarmRate()) / 100.0); // 농장 수익
         logger.info("[refundSubscription] FarmIncome: " + FarmIncome);
+        logger.info("[refundSubscription] 수수료: " + (int)Math.floor((price - FarmIncome) * 0.011));
         int totalProceed = (price - FarmIncome) - (int)Math.floor((price - FarmIncome) * 0.011); // 총 청약수익금액
         logger.info("[refundSubscription] totalProceed: " + totalProceed);
 
@@ -429,6 +430,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         subscriptionRepository.save(subscription);
 
         int ROTTOprice = (int)Math.ceil((double)totalProceed / subscription.getTotalTokenCount());
+        logger.info("[refundSubscription] ROTTOprice: " + ROTTOprice);
         Optional<List<ApplyHistory>> applyHistories = applyHistoryRepository.findBySubscriptionCodeAndIsDelete(
             subscription.getSubscriptionCode(), 0);
 
@@ -437,7 +439,9 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 // 사업자 → 이용자 이체
                 int applyCount = applyHistory.getApplyCount();
                 User user = userRepository.findByUserCode(applyHistory.getUserCode());
-                RefundMoney(user, ROTTOprice * applyCount);
+                if(!RefundMoney(user, ROTTOprice * applyCount)){
+                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("환급 중 에러 발생.");
+                }
 
                 // 이용자 지갑에 ROTTO 소각
                 RefundsTokenRequest refundsTokenRequest = new RefundsTokenRequest();
@@ -454,6 +458,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 tradeHistory.setTokenPrice(ROTTOprice);
                 tradeHistory.setBcAddress(user.getBcAddress());
                 tradeHistoryRepository.save(tradeHistory);
+
+
             }
         }
 
@@ -464,9 +470,11 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     private boolean RefundMoney(User user, Integer amount) {
         // 이용자 가상계좌
         Account userRottoAccount = accountRepository.findByUserCodeAndAccountType(user.getUserCode(), 0);
+        logger.info("[RefundMoney] userRottoAccount: " + userRottoAccount.getBankName());
+        logger.info("[RefundMoney] userRottoAccount: " + userRottoAccount.getAccountNum());
 
-        String adminBankname = "001";
-        String adminAccountNum = "0015553944459869";
+        String adminBankname = "002";
+        String adminAccountNum = "0025683504300707";
 
         if(userRottoAccount == null) return false; // 찾지 못함.
 
@@ -503,14 +511,13 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         headerMap.put("apiKey", "2afacf41e60a4482b5c4997d194a46f0");
         headerMap.put("userKey", "ca55278a-89d2-4b51-bfa3-0cbbd376f9fd");
 
-
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("Header", headerMap);
         // 은행코드(은행이름으로 불리는 코드)
         bodyMap.put("depositBankCode", userRottoAccount.getBankName());
         bodyMap.put("depositAccountNo", userRottoAccount.getAccountNum());
         bodyMap.put("depositTransactionSummary", "이용자 계좌");
-        bodyMap.put("transactionBalance", amount);
+        bodyMap.put("transactionBalance", String.valueOf(amount.intValue()));
         bodyMap.put("withdrawalBankCode", adminBankname);
         bodyMap.put("withdrawalAccountNo", adminAccountNum);
         bodyMap.put("withdrawalTransactionSummary", "관리자 계좌");
@@ -522,7 +529,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 .bodyValue(bodyMap) // 구성한 Map을 bodyValue에 전달
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .block();
+                .block(); // error 발생
 
             // 입출금내역 저장.
             AccountHistory accountHistory = new AccountHistory();
@@ -531,6 +538,10 @@ public class SubscriptionServiceImpl implements SubscriptionService{
             accountHistory.setAccountTime(now);
             accountHistory.setDepositWithdrawalCode(1);
             accountHistoryRepository.save(accountHistory);
+
+            // 입금
+            userRottoAccount.setBalance(userRottoAccount.getBalance() + amount.intValue());
+            accountRepository.save(userRottoAccount);
 
             return true;
         } catch (Exception e) {
