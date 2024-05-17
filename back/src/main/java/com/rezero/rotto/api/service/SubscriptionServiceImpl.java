@@ -230,7 +230,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
         // 총 신청토큰량이 발행토큰보다 적을때 바로 환불진행
         int totalApplyCount = applyHistoryRepository.sumApplyCountBySubscriptionCodeAndIsDelete(subscriptionCode);
-        if (totalApplyCount > subscription.getTotalTokenCount()) {
+        if (totalApplyCount < subscription.getTotalTokenCount()) {
             List<ApplyHistory> histories = applyHistories.get();
             for (ApplyHistory applyHistory : histories){
                  Subscription subscription1 = subscriptionRepository.findBySubscriptionCode(applyHistory.getSubscriptionCode());
@@ -238,6 +238,9 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                  Integer amount = applyHistory.getApplyCount() * subscription1.getConfirmPrice();
                  RefundMoney(user, amount);
             }
+
+            // ROTTO burn
+            blockChainService.burnToken(subscription);
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("청약 자체가 취소되었습니다. 신청금액은 바로 환불됩니다.");
         }

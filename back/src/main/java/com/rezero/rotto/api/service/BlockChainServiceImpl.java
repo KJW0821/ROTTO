@@ -273,6 +273,29 @@ public class BlockChainServiceImpl implements BlockChainService{
 		}
 	}
 
+	@Override
+	public ResponseEntity<?> burnToken(Subscription subscription){
+		if(tokenManager == null) initContract();
+
+		try {
+			BigInteger code = BigInteger.valueOf(subscription.getSubscriptionCode());
+			TransactionReceipt transactionReceipt = tokenManager.burnToken(code).send();
+			if(transactionReceipt.isStatusOK()) return ResponseEntity.ok().body("신청률 미달 청약 ROTTO burn 완료");
+			else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("신청률 미달 청약 ROTTO burn 실패");
+
+		} catch (Exception ex){
+			Throwable cause = ex.getCause();
+			if(cause instanceof TransactionException){
+				String revertReason = getRevertReason((TransactionException)cause);
+				logger.info("[RemoveWhiteList] revertReason: " + revertReason);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(revertReason);
+			}
+			String errorMessage = (cause != null ? cause.getMessage() : ex.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+		}
+	}
+
 	private TokenManager.Subscription changeVariable(Subscription subscription){
 		BigInteger code = BigInteger.valueOf(subscription.getSubscriptionCode());
 		BigInteger confirm_price = BigInteger.valueOf(subscription.getConfirmPrice());
