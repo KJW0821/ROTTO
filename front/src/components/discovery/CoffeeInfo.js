@@ -48,7 +48,7 @@ const CoffeeInfo = () => {
     <View style={styles.container}>
       <Image
           source={require("../../../assets/images/discovery/coffeebean11.png")}
-          style={{ width: width, height: 250, resizeMode: "cover"}}
+          style={{ width: width-50, height: 250, resizeMode: "cover"}}
         />
       <View style={styles.flatListContainer}>
         {COFFEE_BEAN_INFO.map((item) => (
@@ -62,10 +62,10 @@ const CoffeeInfo = () => {
         
         {selectedItem && imagePath != "" && (
           <>
-            {/* <Image
+            <Image
               source={{uri : imagePath}}
               style={{ width: "100%", height: 200, resizeMode: "cover" }}
-            /> */}
+            />
             <Text style={styles.descriptionFont}>{COFFEE_BEAN_INFO[selectedItem - 1].description}</Text>
           </>
         )}
@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
     alignItems: "center",
-    
     margin: 5,
   },
   item: {
