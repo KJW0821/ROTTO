@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert, Image } from 'react-native';
 import DetailTopBar from '../../components/common/DetailTopBar';
 import { useEffect, useState } from 'react';
 import { chargeAccount as charge, sendMoney as send } from '../../utils/accountApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setTransactionMode } from '../../stores/mySlice';
+import CustomButton from '../../components/common/CustomButton';
+import LottieView from 'lottie-react-native';
 
 const TransactionResultScreen = ({navigation, route}) => {
   const transactionBalance = route.params.amount;
@@ -26,7 +28,6 @@ const TransactionResultScreen = ({navigation, route}) => {
       } else {
         setIsLoading(true);
         setIsSuccess(true);
-        dispatch(setTransactionMode(null));
       }
     };
 
@@ -42,7 +43,6 @@ const TransactionResultScreen = ({navigation, route}) => {
       } else {
         setIsLoading(true);
         setIsSuccess(true);
-        dispatch(setTransactionMode(null));
       }
     };
 
@@ -59,12 +59,39 @@ const TransactionResultScreen = ({navigation, route}) => {
         isLoading ?
         isSuccess && (
           <>
-            <DetailTopBar destination="mypage" navigation={navigation} />
-            <Text>{transactionBalance}원 채우기 성공!!</Text>
+            <View style={styles.innerContainer}>
+              <Text style={styles.text}>
+                {parseInt(transactionBalance).toLocaleString('ko-KR')}원 {transactionMode === 'charge' ? '채우기' : '보내기'} 완료
+              </Text>
+              <Image 
+                style={styles.img} 
+                resizeMode='contain'
+                source={
+                transactionMode === 'charge' ? 
+                require('../../../assets/images/deposit.png') 
+                : 
+                require('../../../assets/images/withdraw.png')} 
+              />
+              <CustomButton onPress={() => {
+                navigation.navigate('account');
+                dispatch(setTransactionMode(null));
+              }}>
+                확인
+              </CustomButton>
+            </View>
           </>
         )
         :
-        <Text>거래 진행 중...</Text>
+        <View style={styles.loadingContainer}>
+          <LottieView
+            autoPlay
+            style={{
+              width: '100%',
+              height: '80%',
+            }}
+            source={require('../../../assets/transactionLoading.json')}
+          />
+        </View>
       }
     </View>
   )
@@ -77,5 +104,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     alignItems: 'center'
+  },
+  text: {
+    fontSize: 24,
+    fontFamily: 'pretendard-semiBold',
+    textAlign: 'center'
+  },
+  innerContainer: {
+    width: '78%',
+    gap: 100,
+    flex: 1,
+    justifyContent: 'center'
+  },
+  img: {
+    width: '100%'
+  },
+  loadingContainer: {
+    width: '70%',
+    flex: 1,
+    justifyContent: 'center'
   }
 })
