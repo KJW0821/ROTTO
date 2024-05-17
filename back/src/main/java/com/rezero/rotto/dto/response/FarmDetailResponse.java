@@ -18,6 +18,7 @@ public class FarmDetailResponse {
     private String farmLogoPath;
     private String farmAddress;
     private int farmScale;
+    private String farmIntroduce;
     private LocalDateTime farmStartedDate;
     private String awardHistory;
     private String beanName;
