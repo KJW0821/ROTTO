@@ -23,7 +23,7 @@ import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { useEffect } from "react";
 
 const customChain = {
-  id: 31221,
+  id: process.env.EXPO_PUBLIC_CHAIN_ID,
   name: "ssafy",
   rpcUrls: {
     public: {

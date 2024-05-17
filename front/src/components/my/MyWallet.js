@@ -21,7 +21,7 @@ const MyWallet = () => {
 
   const { data, isError, isLoading } = useBalance({
     address,
-    chainId: 31221,
+    chainId: process.env.EXPO_PUBLIC_CHAIN_ID,
     token: tokenAddress,
     onSuccess: () => {
       console.log(data);
