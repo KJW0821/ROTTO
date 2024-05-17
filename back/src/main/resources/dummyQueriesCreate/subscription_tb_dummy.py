@@ -33,11 +33,15 @@ def create_dummy_data(farm_num):
         # 인당 구매 개수 제한 = 50개 고정
         limit_num = 50
         # 농장주에게 나눠줄 수익 비율 = 10% 고정(임시)
-        partner_farm_rate = 10
+        bean_grade = farm_bean_grade_ls[num-1]
+        partner_farm_rate = 12 - bean_grade * 2
         # 총 발행 토큰 수 = 농장 규모 m^2 만큼
-        total_token_count = farm_scales[f'{num}']
-        # 청약의 총 수익률 기본값
-        total_proceed = 0
+        farm_scale = farm_scales[f'{num}']
+        total_token_count = farm_scale
+
+        # 매출액(원두 총 판매액) = 농장 규모 * 원두등급 가중치(1:10, 2:7, 3:5) * 10000
+        bean_grade_dict = {1:10, 2:7, 3:5}
+        total_sales = farm_scale * bean_grade_dict[bean_grade] * 10000
 
         # 진행 예정 청약
         for i in range(subs['proceed']):
@@ -45,11 +49,11 @@ def create_dummy_data(farm_num):
             started_time = fake.date_time_between(start_date='+1m', end_date='+1y').replace(hour=9, minute=0, second=0).strftime('%Y-%m-%d %H:%M:%S')
             # 종료 시간 = 시작 시간 + 2주 뒤
             ended_time = (datetime.strptime(started_time, '%Y-%m-%d %H:%M:%S') + timedelta(weeks=2)).replace(hour=8, minute=59, second=59).strftime('%Y-%m-%d %H:%M:%S')
-            # 수익률은 0~30.00% 소수점 두자리까지
-            return_rate = round(random.uniform(0, 30), 2)
+            # 수익률은 -10.00~25.00% 소수점 두자리까지
+            return_rate = round(random.uniform(-10, 25), 2)
             
             # sql문 생성
-            sql = f"INSERT INTO subscription_tb (farm_code, confirm_price, started_time, ended_time, limit_num, return_rate, total_token_count, partner_farm_rate, total_proceed) VALUES ('{farm_code}', '{confirm_price}', '{started_time}', '{ended_time}', '{limit_num}', '{return_rate}', '{total_token_count}', '{partner_farm_rate}', {total_proceed});"
+            sql = f"INSERT INTO subscription_tb (farm_code, confirm_price, started_time, ended_time, limit_num, return_rate, total_token_count, partner_farm_rate, total_sales) VALUES ('{farm_code}', '{confirm_price}', '{started_time}', '{ended_time}', '{limit_num}', '{return_rate}', '{total_token_count}', '{partner_farm_rate}', {total_sales});"
 
             sql_queries.append(sql)
 
@@ -64,7 +68,7 @@ def create_dummy_data(farm_num):
             return_rate = round(random.uniform(0, 30), 2)
 
             # sql문 생성
-            sql = f"INSERT INTO subscription_tb (farm_code, confirm_price, started_time, ended_time, limit_num, return_rate, total_token_count, partner_farm_rate, total_proceed) VALUES ('{farm_code}', '{confirm_price}', '{started_time}', '{ended_time}', '{limit_num}', '{return_rate}', '{total_token_count}', '{partner_farm_rate}', {total_proceed});"
+            sql = f"INSERT INTO subscription_tb (farm_code, confirm_price, started_time, ended_time, limit_num, return_rate, total_token_count, partner_farm_rate, total_sales) VALUES ('{farm_code}', '{confirm_price}', '{started_time}', '{ended_time}', '{limit_num}', '{return_rate}', '{total_token_count}', '{partner_farm_rate}', {total_sales});"
 
             sql_queries.append(sql)
 
@@ -77,36 +81,43 @@ def create_dummy_data(farm_num):
             ended_time = (datetime.strptime(started_time, '%Y-%m-%d %H:%M:%S') + timedelta(weeks=2)).replace(hour=8, minute=59, second=59).strftime('%Y-%m-%d %H:%M:%S')
             # 수익률은 0~30.00% 소수점 두자리까지
             return_rate = round(random.uniform(0, 30), 2)
-            # 청약의 총 수익률 종료된 것은 값이 존재
-            total_proceed = random.randint(4, 21)
 
             # sql문 생성
-            sql = f"INSERT INTO subscription_tb (farm_code, confirm_price, started_time, ended_time, limit_num, return_rate, total_token_count, partner_farm_rate, total_proceed) VALUES ('{farm_code}', '{confirm_price}', '{started_time}', '{ended_time}', '{limit_num}', '{return_rate}', '{total_token_count}', '{partner_farm_rate}', {total_proceed});"
+            sql = f"INSERT INTO subscription_tb (farm_code, confirm_price, started_time, ended_time, limit_num, return_rate, total_token_count, partner_farm_rate, total_sales) VALUES ('{farm_code}', '{confirm_price}', '{started_time}', '{ended_time}', '{limit_num}', '{return_rate}', '{total_token_count}', '{partner_farm_rate}', {total_sales});"
 
             sql_queries.append(sql)
         
         
     return sql_queries
 
-# 내 DB에 저장된 farm_scale 칼럼값
+# 내 DB에 저장된 farm_scale 칼럼값(162개)
 farm_scale_ls = [
-    860, 1976, 5206, 6901, 6091, 7682, 6424, 9707, 8826, 4317,
-    995, 6519, 8429, 2536, 9642, 4759, 9078, 8872, 8160, 1447,
-    1992, 2421, 9148, 7479, 3706, 3407, 3560, 1580, 1474, 1860,
-    2612, 9434, 6087, 9608, 9915, 4773, 685, 1248, 3907, 9126,
-    5710, 1009, 4995, 2733, 3934, 2039, 5874, 6004, 1086, 7726,
-    758, 1464, 4684, 6597, 523, 5994, 7107, 2444, 4778, 8120,
-    5438, 8218, 9994, 8071, 6294, 5069, 7763, 2457, 5945, 1595,
-    3160, 4809, 7426, 3520, 624, 6814, 3226, 5363, 965, 9351,
-    3620, 4185, 5484, 708, 2737, 6894, 8806, 4087, 8931, 6363,
-    1829, 3743, 8175, 9823, 3154, 2468, 9531, 7770, 4353, 1681,
-    2428, 5536, 3226, 6055, 5786, 5694, 5704, 5969, 6702, 5002,
-    5379, 4981, 3888, 4655, 4742, 9249, 3424, 3939, 9601, 3127,
-    2291, 3773, 892, 1150, 7749, 5756, 3351, 898, 3310, 9719,
-    7890, 6941, 1046, 2174, 9512, 5922, 9247, 8432, 1639, 5652,
-    3977, 2766, 3638, 2129, 5007, 7409, 7909, 1078, 6114, 2177,
-    7663, 9935, 9910, 3342, 576, 5944, 9429, 3649, 4764, 7734,
-    4470, 3201
+    14400, 11700, 12600, 8800, 8200, 14200, 10100, 14500, 10500, 4800, 
+    12200, 9200, 12100, 11900, 7200, 6200, 9800, 6100, 14900, 12700, 
+    8200, 11500, 4200, 9000, 6700, 13900, 6300, 8100, 10100, 14700, 
+    14800, 11500, 7800, 12100, 13800, 11500, 11800, 14200, 13100, 13800, 
+    8500, 6600, 6000, 11200, 11400, 13600, 7900, 4500, 7200, 9500, 
+    9100, 7700, 10900, 8500, 10800, 12300, 15000, 9300, 8400, 14100, 
+    14200, 7400, 6900, 5100, 13600, 8800, 8500, 5000, 5700, 12800, 
+    10500, 10900, 13700, 4500, 5300, 7000, 8300, 6400, 9400, 13300, 
+    11100, 6800, 5900, 14400, 4700, 14100, 4400, 7900, 11100, 14800, 
+    4000, 5200, 14700, 14500, 4900, 5300, 11600, 6800, 10000, 12800, 
+    9600, 7300, 5000, 11900, 8600, 14300, 11100, 8100, 9200, 12400, 
+    12500, 6400, 13300, 5300, 13900, 4200, 6600, 10500, 11300, 5100, 
+    10200, 4200, 11000, 6000, 14500, 14700, 6400, 13900, 13900, 8200, 
+    13300, 7700, 5500, 14600, 14500, 13000, 7400, 14200, 9600, 8700, 
+    13400, 4200, 13700, 8400, 13400, 5100, 7000, 13500, 9700, 12200, 
+    8400, 9800, 9200, 5900, 8600, 13800, 13500, 12300, 10100, 11900, 
+    7300, 5000
+]
+
+# 내 DB에 저장된 farm_bean_grade 칼럼값(162개)
+farm_bean_grade_ls = [
+    1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1,
+    2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 3, 3, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 3, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 3, 1, 1, 1, 1, 1, 3, 3, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1,
+    1, 3, 2, 1, 1, 2, 1, 2, 1, 3, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1,
+    1, 1, 2, 2, 1, 2, 1, 1, 1, 3, 1, 1
 ]
 
 # SQL 쿼리 생성
