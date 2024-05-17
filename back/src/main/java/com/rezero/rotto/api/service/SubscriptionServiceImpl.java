@@ -409,6 +409,9 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         else if(subscription.getTotalSales() == 0){ // 총 판매액 입력이 안되어 있는 경우
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("아직 경매가 완료되지 않은 청약입니다.");
         }
+        else if(subscription.getTotalProceed() != 0){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 환급이 완료된 청약입니다.");
+        }
 
         List<ExpenseDetail> expenseDetailList = expenseDetailRepository.findBySubscriptionCode(subscription.getSubscriptionCode());
         int TotalExpense = 0;
@@ -422,10 +425,12 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         logger.info("[refundSubscription] price: " + price);
         int FarmIncome = (int)Math.ceil(price * (subscription.getPartnerFarmRate()) / 100.0); // 농장 수익
         logger.info("[refundSubscription] FarmIncome: " + FarmIncome);
-        logger.info("[refundSubscription] 수수료: " + (int)Math.floor((price - FarmIncome) * 0.011));
-        int totalProceed = (price - FarmIncome) - (int)Math.floor((price - FarmIncome) * 0.011); // 총 청약수익금액
+        int fee = (int)Math.floor((price - FarmIncome) * 0.011);
+        logger.info("[refundSubscription] 수수료: " + fee);
+        int totalProceed = (price - FarmIncome) - fee; // 총 청약수익금액
         logger.info("[refundSubscription] totalProceed: " + totalProceed);
 
+        subscription.setFee(fee);
         subscription.setTotalProceed(totalProceed);
         subscriptionRepository.save(subscription);
 
