@@ -17,6 +17,7 @@ public class FarmListDto extends FarmDto {
     private String beanName;
     private Boolean isLiked;
     private BigDecimal returnRate;
+    private Boolean isFunding;
     private Long likeCount;
 
 }
