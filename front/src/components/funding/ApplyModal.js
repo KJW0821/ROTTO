@@ -10,6 +10,9 @@ const ApplyModal = () => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.fundingInfo.isApplyModalOpen);
   const fundingData = useSelector(state => state.fundingInfo.fundingData);
+  const fundingAccount = useSelector(state => state.myPageInfo.fundingAccount);
+
+  console.log(fundingData, fundingAccount)
 
   const [amount, setAmount] = useState('');
   const [isValidAmount, setIsValidAmount] = useState();
@@ -24,6 +27,11 @@ const ApplyModal = () => {
   };
 
   const applyHandler = async () => {
+    if (fundingAccount.accountBalance < fundingData.confirmPrice * amount) {
+      return Alert.alert('', '펀딩 계좌에 잔액이 부족합니다.', [
+        { text: '확인', onPress: () => dispatch(setApplyModal(false)) }
+      ]);
+    }
     const res = await applyFunding(fundingData.subscriptionCode, amount);
     return Alert.alert(res.status === 200 ? '청약 신청이 완료되었습니다.' : '청약 신청에 실패하셨습니다.', '', 
     [{
