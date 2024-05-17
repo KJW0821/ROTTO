@@ -28,6 +28,10 @@ public class NewsCrawler {
     @Scheduled(fixedRate = 3600000) // 1시간마다 크롤링 수행
     void crawlCoffeeNews() {
         log.info("Crawling Start");
+
+        // 크롤링 개수
+        int crawlCount = 0;
+
         try {
             // 커피 뉴스 크롤링할 URL
             String url = "https://dailycoffeenews.com/latest-news/";
@@ -37,6 +41,7 @@ public class NewsCrawler {
 
             // article 요소 선택
             Elements articles = document.select("article");
+
 
             // 각 article 요소에 대해 반복
             for (Element article : articles) {
@@ -136,6 +141,7 @@ public class NewsCrawler {
 
                     // 데이터 저장
                     newsRepository.save(news);
+                    crawlCount ++;
                 } catch (IOException e) {
                     log.error("뉴스 디테일 크롤링 실패" + news.getNewsDetailLink(), e);
                 }
@@ -143,7 +149,7 @@ public class NewsCrawler {
         } catch (IOException e) {
             log.error("뉴스 크롤링 실패", e);
         }
-        log.info("Crawling Success");
+        log.info(crawlCount + " Data Crawling Success");
     }
 
     // 스타일 속성 값에서 이미지 URL을 추출하는 메서드
