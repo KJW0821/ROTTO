@@ -23,7 +23,7 @@ const HomeRouters = () => {
     });
 
     return () => {
-      BackHandler.remove();
+      BackHandler.removeEventListener();
     }
   }, [])
 
