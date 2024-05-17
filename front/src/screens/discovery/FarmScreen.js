@@ -45,7 +45,7 @@ const FarmScreen = ({ route }) => {
 
   useEffect(() => {
     getDetail();
-  }, []);
+  }, [route.params.farmCode]);
 
   const handlePressHeart = () => {
     farm.isLiked ? removeLike(farm.farmCode) : addLike(farm.farmCode);
