@@ -19,4 +19,6 @@ public class ApplyHistoryListCancelDto {
     private LocalDateTime startedTime;
     private LocalDateTime endedTime;
     private int isDelete;
+    private int applyCount;
+    private int totalTokenCount;
 }

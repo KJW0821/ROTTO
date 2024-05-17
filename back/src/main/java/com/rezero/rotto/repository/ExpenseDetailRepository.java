@@ -1,12 +1,15 @@
 package com.rezero.rotto.repository;
 
 import com.rezero.rotto.entity.ExpenseDetail;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface ExpenseDetailRepository extends CrudRepository<ExpenseDetail, String> {
+@Repository
+public interface ExpenseDetailRepository extends JpaRepository<ExpenseDetail, Integer> {
 
     // 청약 지출내역
     List<ExpenseDetail> findBySubscriptionCode(int subscriptionCode);
