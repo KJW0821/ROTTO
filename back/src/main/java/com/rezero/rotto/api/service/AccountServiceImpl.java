@@ -297,7 +297,6 @@ public class AccountServiceImpl implements AccountService{
             System.out.println(e.getMessage());
         }
 
-
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("계좌연결에 실패했어요");
     }
 
@@ -380,11 +379,19 @@ public class AccountServiceImpl implements AccountService{
             // 입출금내역 저장.
             AccountHistory accountHistory = new AccountHistory();
             accountHistory.setAccountCode(currentAccount.getAccountCode());
-            accountHistory.setAmount(Integer.parseInt(accountWithdrawalRequest.getTransactionBalance()));
+            accountHistory.setAmount(checkMoney);
             accountHistory.setAccountTime(now);
             accountHistory.setDepositWithdrawalCode(2);
             accountHistoryRepository.save(accountHistory);
 
+            Account gongmoAccount = accountRepository.findByUserCodeAndAccountType(userCode, 0);
+            gongmoAccount.setBalance(gongmoAccount.getBalance() - checkMoney);
+
+            Account realAccount = accountRepository.findByUserCodeAndAccountType(userCode, 1);
+            realAccount.setBalance(realAccount.getBalance() + checkMoney);
+
+            accountRepository.save(gongmoAccount);
+            accountRepository.save(realAccount);
 
             return ResponseEntity.status(HttpStatus.OK).body("이체 완료");
         } catch (Exception e) {
@@ -463,7 +470,7 @@ public class AccountServiceImpl implements AccountService{
         bodyMap.put("depositBankCode", toGoAccount.getBankName());
         bodyMap.put("depositAccountNo", toGoAccount.getAccountNum());
         bodyMap.put("depositTransactionSummary", "입금이체 계좌");
-        bodyMap.put("transactionBalance", accountDepositRequest.getTransactionBalance());
+        bodyMap.put("transactionBalance", transactionBalanceStr);
         bodyMap.put("withdrawalBankCode", "002");
         bodyMap.put("withdrawalAccountNo", "0025683504300707");
         bodyMap.put("withdrawalTransactionSummary", "출금이체 계좌");
@@ -481,11 +488,19 @@ public class AccountServiceImpl implements AccountService{
             // 입출금내역 저장.
             AccountHistory accountHistory = new AccountHistory();
             accountHistory.setAccountCode(toGoAccount.getAccountCode());
-            accountHistory.setAmount(Integer.parseInt(accountDepositRequest.getTransactionBalance()));
+            accountHistory.setAmount(checkMoney);
             accountHistory.setAccountTime(now);
             accountHistory.setDepositWithdrawalCode(1);
             accountHistoryRepository.save(accountHistory);
 
+            Account gongmoAccount = accountRepository.findByUserCodeAndAccountType(userCode, 0);
+            gongmoAccount.setBalance(gongmoAccount.getBalance() + checkMoney);
+
+            Account realAccount = accountRepository.findByUserCodeAndAccountType(userCode, 1);
+            realAccount.setBalance(realAccount.getBalance() - checkMoney);
+
+            accountRepository.save(gongmoAccount);
+            accountRepository.save(realAccount);
 
             return ResponseEntity.status(HttpStatus.OK).body("이체 완료");
         } catch (Exception e) {
