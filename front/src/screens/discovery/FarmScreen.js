@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -19,10 +21,21 @@ import Colors from "../../constants/Colors";
 const FarmScreen = ({ route }) => {
   const { width, height } = useWindowDimensions();
   const [farm, setFarm] = useState(null);
-  // const farmImagesCount = Array.from({ length: 10 }, (_, i) => i + 1);
   const farmImagesCount = Array.from({ length: 10 }, (_, i) =>
     (i + 1).toString().padStart(3, "0")
   );
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const openModal = (imageUri) => {
+    setSelectedImage(imageUri);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setSelectedImage(null);
+  };
 
   const getDetail = async () => {
     const res = await getFarmDetail(route.params.farmCode);
@@ -36,7 +49,11 @@ const FarmScreen = ({ route }) => {
 
   const handlePressHeart = () => {
     farm.isLiked ? removeLike(farm.farmCode) : addLike(farm.farmCode);
-    setFarm((prevFarm) => ({ ...prevFarm, isLiked: !farm.isLiked, likeCount: farm.isLiked ? farm.likeCount - 1 : farm.likeCount + 1 }));
+    setFarm((prevFarm) => ({
+      ...prevFarm,
+      isLiked: !farm.isLiked,
+      likeCount: farm.isLiked ? farm.likeCount - 1 : farm.likeCount + 1,
+    }));
   };
 
   const renderFarmImage = (itemData) => {
@@ -52,7 +69,7 @@ const FarmScreen = ({ route }) => {
   return (
     <>
       {farm && (
-        <>
+        <View style={styles.screen}>
           <StackHeader
             screenName="farmList"
             title={farm.farmName}
@@ -60,7 +77,7 @@ const FarmScreen = ({ route }) => {
             isLiked={farm.isLiked}
             onPressHeart={handlePressHeart}
           />
-          <ScrollView style={styles.screen}>
+          <ScrollView style={styles.scrollView}>
             <View style={styles.mainContainer}>
               <View style={styles.badgeContainer}>
                 <View
@@ -147,22 +164,50 @@ const FarmScreen = ({ route }) => {
               <Text style={styles.imageTitle}>농장 둘러보기</Text>
               <View style={styles.imageContent}>
                 {farmImagesCount.map((item) => (
-                  <Image
-                    source={{
-                      uri: `${process.env.EXPO_PUBLIC_S3URL}/farm_img/1/farm${item}.jpg`,
-                    }}
-                    style={{
-                      width: (width / 100) * 32,
-                      height: (width / 100) * 32,
-                      marginBottom: 5,
-                    }}
+                  <TouchableOpacity
                     key={item}
-                  />
+                    onPress={() =>
+                      openModal(
+                        `${process.env.EXPO_PUBLIC_S3URL}/farm_img/1/farm${item}.jpg`
+                      )
+                    }
+                  >
+                    <Image
+                      source={{
+                        uri: `${process.env.EXPO_PUBLIC_S3URL}/farm_img/1/farm${item}.jpg`,
+                      }}
+                      style={{
+                        width: (width / 100) * 32,
+                        height: (width / 100) * 32,
+                        marginBottom: 5,
+                      }}
+                      key={item}
+                    />
+                  </TouchableOpacity>
                 ))}
               </View>
             </View>
           </ScrollView>
-        </>
+          {selectedImage && (
+            <Modal
+              visible={modalVisible}
+              transparent={true}
+              animationType="fade"
+            >
+              <View style={styles.modalBackground}>
+                <TouchableOpacity
+                  style={styles.modalContainer}
+                  onPress={closeModal}
+                >
+                  <Image
+                    source={{ uri: selectedImage }}
+                    style={styles.modalImage}
+                  />
+                </TouchableOpacity>
+              </View>
+            </Modal>
+          )}
+        </View>
       )}
     </>
   );
@@ -256,6 +301,24 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   likeCountText: {
-    fontFamily: "pretendard-semiBold"
-  }
+    fontFamily: "pretendard-semiBold",
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '95%',
+    height: '100%',
+    backgroundColor: '#ffffff00',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  modalImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
 });
