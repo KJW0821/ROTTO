@@ -104,7 +104,7 @@ public class AccountServiceImpl implements AccountService{
             if (recNode != null) { // 'REC' 필드가 존재하는지 확인
                 String accountBalance = recNode.get("accountBalance").asText();
                 accountZero.setBalance(Integer.parseInt(accountBalance));
-
+                accountRepository.save(accountZero);
             }
 
             AccountZeroResponse accountZeroResponse = AccountZeroResponse.builder()
@@ -191,6 +191,7 @@ public class AccountServiceImpl implements AccountService{
             if (recNode != null) { // 'REC' 필드가 존재하는지 확인
                 String accountBalance = recNode.get("accountBalance").asText();
                 accountOne.setBalance(Integer.parseInt(accountBalance));
+                accountRepository.save(accountOne);
             }
 
             AccountOneResponse accountOneResponse = AccountOneResponse.builder()
