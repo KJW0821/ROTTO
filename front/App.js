@@ -86,39 +86,6 @@ export default function App() {
   const statusBarStyle = "light";
   const statusBarColor = Colors.bgOrg;
 
-  // const requestUserPermission = async () => {
-  //   const authStatus = await messaging().requestPermission();
-  //   const enabled =
-  //     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-  //     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-  //   if (enabled) {
-  //     return getToken();
-  //   }
-  // };
-
-  // const getToken = async () => {
-  //   const fcmToken = await messaging().getToken();
-  //   console.log("디바이스 토큰값");
-  //   console.log(fcmToken);
-  //   dispatch(set_deviceToken(fcmToken));
-  // };
-  // useEffect(() => {
-  //   const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-  //     Alert.alert("A new FCM message arrived!", JSON.stringify(remoteMessage));
-  //   });
-
-  //   return unsubscribe;
-  // }, []);
-  // useEffect(() => {
-  //   const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-  //     console.log(remoteMessage);
-  //   });
-  //   requestUserPermission();
-
-  //   return unsubscribe;
-  // }, []);
-
   return (
     <SafeAreaProvider>
       <Provider store={store}>

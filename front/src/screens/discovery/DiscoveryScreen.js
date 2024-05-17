@@ -20,9 +20,6 @@ const DiscoveryScreen = () => {
       <MyHeader>
         <ScrollView style={styles.container}>
           <View style={styles.component}>
-            <Pressable onPress={Navigation.navigate("noti")}>
-              <Text style={styles.title}>버튼입니다</Text>
-            </Pressable>
             <Text style={styles.title}>농장</Text>
             <FarmPreview />
           </View>

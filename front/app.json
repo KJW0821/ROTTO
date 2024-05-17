@@ -23,7 +23,6 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "googleServicesFile": "./google-services.json",
       "package": "com.rezero.rotto"
     },
     "web": {
@@ -31,9 +30,7 @@
     },
     "plugins": [
       "expo-secure-store",
-      "expo-font",
-      "@react-native-firebase/app",
-      "@react-native-firebase/messaging"
+      "expo-font"
     ],
     "extra": {
       "eas": {
