@@ -26,5 +26,6 @@ public class FarmDetailResponse {
     private Boolean isLiked;
     private Boolean isFunding;
     private Long likeCount;
+    private Integer deadline;
 
 }

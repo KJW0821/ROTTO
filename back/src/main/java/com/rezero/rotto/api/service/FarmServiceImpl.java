@@ -106,15 +106,28 @@ public class FarmServiceImpl implements FarmService {
             latestEndedSubscription = latestEndedSubscriptions.get(0);
         }
 
-        BigDecimal returnRate;
-        if (latestEndedSubscription == null) {
-            returnRate = null;
-        } else {
+        BigDecimal returnRate = null;
+        if (latestEndedSubscription != null) {
+            // 수익률
             returnRate = latestEndedSubscription.getReturnRate();
         }
 
         Long likeCount = interestFarmRepository.countByFarmCode(farmCode);
         Boolean isFunding = isFunding(farmCode);
+
+        // 펀딩 종료까지 남은 기간
+        // endedTime >= 현재 시간 인 것. endedTime - 현재 시간 (일수로만)
+        Integer deadline = null;
+        List<Subscription> impendingOngoingSubscriptions = subscriptionRepository.findImpedingOngoingSubscription(farmCode, now);
+        Subscription impendingOngoingSubscription = null;
+        if (!impendingOngoingSubscriptions.isEmpty()) {
+            impendingOngoingSubscription = impendingOngoingSubscriptions.get(0);
+        }
+
+        if (impendingOngoingSubscription != null) {
+            deadline = impendingOngoingSubscription.getEndedTime().getYear() - now.getYear();
+        }
+
 
         FarmDetailResponse response = FarmDetailResponse.builder()
                 .farmCode(farmCode)
@@ -131,6 +144,7 @@ public class FarmServiceImpl implements FarmService {
                 .isLiked(isLiked)
                 .isFunding(isFunding)
                 .likeCount(likeCount)
+                .deadline(deadline)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
