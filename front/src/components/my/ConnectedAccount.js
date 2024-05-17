@@ -24,7 +24,7 @@ const ConnectedAccount = ({navigation}) => {
 
       getRealAccountData();
       console.log(connectedAccount);
-    }, [])
+    }, [connectedAccount])
   );
 
   useEffect(() => {
