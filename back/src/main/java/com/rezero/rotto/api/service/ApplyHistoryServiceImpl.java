@@ -41,7 +41,13 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
 
         ApplyHistory applyHistory = new ApplyHistory();
         ApplyHistory applyHistoryRepo = applyHistoryRepository.findByUserCodeAndSubscriptionCode(userCode, subscriptionCode);
+        if (applyHistoryRepo == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("신청 내역이 없습니다.");
+        }
         Subscription subscription = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
+        if (subscription == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("청약 정보가 없습니다.");
+        }
         Account userAccount = accountRepository.findByUserCodeAndAccountType(userCode, 0);
 
         int applyBalance = subscription.getConfirmPrice() * applyCount;
@@ -162,8 +168,11 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
         Subscription subscription = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
         Account userAccount = accountRepository.findByUserCodeAndAccountType(userCode, 0);
 
-        int applyCountBalance = subscription.getConfirmPrice() * applyHistory.getApplyCount();
+        if (subscription == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("청약 정보가 없습니다.");
+        }
 
+        int applyCountBalance = subscription.getConfirmPrice() * applyHistory.getApplyCount();
 
         LocalDateTime startedTime = subscription.getStartedTime();
         LocalDateTime endedTime = subscription.getEndedTime();
@@ -261,7 +270,16 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
 
         for (ApplyHistory applyHistory : applyHistories) {
             Subscription subscription = subscriptionRepository.findBySubscriptionCode(applyHistory.getSubscriptionCode());
+
+            if (subscription == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("신청내역에 해당하는 청약내역이 없습니다.");
+            }
             Farm farm = farmRepository.findByFarmCode(subscription.getFarmCode());
+
+            if (farm == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("신청내역에 해당하는 청약의 농장정보가 없습니다.");
+            }
+
             Integer totalApplyCount = applyHistoryRepository.sumApplyCountBySubscriptionCode(subscription.getSubscriptionCode());
             ApplyHistoryListGetDto applyHistoryListDto = ApplyHistoryListGetDto.builder()
                     .applyHistoryCode(applyHistory.getApplyHistoryCode())
@@ -305,6 +323,10 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
         for (ApplyHistory applyHistory : applyHistories) {
             Subscription subscription = subscriptionRepository.findBySubscriptionCode(applyHistory.getSubscriptionCode());
             Farm farm = farmRepository.findByFarmCode(subscription.getFarmCode());
+
+            if (farm == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("신청내역에 해당하는 청약의 농장정보가 없습니다.");
+            }
             ApplyHistoryListCancelDto applyHistoryListDto = ApplyHistoryListCancelDto.builder()
                     .subscriptionCode(applyHistory.getSubscriptionCode())
                     .userCode(applyHistory.getUserCode())

@@ -166,6 +166,10 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         }
 
         Subscription subscriptionDetail = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
+        if (subscriptionDetail == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("청약내역이 없습니다.");
+        }
+
         Integer applyCount = applyHistoryRepository.sumApplyCountBySubscriptionCode(subscriptionCode);
         ApplyHistory applyHistory1 = applyHistoryRepository.findByUserCodeAndSubscriptionCode(userCode, subscriptionCode);
 
