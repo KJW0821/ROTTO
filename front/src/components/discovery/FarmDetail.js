@@ -29,7 +29,10 @@ const FarmDetail = ({ data }) => {
     >
       <Image
         source={{
-          uri: `${process.env.EXPO_PUBLIC_S3URL}/farm_img/1/${data.farmLogoPath}`,
+          uri: `${process.env.EXPO_PUBLIC_S3URL}/farm_img/${data.farmCode}/${data.farmLogoPath}`,
+        }}
+        onError={(e) => {
+          e.target.src = require('../../../assets/images/defaultProfile.jpg')
         }}
         style={styles.farmLogo}
       />
