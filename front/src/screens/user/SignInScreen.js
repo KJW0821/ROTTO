@@ -35,7 +35,10 @@ const SignInScreen = ({navigation}) => {
       await TokenService.setToken(res.data.accessToken, res.data.refreshToken);
       const userInfoRes = await getUserInfo();
       await TokenService.setUserCode(userInfoRes.data.userCode.toString());
-      navigation.navigate('Routers');
+      navigation.reset({
+        index: 1,
+        routes: [{ name: 'Routers' }]
+      });
       setErrMsg('');
     } else {
       setErrMsg('전화번호와 비밀번호를 다시 확인해주세요');

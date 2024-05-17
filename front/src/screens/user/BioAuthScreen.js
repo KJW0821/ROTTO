@@ -22,7 +22,10 @@ const BioAuthScreen = ({navigation}) => {
   
           if (bioAuth.success) {
             console.log('생체 인증 성공');
-            navigation.navigate('Routers');
+            navigation.reset({
+              index: 1,
+              routes: [{ name: 'Routers' }]
+            });
           } else if (bioAuth.error === 'user_fallback') {
             navigation.navigate('PINInput');
           } else {
