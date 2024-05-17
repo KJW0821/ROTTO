@@ -89,3 +89,17 @@ export const updateWalletAddress = async (data) => {
     return err;
   }
 };
+
+export const checkEmail = async (data) => {
+  try {
+    const res = await API.post('/user/email-check', data);
+    return res.data.isExist;
+  } catch (err) {
+    if (err.response.status === 400) {
+      return true;
+    } else {
+      console.error('이메일 중복 체크 에러' + err);
+      return err;
+    }
+  }
+};
