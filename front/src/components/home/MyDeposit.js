@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, Dimensions } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { getMyInvestment } from "../../utils/myInvestmentAmount";
 
@@ -51,8 +50,7 @@ const MyDeposit = () => {
           <View>
             <Text style={styles.content}> 투자 현황</Text>
           </View>
-
-          {MyInvestment.tradeHistoryHomeInfoDtoss.map((token, index) => (
+          {MyInvestment.tradeHistoryHomeInfoDtoss && MyInvestment.tradeHistoryHomeInfoDtoss.map((token, index) => (
             <View>
             <View style={styles.itemStyle}>
               <View style={styles.itemContentStyle}>
