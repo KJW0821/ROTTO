@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { getFundingDetail } from '../../utils/fundingApi';
 import dayjs from 'dayjs';
 import Colors from '../../constants/Colors';
-import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import CustomButton from '../../components/common/CustomButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { setApplyModal, setFundingData } from '../../stores/fundingSlice';
@@ -84,7 +84,7 @@ const FundingDetailScreen = ({navigation, route}) => {
               <MaterialCommunityIcons name="registered-trademark" size={18} color="black" />
               <Text style={styles.menuText}>펀딩 목표 수량</Text>
             </View>
-            <Text style={styles.contentText}>{fundingData.totalTokenCount} ROTTO</Text>
+            <Text style={styles.contentText}>{fundingData.totalTokenCount.toLocaleString('ko-KR')} ROTTO</Text>
           </View>
           <View style={styles.contentContainer}>
             <View style={styles.menuContainer}>
@@ -100,6 +100,18 @@ const FundingDetailScreen = ({navigation, route}) => {
             </View>
             <Text style={styles.contentText}>{fundingData.confirmPrice.toLocaleString('ko-KR')}원 / 1 ROTTO</Text>
           </View>
+          {
+            fundingData.subsStatus === 1 &&
+            <View style={styles.contentContainer}>
+              <View style={styles.menuContainer}>
+                <FontAwesome5 name="chart-pie" size={18} />
+                <Text style={styles.menuText}>신청률</Text>
+              </View>
+              <Text style={styles.contentText}>
+              {fundingData.applyCount.toLocaleString('ko-KR')} / {fundingData.totalTokenCount.toLocaleString('ko-KR')} ROT ({Math.round(fundingData.applyCount / fundingData.totalTokenCount * 100 * 100) / 100}%)
+              </Text>
+            </View>
+          }
           <View style={styles.contentContainer}>
             <View style={styles.menuContainer}>
               <MaterialCommunityIcons name="chart-line" size={18} color="black" />
