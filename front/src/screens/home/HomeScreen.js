@@ -15,82 +15,10 @@ import FaqBanner from "../../components/home/FaqBanner";
 import FarmILike from "../../components/home/FarmILike";
 import FarmNews from "../../components/home/FarmNews";
 
-import * as Notifications from "expo-notifications";
-import { createRef, useEffect, useState } from "react";
-
 const HomeScreen = ({ navigation }) => {
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: false,
-    }),
-  });
-
-  const responseListener = createRef();
-  const notificationListener = createRef();
-  const [state, setState] = useState({
-    pushToken: "",
-    notification: false,
-  });
-
-  const schedulePushNotification = async (data) => {
-    console.log("pushToken", state.pushToken);
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "테스트 알림",
-        body: data,
-      },
-      trigger: null,
-    });
-  };
-
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     if (Platform.OS === "android") {
-  //       await Notifications.setNotificationChannelAsync("default", {
-  //         name: "default",
-  //         importance: Notifications.AndroidImportance.MAX,
-  //         vibrationPattern: [0, 250, 250, 250],
-  //         lightColor: "#FF231F7C",
-  //       });
-  //     }
-  //     const { granted } = await Notifications.getPermissionsAsync();
-  //     console.log("granted", granted);
-  //     if (granted) {
-  //       const { data } = await Notifications.getExpoPushTokenAsync();
-  //       setState({ pushToken: data });
-  //       console.log("data", data);
-  //     } else if (!granted) {
-  //       alert("알림이 거부 되었습니다.");
-  //     } else {
-  //       alert("알림이 지원 되지않습니다.");
-  //     }
-  //     Notifications.addNotificationReceivedListener((notification) => {
-  //       console.log("NOTIFICATION1:", notification);
-  //     });
-  //     notificationListener.current =
-  //       Notifications.addNotificationReceivedListener((notification) => {
-  //         setState({ notification: notification });
-  //       });
-  //     responseListener.current =
-  //       Notifications.addNotificationResponseReceivedListener((response) => {
-  //         console.log("responseRecieved", response);
-  //       });
-  //   }
-  //   fetchData();
-  // }, []);
 
   return (
     <MyHeader>
-      {/* <View>
-        <Button
-          title="Show Push Token"
-          onPress={async () => {
-            await schedulePushNotification(state.pushToken);
-          }}
-        />
-      </View> */}
       <ScrollView style={styles.container}>
         <MyBanner />
         <MyDeposit />
