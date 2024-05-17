@@ -90,6 +90,13 @@ const FundingList = ({navigation}) => {
                     </Text>
                   </View>
                 }
+                <View style={styles.contentContainer}>
+                  <View style={styles.menuContainer}>
+                    <FontAwesome5 name="chart-line" size={12} />
+                    <Text style={styles.menu}>지난 수익률</Text>
+                  </View>
+                  <Text style={[styles.content, { color: itemData.item.returnRate < 0 ? 'blue' : 'red'}]}>{itemData.item.returnRate > 0 && '+'}{itemData.item.returnRate}%</Text>
+                </View>
               </View>
             </Pressable>
           )
@@ -130,8 +137,8 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     flexDirection: 'row',
-    gap: 28,
-    alignContent: 'center'
+    alignContent: 'center',
+    gap: 28
   },
   date: {
     fontSize: 10,
