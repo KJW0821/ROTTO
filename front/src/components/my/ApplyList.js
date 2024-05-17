@@ -65,10 +65,6 @@ const ApplyList = () => {
                 <Text style={styles.menu}>신청률</Text>
                 <Text style={styles.content}>{itemData.item.totalApplyCount} / {itemData.item.totalTokenCount} ROT ({Math.round(itemData.item.totalApplyCount / itemData.item.totalTokenCount * 100 * 100) / 100}%)</Text>
               </View>
-              <View style={styles.contentContainer}>
-                <Text style={styles.menu}>배정 수량</Text>
-                <Text style={styles.content}>미정 / {itemData.item.applyCount} ROT</Text>
-              </View>
             </View>
             <View style={styles.bottomContainer}>
               <View style={styles.contentContainer}>
