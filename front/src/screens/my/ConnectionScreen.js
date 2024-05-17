@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TextInput, Modal, Pressable, Alert } from 'react-native';
 import DetailTopBar from '../../components/common/DetailTopBar';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Colors from '../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import CustomButton from '../../components/common/CustomButton';
@@ -8,6 +8,7 @@ import BankSelectModal from '../../components/my/BankSelectModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBankModal, setSelectedBank } from '../../stores/mySlice';
 import { connectAccount } from '../../utils/accountApi';
+import { useIsFocused } from '@react-navigation/native';
 
 const ConnectionScreen = ({navigation}) => {
   const dispatch = useDispatch();
@@ -16,6 +17,17 @@ const ConnectionScreen = ({navigation}) => {
   const [step, setStep] = useState(1);
   const [accountNum, setAccountNum] = useState('');
   const [password, setPassword] = useState('');
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (!isFocused) {
+      setStep(1);
+      setAccountNum('');
+      setPassword('');
+      dispatch(setSelectedBank(null));
+    }
+  }, [isFocused])
 
   const accountNumHandler = (enteredText) => {
     setAccountNum(enteredText);
@@ -105,7 +117,7 @@ const ConnectionScreen = ({navigation}) => {
                 autoCorrect={false}
                 onChangeText={passwordHandler}
                 secureTextEntry={true}
-                maxLength={466}
+                maxLength={4}
               />
             </View>
           </>
