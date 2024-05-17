@@ -34,6 +34,9 @@ public class Farm {
     @Column(name = "farm_scale")
     private int farmScale;
 
+    @Column(name = "farm_introduce")
+    private String farmIntroduce;
+
     @Column(name = "farm_started_time")
     private LocalDateTime farmStartedTime;
 
