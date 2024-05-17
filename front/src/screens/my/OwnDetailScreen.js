@@ -7,6 +7,19 @@ import Colors from '../../constants/Colors';
 
 const OwnDetailScreen = ({navigation, route}) => {
   const subscriptionCode = route.params.subscriptionCode;
+  const [data, setData] = useState();
+
+  useFocusEffect(
+    useCallback(() => {
+      const getDetailData = async () => {
+        const res = await getOwnDetail(subscriptionCode);
+        console.log(res);
+        setData(res);
+      };
+
+      getDetailData();
+    }, [])
+  )
 
   return (
     <View style={styles.container}>
