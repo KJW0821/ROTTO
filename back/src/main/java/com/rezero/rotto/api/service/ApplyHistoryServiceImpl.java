@@ -315,6 +315,8 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
                     .startedTime(subscription.getStartedTime())
                     .endedTime(subscription.getEndedTime())
                     .isDelete(applyHistory.getIsDelete())
+                    .applyCount(applyHistory.getApplyCount())
+                    .totalTokenCount(subscription.getTotalTokenCount())
                     .build();
 
             applyHistoryListDtos.add(applyHistoryListDto);
