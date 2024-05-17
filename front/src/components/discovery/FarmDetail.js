@@ -26,7 +26,7 @@ const FarmDetail = ({ data }) => {
           farmCode: data.farmCode,
         });
       }}
-      style={[styles.container, { width: width * 0.9, height: 100 }]}
+      style={[styles.container, { width: width * 0.9, height: 90 }]}
     >
       <Image
         source={
@@ -40,9 +40,24 @@ const FarmDetail = ({ data }) => {
         style={styles.farmLogo}
       />
       <View>
-        <Text style={styles.title}>{data.farmName}</Text>
-        <Text style={styles.profit}>지난 수익률 : + 12.66%</Text>
-        <Text>{data.beanName}</Text>
+        <View style={[styles.rowContainer, { width: "90%" }]}>
+          <View style={styles.rowItem}>
+            <Text style={styles.title}>{data.farmName}</Text>
+          </View>
+          <View style={styles.rowItem}>
+            <Text
+              style={
+                data.returnRate > 0
+                  ? [styles.infoContent, styles.returnRatePlus]
+                  : [styles.infoContent, styles.returnRateMinus]
+              }
+            >
+              지난 수익률 : {data.returnRate > 0 ? "+" : "-"}
+              {data.returnRate}%
+            </Text>
+            <Text style={styles.infoContent}>원두 : {data.beanName}</Text>
+          </View>
+        </View>
       </View>
     </Pressable>
   );
@@ -58,6 +73,8 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "black",
+    fontFamily: "pretendard-semiBold",
+    fontSize: 15
   },
   farmLogo: {
     height: 52,
@@ -67,6 +84,24 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   profit: {
+    color: "#000000",
+  },
+  returnRatePlus: {
     color: "red",
   },
+  returnRateMinus: {
+    color: "blue",
+  },
+  rowContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  rowItem: {
+    justifyContent: "center",
+    alignItems: "flex-end"
+  },
+  infoContent: {
+    fontFamily: "pretendard-regular",
+    fontSize: 13
+  }
 });
