@@ -7,46 +7,26 @@ import dayjs from 'dayjs';
 import Colors from '../../constants/Colors';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import CustomButton from '../../components/common/CustomButton';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setApplyModal, setFundingData } from '../../stores/fundingSlice';
 import ApplyModal from '../../components/funding/ApplyModal';
 
 const FundingDetailScreen = ({navigation, route}) => {
   const subscriptionCode = route.params.subscriptionCode;
   const dispatch = useDispatch();
+  const fundingData = useSelector(state => state.fundingInfo.fundingData);
 
-  // const [data, setData] = useState();
+  useFocusEffect(
+    useCallback(() => {
+      const getDetailedData = async () => {
+        const res = await getFundingDetail(subscriptionCode);
+        console.log(res);
+        dispatch(setFundingData(res));
+      };
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     const getDetailedData = async () => {
-  //       const res = await getFundingDetail(subscriptionCode);
-  //       console.log(res);
-  //       setData(res);
-  //     };
-
-  //     getDetailedData();
-  //   }, [])
-  // )
-
-  const data = {
-    subscriptionCode: 455,
-    farmCode: 11,
-    farmName: "섀넌 농장",
-    confirmPrice: 10000,
-    startedTime: "2024-05-14T17:03:57",
-    endTime: "2024-05-19T17:03:57",
-    beanType: "과테말라 안티구아",
-    limitNum: 5,
-    returnRate: 0,
-    applyCount: 0,
-    totalTokenCount: 0,
-    subsStatus: 1
-  };
-
-  useEffect(() => {
-    dispatch(setFundingData(data));
-  }, [data])
+      getDetailedData();
+    }, [])
+  );
 
   const getState = (state, startedTime, endTime) => {
     switch (state) {
@@ -73,20 +53,20 @@ const FundingDetailScreen = ({navigation, route}) => {
     <View style={styles.container}>
       <DetailTopBar navigation={navigation} />
       {
-        data &&
+        fundingData && fundingData.subscriptionCode === subscriptionCode &&
         <ScrollView style={styles.scrollContainer} contentContainerStyle={{ rowGap: 14 }}>
           <View style={styles.badgeContainer}>
-            <View style={[styles.badge, { backgroundColor: getState(data.subsStatus, data.startedTime, data.endTime).color }]}>
-              <Text style={styles.badgeText}>{getState(data.subsStatus, data.startedTime, data.endTime).text}</Text>
+            <View style={[styles.badge, { backgroundColor: getState(fundingData.subsStatus, fundingData.startedTime, fundingData.endTime).color }]}>
+              <Text style={styles.badgeText}>{getState(fundingData.subsStatus, fundingData.startedTime, fundingData.endTime).text}</Text>
             </View>
             {
-              data.subsStatus === 1 &&
+              fundingData.subsStatus === 1 &&
               <View style={[styles.badge, { backgroundColor: 'black' }]}>
-                <Text style={styles.badgeText}>{getState(data.subsStatus, data.startedTime, data.endTime).endText}</Text>
+                <Text style={styles.badgeText}>{getState(fundingData.subsStatus, fundingData.startedTime, fundingData.endTime).endText}</Text>
               </View>
             }
           </View>
-          <Text style={styles.farmName}>{data.farmName}</Text>
+          <Text style={styles.farmName}>{fundingData.farmName}</Text>
           <View style={styles.imgContainer}>
             <Image style={styles.img} source={require('../../../assets/images/discovery/coffeefarm2.png')} />
           </View>
@@ -96,7 +76,7 @@ const FundingDetailScreen = ({navigation, route}) => {
               <Text style={styles.menutext}>공모 기한</Text>
             </View>
             <Text style={styles.contentText}>
-              {dayjs(data.startedTime).add(9, 'hour').format('YYYY.MM.DD')} - {dayjs(data.endTime).add(9, 'hour').format('YYYY.MM.DD')}
+              {dayjs(fundingData.startedTime).add(9, 'hour').format('YYYY.MM.DD')} - {dayjs(fundingData.endTime).add(9, 'hour').format('YYYY.MM.DD')}
             </Text>
           </View>
           <View style={styles.contentContainer}>
@@ -104,28 +84,28 @@ const FundingDetailScreen = ({navigation, route}) => {
               <MaterialCommunityIcons name="registered-trademark" size={18} color="black" />
               <Text style={styles.menuText}>펀딩 목표 수량</Text>
             </View>
-            <Text style={styles.contentText}>{data.totalTokenCount} ROTTO</Text>
+            <Text style={styles.contentText}>{fundingData.totalTokenCount} ROTTO</Text>
           </View>
           <View style={styles.contentContainer}>
             <View style={styles.menuContainer}>
               <MaterialCommunityIcons name="registered-trademark" size={18} color="black" />
               <Text style={styles.menuText}>펀딩 최대 수량</Text>
             </View>
-            <Text style={styles.contentText}>{data.limitNum} ROTTO</Text>
+            <Text style={styles.contentText}>{fundingData.limitNum} ROTTO</Text>
           </View>
           <View style={styles.contentContainer}>
             <View style={styles.menuContainer}>
               <Ionicons name="pricetags" size={18} color="black" />
               <Text style={styles.menuText}>가격</Text>
             </View>
-            <Text style={styles.contentText}>{data.confirmPrice.toLocaleString('ko-KR')}원 / 1 ROTTO</Text>
+            <Text style={styles.contentText}>{fundingData.confirmPrice.toLocaleString('ko-KR')}원 / 1 ROTTO</Text>
           </View>
           <View style={styles.contentContainer}>
             <View style={styles.menuContainer}>
               <MaterialCommunityIcons name="chart-line" size={18} color="black" />
               <Text style={styles.menuText}>지난 펀딩 수익률</Text>
             </View>
-            <Text style={[styles.contentText, { color: 'red' }]}>+{data.returnRate}%</Text>
+            <Text style={[styles.contentText, { color: 'red' }]}>+{fundingData.returnRate}%</Text>
           </View>
           <View style={styles.contentContainer}>
             <View style={styles.menuContainer}>
@@ -139,9 +119,19 @@ const FundingDetailScreen = ({navigation, route}) => {
         </ScrollView>
       }
       {
-        data.subsStatus === 1 &&
+        fundingData && fundingData.subscriptionCode === subscriptionCode && fundingData.subsStatus === 1 &&
         <View style={styles.buttonContainer}>
-          <CustomButton onPress={() => dispatch(setApplyModal(true))}>신청하기</CustomButton>
+          <CustomButton 
+            onPress={() => dispatch(setApplyModal(true))}
+            disabled={!!fundingData.isApply}
+          >
+            {
+              fundingData.isApply ?
+              '이미 신청하셨습니다'
+              :
+              '신청하기'
+            }
+          </CustomButton>
         </View>
       }
       <ApplyModal />

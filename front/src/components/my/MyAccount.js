@@ -42,7 +42,7 @@ const MyAccount = ({navigation, detail}) => {
               </Pressable>
             }
           </View>
-          <Text style={styles.balanceText}>{fundingAccount.accountBalance} 원</Text>
+          <Text style={styles.balanceText}>{fundingAccount.accountBalance.toLocaleString('ko-KR')} 원</Text>
           <View style={[styles.buttonContainer, detail && { justifyContent: 'space-between' }]}>
             <CustomButton 
               style={{ width: detail ? '48%' : '16%', height: detail ? 30 : 24 }} 

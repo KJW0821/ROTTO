@@ -173,9 +173,17 @@ const FarmListScreen = () => {
               color={Colors.iconGray}
             />
           </Pressable>
-          { (selectedSort != sortData[0] || selectedBean != beanData[0] || minPrice != null ||
-          maxPrice != null || fundingStatus != fundingData[0] || isLiked == true) &&
-            <ResetButton filterName={"초기화"} onPress={handlePressResetButton} />}
+          {(selectedSort != sortData[0] ||
+            selectedBean != beanData[0] ||
+            minPrice != null ||
+            maxPrice != null ||
+            fundingStatus != fundingData[0] ||
+            isLiked == true) && (
+            <ResetButton
+              filterName={"초기화"}
+              onPress={handlePressResetButton}
+            />
+          )}
           <FilterButton
             filterName={fundingStatus.index != 0 ? fundingStatus.name : "청약"}
             onPress={() => {
@@ -199,10 +207,14 @@ const FarmListScreen = () => {
           />
           <FilterButton
             filterName={
-              (!minPrice && !maxPrice) ? "가격" 
-              : (!minPrice) ? `가격 ${maxPrice}원 이하`
-              : (!maxPrice) ? `가격 ${minPrice}원 이상`
-              : `가격 ${minPrice}원 ~ ${maxPrice}원`}
+              !minPrice && !maxPrice
+                ? "가격"
+                : !minPrice
+                ? `가격 ${maxPrice}원 이하`
+                : !maxPrice
+                ? `가격 ${minPrice}원 이상`
+                : `가격 ${minPrice}원 ~ ${maxPrice}원`
+            }
             isChecked={minPrice || maxPrice}
             onPress={() => {
               setIsBottomSheetOpen(true);
@@ -211,13 +223,15 @@ const FarmListScreen = () => {
           />
         </View>
       </ScrollView>
-      <FlatList
-        contentContainerStyle={styles.farmsContainer}
-        showsVerticalScrollIndicator={false}
-        data={farms}
-        keyExtractor={(item) => item.farmCode}
-        renderItem={renderFarmList}
-      />
+      {farms && (
+        <FlatList
+          contentContainerStyle={styles.farmsContainer}
+          showsVerticalScrollIndicator={false}
+          data={farms}
+          keyExtractor={(item) => item.farmCode}
+          renderItem={renderFarmList}
+        />
+      )}
       <MyBottomSheet
         isOpen={isBottomSheetOpen}
         onGestureEvent={handleGestureEvent}

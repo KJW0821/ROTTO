@@ -4,11 +4,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
 import Colors from "../../constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
-import { setWalletModal } from "../../stores/mySlice";
+import { setDisconnectModal } from "../../stores/mySlice";
 import { useWeb3Modal } from "@web3modal/wagmi-react-native";
+import { updateWalletAddress } from "../../utils/userApi";
+import DisconnectModal from "./DisconnectModal";
 
 const MyWallet = () => {
-  const isModalOpen = useSelector(state => state.myPageInfo.isWalletModalOpen);
   const dispatch = useDispatch();
 
   const { open } = useWeb3Modal();
@@ -16,28 +17,25 @@ const MyWallet = () => {
 
   const { address, isConnected, isDisconnected } = useAccount();
   
-  const tokenAddress = '0x85c41a930ddEc0f37BAED79BEd3047Af190c4f98';
+  const tokenAddress = process.env.EXPO_PUBLIC_CONTRACT_ADDRESS;
 
   const { data, isError, isLoading } = useBalance({
     address,
-    chainId: 31221,
+    chainId: process.env.EXPO_PUBLIC_CHAIN_ID,
     token: tokenAddress,
     onSuccess: () => {
       console.log(data);
     },
   })
-
-  const modalHandler = () => {
-    dispatch(setWalletModal(!isModalOpen));
-  };
   
   const disconnectWallet = () => {
     disconnect();
-    dispatch(setWalletModal(false));
+    dispatch(setDisconnectModal(false));
   };
   
   useEffect(() => {
     console.log("주소", address)
+    address && updateWalletAddress({ wallet : address })
     console.log("토큰 조회 데이터", data)    
   }, [data])
 
@@ -51,19 +49,15 @@ const MyWallet = () => {
               <Ionicons name="wallet-outline" size={16} />
               <Text style={styles.addressText} numberOfLines={1} ellipsizeMode="tail">{address}</Text>
             </View>
-            <Pressable onPress={modalHandler}>
+            <Pressable onPress={() => dispatch(setDisconnectModal(true))}>
               <Ionicons name="ellipsis-vertical-outline" size={16} />
             </Pressable>
-            <View style={[styles.modal, {display: isModalOpen ? 'block' : 'none'}]}>
-              <Pressable onPress={disconnectWallet}>
-                <Text style={styles.modalMenuText}>연결 끊기</Text>
-              </Pressable>
-            </View>
           </View>
           <View style={styles.balanceContainer}>
             <Text style={styles.balanceText}>{data?.formatted}</Text>
             <Text style={styles.symbolText}>{data?.symbol}</Text>
           </View>
+          <DisconnectModal onDisconnect={disconnectWallet} />
         </>
         :
         <Pressable onPress={() => open()}>

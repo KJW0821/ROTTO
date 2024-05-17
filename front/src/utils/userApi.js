@@ -79,3 +79,13 @@ export const changePassword = async (data) => {
     return err;
   }
 };
+
+export const updateWalletAddress = async (data) => {
+  try {
+    await API.patch('/user/updateAddress', data);
+    return;
+  } catch (err) {
+    console.error('지갑 주소 업데이트 에러' + err);
+    return err;
+  }
+};

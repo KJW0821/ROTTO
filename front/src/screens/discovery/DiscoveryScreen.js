@@ -1,10 +1,20 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Button,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import MyHeader from "../../components/common/MyHeader";
 import FarmPreview from "../../components/discovery/FarmPreview";
 import CoffeeInfo from "../../components/discovery/CoffeeInfo";
 import FarmTOP10 from "../../components/discovery/FarmTOP10";
+import { useNavigation } from "@react-navigation/native";
 
 const DiscoveryScreen = () => {
+  const Navigation = useNavigation();
+
   return (
     <>
       <MyHeader>
