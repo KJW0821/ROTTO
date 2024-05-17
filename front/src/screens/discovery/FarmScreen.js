@@ -38,7 +38,7 @@ const FarmScreen = ({ route }) => {
 
   const renderFarmImage = (itemData) => {
     return (
-      <Image source={{ uri: `${S3URL}/farm_img/1/farm${itemData.item}.jpg` }} />
+      <Image source={{ uri: `${process.env.EXPO_PUBLIC_S3URL}/farm_img/1/farm${itemData.item}.jpg` }} />
     );
   };
 
@@ -114,7 +114,7 @@ const FarmScreen = ({ route }) => {
             <View style={styles.imageContent}>
               {farmImagesCount.map((item) => (
                 <Image
-                  source={{ uri: `${S3URL}/farm_img/1/farm${item}.jpg` }}
+                  source={{ uri: `${process.env.EXPO_PUBLIC_S3URL}/farm_img/1/farm${item}.jpg` }}
                   style={{
                     width: (width / 100) * 32,
                     height: (width / 100) * 32,
