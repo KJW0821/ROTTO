@@ -8,9 +8,22 @@ import TermsScreen from "../screens/setting/TermsScreen";
 import BioAuthScreen from "../screens/setting/BioAuthScreen";
 import PinAuthScreen from "../screens/setting/PinAuthScreen";
 import PasswordChangeScreen from "../screens/setting/PasswordChangeScreen";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
-const SettingRouters = () => {
+const SettingRouters = ({navigation}) => {
   const SettingStack = createStackNavigator();
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        navigation.reset({
+          index: 1,
+          routes:[{ name: 'setting' }]
+        })
+      }
+    }, [])
+  )
 
   return (
     <SettingStack.Navigator screenOptions={{ headerShown: false }}>
