@@ -35,20 +35,28 @@ let fundingData = [
   { index: 2, name: "진행중", value: 1 },
 ];
 
+// let beanData = [
+//   { index: 0, name: "선택 안함", value: null },
+//   { index: 1, name: "브라질 산토스", value: "브라질 산토스" },
+//   { index: 2, name: "콜롬비아 수프리모", value: "콜롬비아 수프리모" },
+//   { index: 3, name: "자메이카 블루마운틴", value: "자메이카 블루마운틴" },
+//   { index: 4, name: "에티오피아 예가체프", value: "에티오피아 예가체프" },
+//   { index: 5, name: "케냐 AA", value: "케냐 AA" },
+//   { index: 6, name: "코스타리카 따라주", value: "코스타리카 따라주" },
+//   { index: 7, name: "탄자니아 AA", value: "탄자니아 AA" },
+//   { index: 8, name: "예멘 모카 마타리", value: "예멘 모카 마타리" },
+//   { index: 9, name: "하와이 코나", value: "하와이 코나" },
+//   { index: 10, name: "과테말라 안티구아", value: "과테말라 안티구아" },
+//   { index: 11, name: "파나마 게이샤", value: "파나마 게이샤" },
+//   { index: 12, name: "엘살바도르", value: "엘살바도르" },
+// ];
 let beanData = [
   { index: 0, name: "선택 안함", value: null },
-  { index: 1, name: "브라질 산토스", value: "브라질 산토스" },
-  { index: 2, name: "콜롬비아 수프리모", value: "콜롬비아 수프리모" },
-  { index: 3, name: "자메이카 블루마운틴", value: "자메이카 블루마운틴" },
-  { index: 4, name: "에티오피아 예가체프", value: "에티오피아 예가체프" },
-  { index: 5, name: "케냐 AA", value: "케냐 AA" },
-  { index: 6, name: "코스타리카 따라주", value: "코스타리카 따라주" },
-  { index: 7, name: "탄자니아 AA", value: "탄자니아 AA" },
-  { index: 8, name: "예멘 모카 마타리", value: "예멘 모카 마타리" },
-  { index: 9, name: "하와이 코나", value: "하와이 코나" },
-  { index: 10, name: "과테말라 안티구아", value: "과테말라 안티구아" },
-  { index: 11, name: "파나마 게이샤", value: "파나마 게이샤" },
-  { index: 12, name: "엘살바도르", value: "엘살바도르" },
+  { index: 1, name: "자메이카 블루마운틴", value: "자메이카 블루마운틴" },
+  { index: 2, name: "예멘 모카 아이리시", value: "예멘 모카 아이리시" },
+  { index: 3, name: "예멘 애플 마티니", value: "예멘 애플 마티니" },
+  { index: 4, name: "하와이 코나", value: "하와이 코나" },
+  { index: 5, name: "파나마 게이샤", value: "파나마 게이샤" },
 ];
 
 let deviceWidth;
