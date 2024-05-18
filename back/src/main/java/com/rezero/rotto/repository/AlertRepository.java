@@ -7,10 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface AlertRepository extends JpaRepository<Alert, Integer> {
 
     Alert findByAlertCode(int alertCode);
+
+    List<Alert> findByUserCode(int userCode);
 
     @Modifying
     @Transactional
