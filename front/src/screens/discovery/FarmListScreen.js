@@ -1,4 +1,6 @@
 import {
+  ActivityIndicator,
+  Dimensions,
   FlatList,
   Modal,
   Pressable,
@@ -59,10 +61,9 @@ let beanData = [
   { index: 5, name: "파나마 게이샤", value: "파나마 게이샤" },
 ];
 
-let deviceWidth;
+const { width } = Dimensions.get("window");
 
 const FarmListScreen = () => {
-  const { width, height } = useWindowDimensions();
   const [farms, setFarms] = useState([]);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState(sortData[0]); // 기본순 선택
@@ -74,10 +75,13 @@ const FarmListScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState(null); // 바텀 시트 표시 내용 선택
   const [keyword, setKeyword] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-
-  deviceWidth = width;
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   const getList = async (
+    page,
     sort,
     keyword,
     isLiked,
@@ -86,7 +90,10 @@ const FarmListScreen = () => {
     maxPrice,
     beanType
   ) => {
+    if (!page) return;
+    console.log("################getList page", page, "#################");
     const res = await getFarmList(
+      page,
       sort,
       keyword,
       isLiked,
@@ -95,7 +102,40 @@ const FarmListScreen = () => {
       maxPrice,
       beanType
     );
+    console.log(page, res, "##########################");
     setFarms(res.farms);
+    setPage((prevPage) => prevPage + 1);
+    setTotalPages(res.totalPages);
+  };
+
+  const loadFarms = async () => {
+    if (page > totalPages) return;
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+    const newFarms = await getFarmList(
+      page,
+      selectedSort.value,
+      keyword,
+      isLiked ? true : null,
+      fundingStatus.value,
+      minPrice,
+      maxPrice,
+      selectedBean.value
+    );
+    console.log(newFarms, "loadFarms#########################");
+    if (newFarms.farms.length > 0) {
+      setFarms((prevFarms) => [...prevFarms, ...newFarms.farms]);
+      setPage((prevPage) => prevPage + 1);
+    } else {
+      setHasMore(false); // 더 이상 데이터가 없을 경우
+    }
+    setLoading(false);
+  };
+
+  const renderFooter = () => {
+    if (!loading) return null;
+    return <ActivityIndicator size="large" color={Colors.bgOrg} />;
   };
 
   const applyFilter = (category, name, id) => {
@@ -111,7 +151,9 @@ const FarmListScreen = () => {
   };
 
   useEffect(() => {
+    setPage(1);
     getList(
+      page,
       selectedSort.value,
       keyword,
       isLiked ? true : null,
@@ -241,12 +283,22 @@ const FarmListScreen = () => {
         </View>
       </ScrollView>
       {farms && (
+        // <FlatList
+        //   contentContainerStyle={styles.farmsContainer}
+        //   showsVerticalScrollIndicator={false}
+        //   data={farms}
+        //   keyExtractor={(item) => item.farmCode}
+        //   renderItem={renderFarmList}
+        // />
         <FlatList
           contentContainerStyle={styles.farmsContainer}
           showsVerticalScrollIndicator={false}
           data={farms}
           keyExtractor={(item) => item.farmCode}
           renderItem={renderFarmList}
+          onEndReached={loadFarms}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={renderFooter}
         />
       )}
       {/* <MyBottomSheet
@@ -429,14 +481,16 @@ const FarmListScreen = () => {
                         onChangeText={(keyword) => setKeyword(keyword)}
                         value={keyword}
                         placeholder="검색"
-                        style={{width:"83%"}}
+                        style={{ width: "83%" }}
                       />
-                      {keyword && <Ionicons
-                        name="close-circle-outline"
-                        size={24}
-                        color={Colors.fontGray}
-                        onPress={() => setKeyword(null)}
-                      />}
+                      {keyword && (
+                        <Ionicons
+                          name="close-circle-outline"
+                          size={24}
+                          color={Colors.fontGray}
+                          onPress={() => setKeyword(null)}
+                        />
+                      )}
                     </View>
                   </View>
                 )}
