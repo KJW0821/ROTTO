@@ -71,15 +71,18 @@ const FarmScreen = ({ route }) => {
           <ScrollView style={styles.scrollView}>
             <View style={styles.mainContainer}>
               <View style={styles.badgeContainer}>
-                <View
-                  style={[styles.badge, { backgroundColor: Colors.btnBlue }]}
-                >
-                  <Text style={styles.badgeText}>펀딩진행중</Text>
-                </View>
-
-                <View style={[styles.badge, { backgroundColor: "black" }]}>
-                  <Text style={styles.badgeText}>마감 D-2</Text>
-                </View>
+                {farm.isFunding && (
+                  <View
+                    style={[styles.badge, { backgroundColor: Colors.btnBlue }]}
+                  >
+                    <Text style={styles.badgeText}>펀딩진행중</Text>
+                  </View>
+                )}
+                {farm.isFunding && (
+                  <View style={[styles.badge, { backgroundColor: "black" }]}>
+                    <Text style={styles.badgeText}>마감 D-{farm.deadline}</Text>
+                  </View>
+                )}
               </View>
               <View style={styles.rowConatainer}>
                 <View style={styles.rowConatainer}>
@@ -322,9 +325,9 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   returnRatePlus: {
-    color: "red"
+    color: "red",
   },
   returnRateMinus: {
-    color: "blue"
-  }
+    color: "blue",
+  },
 });
