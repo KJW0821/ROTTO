@@ -13,6 +13,8 @@ public class AuthenticatedMatchers {
             "/auth/logout",
             "/auth/refresh",
             "/auth/decrypt",
+            "/sse/**",
+            "/alert/send",
             "/api-docs",
             "/api-docs/json",
             "/api-docs/**",
