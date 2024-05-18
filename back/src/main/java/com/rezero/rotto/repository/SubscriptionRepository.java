@@ -19,7 +19,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Inte
     @Query("SELECT s FROM Subscription s WHERE s.farmCode = :farmCode AND s.endedTime < :now ORDER BY s.endedTime DESC")
     List<Subscription> findLatestEndedSubscription(int farmCode, LocalDateTime now);
 
-    @Query("SELECT s FROM Subscription s WHERE s.farmCode = :farmCode AND s.endedTime >= :now ORDER BY s.endedTime ASC")
+    @Query("SELECT s FROM Subscription s WHERE s.farmCode = :farmCode AND s.endedTime >= :now AND s.startedTime <= :now ORDER BY s.endedTime ASC")
     List<Subscription> findImpedingOngoingSubscription(int farmCode, LocalDateTime now);
 
 
