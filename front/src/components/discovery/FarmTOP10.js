@@ -3,6 +3,7 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { getFarmTOP10 } from "../../utils/farmAPi";
 import { useNavigation } from "@react-navigation/native";
 import FarmDetail from "./FarmDetail";
+import Top10ListItem from "./Top10ListItem";
 
 const FarmTOP10 = () => {
   const [farmsTOP, setFarmsTOP] = useState([]);
@@ -20,8 +21,8 @@ const FarmTOP10 = () => {
   return (
     <View style={styles.container}>
       {farmsTOP &&
-        farmsTOP.map((item) => 
-          <FarmDetail data={item} />
+        farmsTOP.map((item, index) => 
+          <Top10ListItem data={item} index={index} />
           // return (
           //   <View key={item.farmCode} style={styles.listItem}>
           //     <View style={styles.imageContainer}>
