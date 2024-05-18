@@ -41,9 +41,7 @@ public class ApplyHistoryServiceImpl implements ApplyHistoryService{
 
         ApplyHistory applyHistory = new ApplyHistory();
         ApplyHistory applyHistoryRepo = applyHistoryRepository.findByUserCodeAndSubscriptionCode(userCode, subscriptionCode);
-        if (applyHistoryRepo == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("신청 내역이 없습니다.");
-        }
+
         Subscription subscription = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
         if (subscription == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("청약 정보가 없습니다.");
