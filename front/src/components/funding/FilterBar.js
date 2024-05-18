@@ -3,7 +3,7 @@ import Colors from "../../constants/Colors";
 import { Ionicons } from '@expo/vector-icons';
 import FilterButton from "../discovery/FilterButton";
 import { useDispatch, useSelector } from "react-redux";
-import { setFilterData, setFilterModal, setFilter, setSortBy, setSubsStatus, setBeanType, setMinPrice, setMaxPrice } from "../../stores/fundingSlice";
+import { setFilterData, setFilterModal, setFilter, setSortBy, setSubsStatus, setBeanType, setMinPrice, setMaxPrice, setKeyword } from "../../stores/fundingSlice";
 import ResetButton from "../discovery/ResetButton";
 
 const FilterBar = () => {
@@ -13,6 +13,7 @@ const FilterBar = () => {
     minPrice, 
     maxPrice, 
     beanType,
+    keyword
   } = useSelector(state => state.fundingInfo);
 
   const dispatch = useDispatch();
@@ -47,6 +48,7 @@ const FilterBar = () => {
     dispatch(setBeanType(null));
     dispatch(setMinPrice(null));
     dispatch(setMaxPrice(null));
+    dispatch(setKeyword(null));
   };
 
   return (
@@ -70,7 +72,7 @@ const FilterBar = () => {
             />
           </Pressable>
           {
-            (subsStatus !== null || beanType || minPrice || maxPrice) &&
+            (subsStatus !== null || beanType || minPrice || maxPrice || keyword) &&
             <ResetButton filterName={"초기화"} onPress={resetHandler} />
           }
           <FilterButton 
@@ -105,6 +107,13 @@ const FilterBar = () => {
               dispatch(setFilterModal(true));
             }} 
           />
+          {
+            keyword &&
+            <Pressable style={styles.filterButton}>
+              <Text style={styles.filterButtonText}>검색: {keyword}</Text>
+              <Ionicons name="close-circle-outline" size={18} onPress={() => dispatch(setKeyword(null))}/>
+            </Pressable>
+          }
         </View>
       </ScrollView>
     </View>
@@ -143,4 +152,21 @@ const styles = StyleSheet.create({
     fontFamily: "pretendard-bold",
     fontSize: 15,
   },
+  filterButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 35,
+    borderRadius: 5,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    marginLeft: 10,
+    paddingHorizontal: 10
+  },
+  filterButtonText: {
+    marginBottom: 3,
+    marginRight: 4,
+    fontFamily: 'pretendard-bold',
+    fontSize: 15
+  }
 });

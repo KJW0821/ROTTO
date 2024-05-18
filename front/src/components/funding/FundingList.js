@@ -8,7 +8,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
 const FundingList = ({navigation}) => {
-  const { sortBy, subsStatus, beanType, minPrice, maxPrice } = useSelector(state => state.fundingInfo);
+  const { sortBy, subsStatus, beanType, minPrice, maxPrice, keyword } = useSelector(state => state.fundingInfo);
   
   const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
@@ -19,7 +19,7 @@ const FundingList = ({navigation}) => {
   const listRef = useRef(null);
 
   const getFundingData = async (isInit) => {
-    if (page <= totalPage) {
+    if (isInit || (page <= totalPage && data.length >= 10 * page)) {
       setLoading(true);
       const res = await getFundingList({
         'sort': sortBy,
@@ -27,7 +27,8 @@ const FundingList = ({navigation}) => {
         'bean-type': beanType,
         'min-price': minPrice,
         'max-price': maxPrice,
-        'page': isInit ? 1 : page + 1
+        'page': isInit ? 1 : page + 1,
+        'keyword': keyword
       });
       setData(pre => isInit ? res.subscriptions : [...pre, ...res.subscriptions]);
       setTotalPage(res.totalPages);
@@ -47,7 +48,8 @@ const FundingList = ({navigation}) => {
       'bean-type': beanType,
       'min-price': minPrice,
       'max-price': maxPrice,
-      'page': 1
+      'page': 1,
+      'keyword': keyword
     });
     setData(res.subscriptions);
     setTotalPage(res.totalPages);
@@ -58,7 +60,7 @@ const FundingList = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
       getFundingData(true);
-    }, [sortBy, subsStatus, beanType, minPrice, maxPrice])
+    }, [sortBy, subsStatus, beanType, minPrice, maxPrice, keyword])
   );
 
   const getState = (state, startedTime) => {
