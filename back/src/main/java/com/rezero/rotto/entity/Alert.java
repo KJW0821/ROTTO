@@ -29,8 +29,12 @@ public class Alert {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "alert_type")
+    private String alertType;
+
+    @Builder.Default
     @Column(name = "is_read")
-    private Boolean isRead;
+    private Boolean isRead = false;
 
     @CreationTimestamp
     @Column(name = "create_time")

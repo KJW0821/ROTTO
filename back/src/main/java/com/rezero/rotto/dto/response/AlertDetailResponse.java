@@ -15,6 +15,7 @@ public class AlertDetailResponse {
 
     private String title;
     private String content;
+    private String alertType;
     private LocalDateTime createTime;
 
 }

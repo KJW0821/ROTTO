@@ -2,6 +2,7 @@ package com.rezero.rotto.api.service;
 
 
 import com.rezero.rotto.dto.dto.AlertListDto;
+import com.rezero.rotto.dto.request.SseRequest;
 import com.rezero.rotto.dto.response.AlertDetailResponse;
 import com.rezero.rotto.dto.response.AlertListResponse;
 import com.rezero.rotto.entity.Alert;
@@ -35,12 +36,12 @@ public class AlertServiceImpl implements AlertService {
         }
 
         // 알림 모두 불러오기
-        List<Alert> alertList = alertRepository.findAll();
+        List<Alert> alertList = alertRepository.findByUserCode(userCode);
         // 최신것부터 보여주기 위해 리스트 뒤집기
         Collections.reverse(alertList);
         // stream 을 통해 alertList 를 순회하며 dto 리스트에 값을 담는다
         List<AlertListDto> alerts = alertList.stream()
-                .map(alert -> new AlertListDto(alert.getAlertCode(), alert.getTitle(), alert.getCreateTime(), alert.getIsRead()))
+                .map(alert -> new AlertListDto(alert.getAlertCode(), alert.getTitle(), alert.getAlertType(), alert.getCreateTime(), alert.getIsRead()))
                 .toList();
 
         // 리스폰스 생성
@@ -75,7 +76,7 @@ public class AlertServiceImpl implements AlertService {
         }
 
         // 리스폰스 생성
-        AlertDetailResponse response = new AlertDetailResponse(alert.getTitle(), alert.getContent(), alert.getCreateTime());
+        AlertDetailResponse response = new AlertDetailResponse(alert.getTitle(), alert.getContent(), alert.getAlertType(), alert.getCreateTime());
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -136,4 +137,23 @@ public class AlertServiceImpl implements AlertService {
         return ResponseEntity.status(HttpStatus.OK).body("알림을 모두 삭제했습니다.");
     }
 
+
+    // 알림 생성
+    public void createAlert(SseRequest request) {
+        int userCode = request.getUserCode();
+
+        User user = userRepository.findByUserCode(userCode);
+
+        if (user != null) {
+            Alert alert = Alert.builder()
+                    .userCode(userCode)
+                    .title(request.getData().getTitle())
+                    .content(request.getData().getContent())
+                    .alertType(request.getName())
+                    .isRead(false)
+                    .build();
+
+            alertRepository.save(alert);
+        }
+    }
 }
