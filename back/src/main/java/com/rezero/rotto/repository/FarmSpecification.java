@@ -110,7 +110,30 @@ public class FarmSpecification {
     public static Specification<Farm> applySorting(String sort) {
         return (root, query, criteriaBuilder) -> {
             if ("rate".equals(sort)) {
-                orderByRecentSubscriptionReturnRate(root, query, criteriaBuilder);
+                // 서브쿼리: 현재 시간(now)과 가장 가까운 endedTime 선택
+                Subquery<LocalDateTime> closestEndedTimeSubquery = query.subquery(LocalDateTime.class);
+                Root<Subscription> subscriptionRoot = closestEndedTimeSubquery.from(Subscription.class);
+                closestEndedTimeSubquery.select(criteriaBuilder.greatest(
+                        criteriaBuilder.<LocalDateTime>selectCase()
+                                .when(criteriaBuilder.greaterThan(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp()), subscriptionRoot.get("endedTime"))
+                                .otherwise(LocalDateTime.MIN)
+                ));
+                closestEndedTimeSubquery.where(criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode")));
+
+                // 서브쿼리: 선택된 가장 가까운 endedTime 중에서 returnRate가 가장 높은 것 선택
+                Subquery<Double> maxReturnRateSubquery = query.subquery(Double.class);
+                Root<Subscription> subscriptionRoot2 = maxReturnRateSubquery.from(Subscription.class);
+                maxReturnRateSubquery.select(criteriaBuilder.max(subscriptionRoot2.get("returnRate")));
+                maxReturnRateSubquery.where(
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(subscriptionRoot2.get("farmCode"), root.get("farmCode")),
+                                criteriaBuilder.equal(subscriptionRoot2.get("endedTime"), closestEndedTimeSubquery)
+                        )
+                );
+
+                // 서브쿼리 결과를 통해 정렬
+                query.orderBy(criteriaBuilder.desc(maxReturnRateSubquery));
+
 
             } else if ("like".equals(sort)) {
                 Subquery<Long> likeCountSubquery = query.subquery(Long.class);
