@@ -93,7 +93,7 @@ const CoffeeInfo = () => {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={imagePath}
+        source={imagePath ? imagePath : require("../../../assets/images/discovery/coffeebean12.png")}
         style={{ width: width - 30, height: 300 }}
         resizeMode="cover"
       />
@@ -170,14 +170,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   title: {
-    fontFamily: "pretendard-semibold",
+    fontFamily: "pretendard-semiBold",
     fontSize: 12,
   },
   selectedName: {
     backgroundColor: Colors.bgGray,
   },
   selectedInfo: {
-    fontFamily: "pretendard-semibold",
+    fontFamily: "pretendard-regular",
     fontSize: 12,
   },
 });

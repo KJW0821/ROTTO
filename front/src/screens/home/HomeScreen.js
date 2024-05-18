@@ -21,7 +21,7 @@ const HomeScreen = ({ navigation }) => {
     <MyHeader>
       <ScrollView style={styles.container}>
         <MyBanner />
-        {/* <MyDeposit /> */}
+        <MyDeposit />
         <FaqBanner />
         <View style={styles.infoContainer}>
           <FarmILike />
