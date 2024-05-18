@@ -1,4 +1,4 @@
-import { View, FlatList, Text, StyleSheet, Pressable } from 'react-native';
+import { View, FlatList, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -153,8 +153,8 @@ const FundingList = ({navigation}) => {
         }}
         contentContainerStyle={{ flexGrow: 1 }}
         onEndReached={onEndReached}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={() => <View style={{height: 16}}></View>}
+        onEndReachedThreshold={0.6}
+        ListFooterComponent={loading && <ActivityIndicator />}
         onRefresh={onRefresh}
         refreshing={refreshing}
       />
