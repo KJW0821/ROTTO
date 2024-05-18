@@ -10,7 +10,9 @@ const initialState = {
   beanType: null,
   isFilterModalOpen: false,
   filterData: null,
-  selectedFilter: null
+  selectedFilter: null,
+  isSearchModalOpen: false,
+  keyword: null
 }
 
 export const fundingSlice = createSlice({
@@ -46,6 +48,12 @@ export const fundingSlice = createSlice({
     },
     setFilter: (state, action) => {
       state.selectedFilter = action.payload;
+    },
+    setSearchModal: (state, action) => {
+      state.isSearchModalOpen = action.payload;
+    },
+    setKeyword: (state, action) => {
+      state.keyword = action.payload;
     }
   }
 });
@@ -60,7 +68,9 @@ export const {
   setBeanType,
   setFilterModal,
   setFilterData,
-  setFilter
+  setFilter,
+  setSearchModal,
+  setKeyword
 } = fundingSlice.actions;
 
 export default fundingSlice.reducer;
