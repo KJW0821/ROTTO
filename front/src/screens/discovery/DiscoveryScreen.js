@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   component: {
-    marginHorizontal: 25,
+    marginHorizontal: 15,
     flex: 1,
     marginBottom: 20,
   },
