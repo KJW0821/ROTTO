@@ -152,7 +152,7 @@ public class FarmSpecification {
             }
             else {
                 // 기본 정렬 기준: 농장 이름 순
-                query.orderBy(criteriaBuilder.asc(root.get("farmName")));
+                query.orderBy(criteriaBuilder.asc(root.get("farmCode")));
             }
             return query.getRestriction();
         };
