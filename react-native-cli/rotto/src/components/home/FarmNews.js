@@ -31,8 +31,9 @@ const FarmNews = () => {
             index < 3 && (
               <Pressable
               onPress={() => Navigation.navigate('NewsWebview', {newsDetailLink: item.newsDetailLink})}
+              key={item.newsCode}
               >
-                <View key={item.newsCode} style={styles.itemStyle}>
+                <View style={styles.itemStyle}>
                 <View style={{ flexShrink: 1 }}>
                 <Text>{item.category}</Text>
                   <Text style={styles.title}>{item.title}</Text>

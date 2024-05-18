@@ -20,6 +20,7 @@ const MyDeposit = () => {
 
 
   return (
+    
     <View style={styles.componentContainer}>
       <Text style={styles.header}>나의 자산</Text>
       <View style={styles.boxContainer}>
@@ -28,7 +29,7 @@ const MyDeposit = () => {
             <Text style={styles.content}>순 자산</Text>
             <Text>
               <Text style={styles.highlight}>
-                {MyInvestment.totalInvestAmount}
+                {MyInvestment && MyInvestment.totalInvestAmount ? MyInvestment.totalInvestAmount: '-'}
               </Text>{" "}
               원
             </Text>
@@ -37,11 +38,11 @@ const MyDeposit = () => {
           <View style={{ flex: 1, alignItems: "flex-end" }}>
             <View style={{ flexDirection: "row" }}>
               <Text>손익</Text>
-              <Text style={styles.variance}>{MyInvestment.totalProceed}</Text>
+              <Text style={styles.variance}>{MyInvestment && MyInvestment.totalProceed ? MyInvestment.totalProceed : '-'}</Text>
             </View>
             <View style={{ flexDirection: "row" }}>
               <Text>수익률</Text>
-              <Text style={styles.variance}>{MyInvestment.totalPercent}</Text>
+              <Text style={styles.variance}>{MyInvestment && MyInvestment.totalPercent ? MyInvestment.totalPercent : '-'}</Text>
             </View>
           </View>
         </View>
@@ -51,24 +52,24 @@ const MyDeposit = () => {
             <Text style={styles.content}> 투자 현황</Text>
           </View>
           {MyInvestment.tradeHistoryHomeInfoDtoss && MyInvestment.tradeHistoryHomeInfoDtoss.map((token, index) => (
-            <View>
-            <View style={styles.itemStyle}>
-              <View style={styles.itemContentStyle}>
-                <Image
-                  source={require("../../../assets/images/farmfarm.png")}
-                  style={{ width: 60, height: 60 }}
-                />
-                <View style={{ marginLeft: 10 }}>
-                  <Text style={styles.itemContent}>{token.title}</Text>
-                  <Text style={styles.itemSubContent}>{token.tokenNum} ROTTO </Text>
+            <View key={index}>
+              <View style={styles.itemStyle}>
+                <View style={styles.itemContentStyle}>
+                  <Image
+                    source={require("../../../assets/images/farmfarm.png")}
+                    style={{ width: 60, height: 60 }}
+                  />
+                  <View style={{ marginLeft: 10 }}>
+                    <Text style={styles.itemContent}>{token.title}</Text>
+                    <Text style={styles.itemSubContent}>{token.tokenNum} ROTTO </Text>
+                  </View>
+                </View>
+                <View>
+                  <Text style={{ marginRight: 10 }}></Text>
+                  <Text style={{ marginRight: 5 }}>{token.expenses}원</Text>
                 </View>
               </View>
-              <View>
-                <Text style={{ marginRight: 10 }}></Text>
-                <Text style={{ marginRight: 5 }}>{token.expenses}원</Text>
-              </View>
             </View>
-          </View>            
           ))}
           <View>
             <Text>상세 보기</Text>
@@ -76,6 +77,7 @@ const MyDeposit = () => {
         </View>
       </View>
     </View>
+
   );
 };
 
