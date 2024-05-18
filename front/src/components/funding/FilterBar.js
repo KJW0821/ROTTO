@@ -3,7 +3,7 @@ import Colors from "../../constants/Colors";
 import { Ionicons } from '@expo/vector-icons';
 import FilterButton from "../discovery/FilterButton";
 import { useDispatch, useSelector } from "react-redux";
-import { setFilterData, setFilterModal, setFilter, setSortBy, setSubsStatus, setBeanType, setMinPrice, setMaxPrice } from "../../stores/fundingSlice";
+import { setFilterData, setFilterModal, setFilter, setSortBy, setSubsStatus, setBeanType, setMinPrice, setMaxPrice, setKeyword } from "../../stores/fundingSlice";
 import ResetButton from "../discovery/ResetButton";
 
 const FilterBar = () => {
@@ -13,6 +13,7 @@ const FilterBar = () => {
     minPrice, 
     maxPrice, 
     beanType,
+    keyword
   } = useSelector(state => state.fundingInfo);
 
   const dispatch = useDispatch();
@@ -34,18 +35,11 @@ const FilterBar = () => {
     ],
     beanType: [
       { text: '선택 안함', value: null },
-      { text: '브라질 산토스', value: '브라질 산토스' },
-      { text: '콜롬비아 수프리모', value: '콜롬비아 수프리모' },
+      { text: '예멘 모카 아이리시', value: '예멘 모카 아이리시' },
+      { text: '예멘 애플 마티니', value: '예멘 애플 마티니' },
       { text: '자메이카 블루마운틴', value: '자메이카 블루마운틴' },
-      { text: '에티오피아 예가체프', value: '에티오피아 예가체프' },
-      { text: '케냐 AA', value: '케냐 AA' },
-      { text: '코스타리카 따라주', value: '코스타리카 따라주' },
-      { text: '탄자니아 AA', value: '탄자니아 AA' },
-      { text: '예멘 모카 마타리', value: '예멘 모카 마타리' },
-      { text: '하와이 코나', value: '하와이 코나' },
-      { text: '과테말라 안티구아', value: '과테말라 안티구아' },
       { text: '파나마 게이샤', value: '파나마 게이샤' },
-      { text: '엘살바도르', value: '엘살바도르' }
+      { text: '하와이 코나', value: '하와이 코나' }
     ]
   };
 
@@ -54,6 +48,7 @@ const FilterBar = () => {
     dispatch(setBeanType(null));
     dispatch(setMinPrice(null));
     dispatch(setMaxPrice(null));
+    dispatch(setKeyword(null));
   };
 
   return (
@@ -77,7 +72,7 @@ const FilterBar = () => {
             />
           </Pressable>
           {
-            (subsStatus !== null || beanType || minPrice || maxPrice) &&
+            (subsStatus !== null || beanType || minPrice || maxPrice || keyword) &&
             <ResetButton filterName={"초기화"} onPress={resetHandler} />
           }
           <FilterButton 
@@ -112,6 +107,13 @@ const FilterBar = () => {
               dispatch(setFilterModal(true));
             }} 
           />
+          {
+            keyword &&
+            <Pressable style={styles.filterButton}>
+              <Text style={styles.filterButtonText}>검색: {keyword}</Text>
+              <Ionicons name="close-circle-outline" size={18} onPress={() => dispatch(setKeyword(null))}/>
+            </Pressable>
+          }
         </View>
       </ScrollView>
     </View>
@@ -150,4 +152,21 @@ const styles = StyleSheet.create({
     fontFamily: "pretendard-bold",
     fontSize: 15,
   },
+  filterButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 35,
+    borderRadius: 5,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    marginLeft: 10,
+    paddingHorizontal: 10
+  },
+  filterButtonText: {
+    marginBottom: 3,
+    marginRight: 4,
+    fontFamily: 'pretendard-bold',
+    fontSize: 15
+  }
 });

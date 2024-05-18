@@ -3,8 +3,11 @@ import Colors from '../../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
 import { setApplyModal, setFundingData } from '../../stores/fundingSlice';
 import CustomButton from '../common/CustomButton';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { applyFunding } from '../../utils/fundingApi';
+import { useFocusEffect } from '@react-navigation/native';
+import { setFundingAccount } from '../../stores/mySlice';
+import { getAccountInfo } from '../../utils/accountApi';
 
 const ApplyModal = () => {
   const dispatch = useDispatch();
@@ -12,10 +15,19 @@ const ApplyModal = () => {
   const fundingData = useSelector(state => state.fundingInfo.fundingData);
   const fundingAccount = useSelector(state => state.myPageInfo.fundingAccount);
 
-  console.log(fundingData, fundingAccount)
-
   const [amount, setAmount] = useState('');
   const [isValidAmount, setIsValidAmount] = useState();
+
+  useFocusEffect(
+    useCallback(() => {
+      const getFundingAccount = async () => {
+        const res = await getAccountInfo();
+        dispatch(setFundingAccount(res));
+      };
+      
+      getFundingAccount();
+    }, [])
+  );
 
   const amountHandler = (enteredText) => {
     setAmount(enteredText);
@@ -29,7 +41,10 @@ const ApplyModal = () => {
   const applyHandler = async () => {
     if (fundingAccount.accountBalance < fundingData.confirmPrice * amount) {
       return Alert.alert('', '펀딩 계좌에 잔액이 부족합니다.', [
-        { text: '확인', onPress: () => dispatch(setApplyModal(false)) }
+        { text: '확인', onPress: () => {
+          dispatch(setApplyModal(false));
+          setAmount('');
+        }}
       ]);
     }
     const res = await applyFunding(fundingData.subscriptionCode, amount);
@@ -38,11 +53,13 @@ const ApplyModal = () => {
       text: '확인',
       onPress: () => {
         dispatch(setApplyModal(false));
-        dispatch(setFundingData({
-          ...fundingData,
-          "isApply": 1
-        }));
-        console.log(fundingData);
+        if (res.status === 200) {
+          dispatch(setFundingData({
+            ...fundingData,
+            "isApply": 1
+          }));
+        } 
+        setAmount('');
       }
     }]);
   };

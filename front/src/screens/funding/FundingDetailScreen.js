@@ -15,6 +15,7 @@ const FundingDetailScreen = ({navigation, route}) => {
   const subscriptionCode = route.params.subscriptionCode;
   const dispatch = useDispatch();
   const fundingData = useSelector(state => state.fundingInfo.fundingData);
+  const [error, setError] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -25,6 +26,7 @@ const FundingDetailScreen = ({navigation, route}) => {
       };
 
       getDetailedData();
+      setError(false);
     }, [subscriptionCode])
   );
 
@@ -68,6 +70,16 @@ const FundingDetailScreen = ({navigation, route}) => {
           </View>
           <Text style={styles.farmName}>{fundingData.farmName}</Text>
           <View style={styles.imgContainer}>
+            <Image 
+              style={styles.img} 
+              source = {
+                error ?
+                require('../../../assets/images/discovery/coffeefarm2.png')
+                :
+                { uri: `${process.env.EXPO_PUBLIC_S3URL}/farm_img/${fundingData.farmCode}/${fundingData.farmImg}` }
+              }
+              onError={() => setError(true)}
+            />
             <Image style={styles.img} source={require('../../../assets/images/discovery/coffeefarm2.png')} />
           </View>
           <View style={styles.contentContainer}>
