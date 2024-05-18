@@ -36,7 +36,7 @@ public class AlertServiceImpl implements AlertService {
         }
 
         // 알림 모두 불러오기
-        List<Alert> alertList = alertRepository.findAll();
+        List<Alert> alertList = alertRepository.findByUserCode(userCode);
         // 최신것부터 보여주기 위해 리스트 뒤집기
         Collections.reverse(alertList);
         // stream 을 통해 alertList 를 순회하며 dto 리스트에 값을 담는다
