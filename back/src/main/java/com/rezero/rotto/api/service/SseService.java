@@ -6,6 +6,7 @@ public interface SseService {
 
     SseEmitter subscribe(int userCode);
 
+    void sendToClient(int userCode, String name, Object data);
     void disConnect(int userCode);
 
 }
