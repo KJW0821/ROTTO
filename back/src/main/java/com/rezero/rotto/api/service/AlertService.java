@@ -1,5 +1,6 @@
 package com.rezero.rotto.api.service;
 
+import com.rezero.rotto.dto.request.SseRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface AlertService {
@@ -9,5 +10,6 @@ public interface AlertService {
     ResponseEntity<?> deleteAlert(int userCode, int alertCode);
     ResponseEntity<?> readAllAlert(int userCode);
     ResponseEntity<?> deleteAllAlert(int userCode);
+    void createAlert(SseRequest request);
 
 }
