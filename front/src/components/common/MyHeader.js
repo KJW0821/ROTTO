@@ -1,11 +1,18 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 import Colors from "../../constants/Colors";
+import { useDispatch } from "react-redux";
+import { setSearchModal } from "../../stores/fundingSlice";
 
-const MyHeader = ({ children }) => {
+const MyHeader = ({ children, isSearch }) => {
   const Navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const onPress = () => {
+    dispatch(setSearchModal(true));
+  };
 
   return (
     <View style={styles.container}>
@@ -14,20 +21,27 @@ const MyHeader = ({ children }) => {
           style={styles.appLogo}
           source={require("../../../assets/images/RottoLogo.png")}
         />
-        <View style={styles.iconContainer}>
-          <Ionicons
-            name="notifications-outline"
-            size={26}
-            color="white"
-            onPress={() => Navigation.navigate("alertList")}
-          />
-          <Ionicons
-            name="person-outline"
-            size={26}
-            color="white"
-            onPress={() => Navigation.navigate("My")}
-          />
-        </View>
+        {
+          isSearch ?
+          <Pressable style={styles.searchIcon} onPress={onPress}>
+            <Ionicons name="search" size={24} color="white" />
+          </Pressable>
+          :
+          <View style={styles.iconContainer}>
+            <Ionicons
+              name="notifications-outline"
+              size={26}
+              color="white"
+              onPress={() => Navigation.navigate("alertList")}
+            />
+            <Ionicons
+              name="person-outline"
+              size={26}
+              color="white"
+              onPress={() => Navigation.navigate("My")}
+            />
+          </View>
+        }
       </View>
       {children}
     </View>
@@ -58,4 +72,9 @@ const styles = StyleSheet.create({
   text: {
     color: "white",
   },
+  searchIcon: {
+    marginRight: 20,
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
 });
