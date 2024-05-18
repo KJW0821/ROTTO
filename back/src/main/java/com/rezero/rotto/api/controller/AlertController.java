@@ -1,6 +1,8 @@
 package com.rezero.rotto.api.controller;
 
 import com.rezero.rotto.api.service.AlertService;
+import com.rezero.rotto.api.service.SseService;
+import com.rezero.rotto.dto.request.SseRequest;
 import com.rezero.rotto.dto.response.AlertDetailResponse;
 import com.rezero.rotto.dto.response.AlertListResponse;
 import com.rezero.rotto.utils.JwtTokenProvider;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class AlertController {
 
     private final AlertService alertService;
+    private final SseService sseService;
     private final JwtTokenProvider jwtTokenProvider;
 
 
@@ -86,6 +89,16 @@ public class AlertController {
     public ResponseEntity<?> deleteAllAlert(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
         return alertService.deleteAllAlert(userCode);
+    }
+
+
+    @Operation(summary = "알림 전송",
+            description = "파라미터를 받아 알림 전송")
+    @PostMapping("/send")
+    public ResponseEntity<?> alert(@RequestBody SseRequest request) {
+        alertService.createAlert(request);
+        sseService.sendToClient(request.getUserCode(), request.getName(), request.getData());
+        return ResponseEntity.ok().build();
     }
 
 }

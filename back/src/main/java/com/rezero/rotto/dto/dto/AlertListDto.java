@@ -16,6 +16,7 @@ public class AlertListDto {
 
     private int alertCode;
     private String title;
+    private String alertType;
     private LocalDateTime createTime;
     private Boolean isRead;
 
