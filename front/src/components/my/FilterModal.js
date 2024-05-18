@@ -20,7 +20,7 @@ const FilterModal = () => {
     },
     {
       id: 2,
-      type: '송금'
+      type: '출금'
     }
   ];
 

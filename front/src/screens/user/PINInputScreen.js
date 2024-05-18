@@ -32,7 +32,10 @@ const PINInputScreen = ({navigation}) => {
   const checkPinCode = async () => {
     const storedPin = await KeyService.getPinCode();
     if (storedPin === enteredPin) {
-      navigation.navigate('Routers');
+      navigation.reset({
+        index: 1,
+        routes: [{ name: 'Routers' }]
+      });
     } else {
       Alert.alert('잘못 입력하셨습니다. 다시 입력해주세요.', '', [{text: '재입력', onPress: resetPinCode}])
       setEnteredPin('');
@@ -77,10 +80,10 @@ const PINInputScreen = ({navigation}) => {
           customLeftButton={showRemoveButton ? <Ionicons name={"arrow-back-outline"} size={36} color={"black"} /> : undefined}
           customRightButton={showCompletedButton ? <Ionicons name={"checkmark-outline"} size={36} color={"black"} /> : undefined}
         />
-        <Pressable style={styles.bioButton} onPress={() => navigation.navigate('BioAuth')}>
+        {/* <Pressable style={styles.bioButton} onPress={() => navigation.navigate('BioAuth')}>
           <MaterialCommunityIcons name={ Platform.OS === 'android' ? 'fingerprint' : 'face-recognition' } size={12} />
           <Text style={styles.bioText}>생체 인증</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
     </SafeAreaView>
   )

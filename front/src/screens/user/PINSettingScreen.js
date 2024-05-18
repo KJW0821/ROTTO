@@ -36,7 +36,10 @@ const PINSettingScreen = ({navigation}) => {
 
   const setPinCode = async () => {
     await KeyService.setPinCode(enteredPin);
-    navigation.navigate('Routers');
+    navigation.reset({
+      index: 1,
+      routes: [{ name: 'Routers' }]
+    });
   };
 
   return (

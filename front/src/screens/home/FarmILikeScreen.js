@@ -76,11 +76,11 @@ const FarmILikeListScreen = () => {
             >
                 <Text style={styles.header}>관심 농장</Text>
             </View>
-            <FlatList
+            {farmILikeList && <FlatList
                 data={farmILikeList}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={rendeFarmILikeList}
-            />
+            />}
             <Pressable
                 style={styles.itemStyle}
                 onPress={() => Navigation.navigate("farmList")}

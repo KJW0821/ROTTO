@@ -52,7 +52,7 @@ const ConnectedAccount = ({navigation}) => {
   const disconnectAccount = async () => {
     const res = await disconnect(connectedAccount.accountCode);
     if (res.status === 200) {
-      setConnectedAccount();
+      dispatch(setConnectedAccount(null));
       setModalVisible(false);
     }
   };
@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
     borderWidth: 0.5
   },
   modalMenu: {
-    fontSize: 14,
-    fontFamily: 'pretendard-medium',
+    fontSize: 15,
+    fontFamily: 'pretendard-regular',
     paddingHorizontal: 24,
     paddingVertical: 16
   },

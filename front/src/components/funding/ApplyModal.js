@@ -1,18 +1,33 @@
 import { View, Pressable, Text, StyleSheet, Modal, TextInput, TouchableWithoutFeedback, Alert } from 'react-native';
 import Colors from '../../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
-import { setApplyModal } from '../../stores/fundingSlice';
+import { setApplyModal, setFundingData } from '../../stores/fundingSlice';
 import CustomButton from '../common/CustomButton';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { applyFunding } from '../../utils/fundingApi';
+import { useFocusEffect } from '@react-navigation/native';
+import { setFundingAccount } from '../../stores/mySlice';
+import { getAccountInfo } from '../../utils/accountApi';
 
 const ApplyModal = () => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.fundingInfo.isApplyModalOpen);
   const fundingData = useSelector(state => state.fundingInfo.fundingData);
+  const fundingAccount = useSelector(state => state.myPageInfo.fundingAccount);
 
   const [amount, setAmount] = useState('');
   const [isValidAmount, setIsValidAmount] = useState();
+
+  useFocusEffect(
+    useCallback(() => {
+      const getFundingAccount = async () => {
+        const res = await getAccountInfo();
+        dispatch(setFundingAccount(res));
+      };
+      
+      getFundingAccount();
+    }, [])
+  );
 
   const amountHandler = (enteredText) => {
     setAmount(enteredText);
@@ -24,11 +39,28 @@ const ApplyModal = () => {
   };
 
   const applyHandler = async () => {
+    if (fundingAccount.accountBalance < fundingData.confirmPrice * amount) {
+      return Alert.alert('', '펀딩 계좌에 잔액이 부족합니다.', [
+        { text: '확인', onPress: () => {
+          dispatch(setApplyModal(false));
+          setAmount('');
+        }}
+      ]);
+    }
     const res = await applyFunding(fundingData.subscriptionCode, amount);
     return Alert.alert(res.status === 200 ? '청약 신청이 완료되었습니다.' : '청약 신청에 실패하셨습니다.', '', 
     [{
       text: '확인',
-      onPress: () => dispatch(setApplyModal(false))
+      onPress: () => {
+        dispatch(setApplyModal(false));
+        if (res.status === 200) {
+          dispatch(setFundingData({
+            ...fundingData,
+            "isApply": 1
+          }));
+        } 
+        setAmount('');
+      }
     }]);
   };
 

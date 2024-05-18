@@ -3,6 +3,8 @@ import Colors from '../../constants/Colors';
 import { useState } from 'react';
 import TradeList from './TradeList';
 import ApplyList from './ApplyList';
+import CancelList from './CancelList';
+import OwnList from './OwnList';
 
 const InvestmentList = ({navigation}) => {
   const [selectedMenu, setSelectedMenu] = useState('보유 내역');
@@ -16,10 +18,10 @@ const InvestmentList = ({navigation}) => {
       ComponentToShow = ApplyList;
       break;
     case '정산 내역':
-      ComponentToShow = TradeList;
+      ComponentToShow = OwnList;
       break;
     case '해지 내역':
-      ComponentToShow = TradeList;
+      ComponentToShow = CancelList;
   }
 
   return (
@@ -40,7 +42,7 @@ const InvestmentList = ({navigation}) => {
         </Pressable>
       </View>
       <View style={{flex: 1}}>
-        {ComponentToShow && <ComponentToShow />}
+        {ComponentToShow && <ComponentToShow navigation={navigation} />}
       </View>
     </View>
   )

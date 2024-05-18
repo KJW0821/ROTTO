@@ -1,83 +1,56 @@
-import { View, Text, StyleSheet, FlatList, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableWithoutFeedback, Pressable } from 'react-native';
 import Colors from '../../constants/Colors';
+import { useCallback, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { getTradeHistory } from '../../utils/investApi';
 
-const TradeList = () => {
-  const data = [
-    {
-      tradeCode: 1,
-      farmName: '농부 주원의 에티오피아 농장',
-      confirmPrice: 1000000,
-      tradeTime: '2024-04-25',
-      tradeNum: 10,
-      refund: 0
-    },
-    {
-      tradeCode: 2,
-      farmName: '농부 다민의 에티오피아 농장',
-      confirmPrice: 1000000,
-      tradeTime: '2024-04-22',
-      tradeNum: 10,
-      refund: 0
-    },
-    {
-      tradeCode: 3,
-      farmName: '농부 준형의 에티오피아 농장',
-      confirmPrice: 1000000,
-      tradeTime: '2024-04-21',
-      tradeNum: 10,
-      refund: 1
-    },
-    {
-      tradeCode: 4,
-      farmName: '농부 유정의 에티오피아 농장',
-      confirmPrice: 1000000,
-      tradeTime: '2024-04-20',
-      tradeNum: 10,
-      refund: 1
-    },
-    {
-      tradeCode: 5,
-      farmName: '농부 세훈의 에티오피아 농장',
-      confirmPrice: 1000000,
-      tradeTime: '2024-04-18',
-      tradeNum: 10,
-      refund: 1
-    },
-    {
-      tradeCode: 6,
-      farmName: '농부 형욱의 에티오피아 농장',
-      confirmPrice: 1000000,
-      tradeTime: '2024-04-17',
-      tradeNum: 10,
-      refund: 1
-    }
-  ]
+const TradeList = ({navigation}) => {
+  const [data, setData] = useState();
+
+  useFocusEffect(
+    useCallback(() => {
+      const getTradeData = async () => {
+        const res = await getTradeHistory();
+        setData(res.tradeHistoryListDtoss);
+      };
+
+      getTradeData();
+    }, [])
+  )
 
   return (
+    data &&
     <FlatList 
       data={data}
       renderItem={itemData => {
         return (
-          <TouchableWithoutFeedback>
-            <View style={styles.cardContainer}>
-              <Text style={styles.farmName}>{itemData.item.farmName}</Text>
-              <View style={styles.contentContainer}>
-                <Text style={styles.menu}>내 보유 ROTTO</Text>
-                <Text style={styles.content}>{itemData.item.tradeNum} ROT</Text>
-              </View>
-              <View style={styles.bottomContainer}>
-                <View style={styles.contentContainer}>
-                  <Text style={styles.menu}>내 투자 금액</Text>
-                  <Text style={styles.content}>{itemData.item.confirmPrice} 원</Text>
-                </View>
-                <Text style={styles.state}>{itemData.item.refund ? '출하' : '재배중'}</Text>
-              </View>
+          <Pressable 
+            style={styles.cardContainer} 
+            onPress={() => navigation.navigate('Routers', { 
+              screen: '발견',
+              params: {
+                screen: 'farm',
+                params: { farmCode: itemData.item.farmCode }
+              }
+            })}
+          >
+            <Text style={styles.farmName}>{itemData.item.farmName}</Text>
+            <View style={styles.contentContainer}>
+              <Text style={styles.menu}>내 보유 ROTTO</Text>
+              <Text style={styles.content}>{itemData.item.tradeNum} / {itemData.item.totalTokenCount} ROT</Text>
             </View>
-          </TouchableWithoutFeedback>
+            <View style={styles.bottomContainer}>
+              <View style={styles.contentContainer}>
+                <Text style={styles.menu}>내 투자 금액</Text>
+                <Text style={styles.content}>{(itemData.item.confirmPrice * itemData.item.tradeNum).toLocaleString('ko-KR')} 원</Text>
+              </View>
+              <Text style={styles.state}>{itemData.item.refund ? '출하' : '재배중'}</Text>
+            </View>
+          </Pressable>
         )
       }}
       keyExtractor={(item) => {
-        return item.tradeCode
+        return item.subscriptionCode
       }}
       contentContainerStyle={{ flexGrow: 1 }}
     />
@@ -99,19 +72,19 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   farmName: {
-    fontSize: 12,
-    fontFamily: 'pretendard-medium'
+    fontSize: 14,
+    fontFamily: 'pretendard-semiBold'
   },
   contentContainer: {
     gap: 3
   },
   menu: {
-    fontSize: 8,
+    fontSize: 10,
     color: Colors.fontGray,
     fontFamily: 'pretendard-medium'
   },
   content: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: 'pretendard-medium'
   },
   bottomContainer: {

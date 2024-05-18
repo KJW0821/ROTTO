@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { StyleSheet, SafeAreaView, Alert } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { store } from "./src/stores/Store";
 import { Provider } from "react-redux";
@@ -20,14 +20,15 @@ import {
 } from "@web3modal/wagmi-react-native";
 import { defineChain } from "viem";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+import { useEffect } from "react";
 
 const customChain = {
-  id: 31221,
+  id: process.env.EXPO_PUBLIC_CHAIN_ID,
   name: "ssafy",
   rpcUrls: {
     public: {
-      http: ["https://rpc.ssafy-blockchain.com"],
-    }
+      http: [process.env.EXPO_PUBLIC_RPC_URL],
+    },
   },
   nativeCurrency: {
     name: "Ether",
@@ -37,7 +38,7 @@ const customChain = {
   testnet: false,
 };
 
-const projectId = "41c800331b3143bdaddeef0fdefb7852";
+const projectId = process.env.EXPO_PUBLIC_PROJECT_ID;
 
 const metadata = {
   name: "rotto",
@@ -67,7 +68,7 @@ createWeb3Modal({
   projectId,
   chains,
   wagmiConfig,
-  enableAnalytics: true
+  enableAnalytics: true,
 });
 
 export default function App() {

@@ -1,21 +1,67 @@
-import { View, FlatList, Text, StyleSheet, Pressable } from 'react-native';
+import { View, FlatList, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { getFundingList } from '../../utils/fundingApi';
 import dayjs from 'dayjs';
+import { useFocusEffect } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 const FundingList = ({navigation}) => {
-  const [data, setData] = useState();
+  const { sortBy, subsStatus, beanType, minPrice, maxPrice, keyword } = useSelector(state => state.fundingInfo);
+  
+  const [data, setData] = useState([]);
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [totalPage, setTotalPage] = useState(1);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    const getFundingData = async () => {
-      const res = await getFundingList();
-      setData(res.subscriptions);
-    };
+  const listRef = useRef(null);
 
-    getFundingData();
-  }, [navigation])
+  const getFundingData = async (isInit) => {
+    if (isInit || (page <= totalPage && data.length >= 10 * page)) {
+      setLoading(true);
+      const res = await getFundingList({
+        'sort': sortBy,
+        'subs-status': subsStatus,
+        'bean-type': beanType,
+        'min-price': minPrice,
+        'max-price': maxPrice,
+        'page': isInit ? 1 : page + 1,
+        'keyword': keyword
+      });
+      setData(pre => isInit ? res.subscriptions : [...pre, ...res.subscriptions]);
+      setTotalPage(res.totalPages);
+      setPage(pre => isInit ? 1 : pre + 1);
+      if (isInit) {
+        listRef.current.scrollToOffset({ animated: true, offset: 0 });
+      }
+      setLoading(false);
+    }
+  };
+
+  const refreshFundingData = async () => {
+    setRefreshing(true);
+    const res = await getFundingList({
+      'sort': sortBy,
+      'subs-status': subsStatus,
+      'bean-type': beanType,
+      'min-price': minPrice,
+      'max-price': maxPrice,
+      'page': 1,
+      'keyword': keyword
+    });
+    setData(res.subscriptions);
+    setTotalPage(res.totalPages);
+    setPage(1);
+    setRefreshing(false);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getFundingData(true);
+    }, [sortBy, subsStatus, beanType, minPrice, maxPrice, keyword])
+  );
 
   const getState = (state, startedTime) => {
     switch (state) {
@@ -37,9 +83,22 @@ const FundingList = ({navigation}) => {
     }
   };
 
+  const onEndReached = () => {
+    if (!loading) {
+      getFundingData(false);
+    }
+  };
+  
+  const onRefresh = () => {
+    if (!refreshing) {
+      refreshFundingData();
+    }
+  }
+
   return (
     <View style={styles.container}>
       <FlatList 
+        ref={listRef}
         data={data}
         renderItem={itemData => {
           return (
@@ -51,7 +110,7 @@ const FundingList = ({navigation}) => {
             >
               <View style={styles.topContainer}>
                 <Text style={styles.date}>
-                  {dayjs(itemData.item.startedTime).format('YYYY.MM.DD')} - {dayjs(itemData.item.endTime).format('YYYY.MM.DD')}
+                  {dayjs(itemData.item.startedTime).add(9, 'hour').format('YYYY.MM.DD')} - {dayjs(itemData.item.endTime).add(9, 'hour').format('YYYY.MM.DD')}
                   </Text>
                 <View style={[styles.stateContainer, { backgroundColor: getState(itemData.item.subsStatus, itemData.item.startedTime).color }]}>
                   <Text style={styles.state}>{getState(itemData.item.subsStatus, itemData.item.startedTime).text}</Text>
@@ -64,7 +123,7 @@ const FundingList = ({navigation}) => {
                     <FontAwesome5 name="coins" size={12} />
                     <Text style={styles.menu}>가격</Text>
                   </View>
-                  <Text style={styles.content}>{itemData.item.confirmPrice} / 1ROT</Text>
+                  <Text style={styles.content}>{itemData.item.confirmPrice.toLocaleString('ko-KR')} / 1ROT</Text>
                 </View>
                 {
                   itemData.item.subsStatus === 1 &&
@@ -74,10 +133,17 @@ const FundingList = ({navigation}) => {
                       <Text style={styles.menu}>신청률</Text>
                     </View>
                     <Text style={styles.content}>
-                      {itemData.item.applyCount} / {itemData.item.totalTokenCount} ROT ({Math.round(itemData.item.applyCount / itemData.item.totalTokenCount * 100 * 100) / 100}%)
+                      {itemData.item.applyCount.toLocaleString('ko-KR')} / {itemData.item.totalTokenCount.toLocaleString('ko-KR')} ROT ({Math.round(itemData.item.applyCount / itemData.item.totalTokenCount * 100 * 100) / 100}%)
                     </Text>
                   </View>
                 }
+                <View style={styles.contentContainer}>
+                  <View style={styles.menuContainer}>
+                    <FontAwesome5 name="chart-line" size={12} />
+                    <Text style={styles.menu}>지난 수익률</Text>
+                  </View>
+                  <Text style={[styles.content, { color: itemData.item.returnRate < 0 ? 'blue' : 'red'}]}>{itemData.item.returnRate > 0 && '+'}{itemData.item.returnRate}%</Text>
+                </View>
               </View>
             </Pressable>
           )
@@ -86,6 +152,11 @@ const FundingList = ({navigation}) => {
           return item.subscriptionCode
         }}
         contentContainerStyle={{ flexGrow: 1 }}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.6}
+        ListFooterComponent={loading && <ActivityIndicator />}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
       />
     </View>
   )
@@ -118,8 +189,8 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     flexDirection: 'row',
-    gap: 28,
-    alignContent: 'center'
+    alignContent: 'center',
+    gap: 28
   },
   date: {
     fontSize: 10,

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import FilterModal from './FilterModal';
 import { setFilterModal, setSelectedFilter } from '../../stores/mySlice';
 import { getAccountDeposit, getAccountHistory, getAccountWithdrawal } from '../../utils/accountApi';
@@ -13,6 +13,8 @@ const AccountHistory = () => {
   const dispatch = useDispatch();
   const fundingAccount = useSelector(state => state.myPageInfo.fundingAccount);
   const filter = useSelector(state => state.myPageInfo.selectedFilter);
+
+  const scrollRef = useRef(null);
 
   const [data, setData] = useState();
   const [sections, setSections] = useState({});
@@ -28,6 +30,7 @@ const AccountHistory = () => {
       const res = await getAccountWithdrawal(fundingAccount.accountCode);
       setData(res.accountHistoryListDtoss);
     }
+    scrollRef.current.scrollTo({ animated: true, y: 0 })
   };
 
   useFocusEffect(
@@ -57,10 +60,6 @@ const AccountHistory = () => {
     }
   }, [data])
 
-  useEffect(() => {
-    console.log(sections)
-  }, [sections])
-
   return (
     <View style={styles.container}>
       <View style={styles.filterContainer}>
@@ -73,7 +72,7 @@ const AccountHistory = () => {
         </Pressable>
       </View>
       <View style={styles.scrollContainer}>
-        <ScrollView contentContainerStyle={{rowGap: 16}}>
+        <ScrollView contentContainerStyle={{rowGap: 16}} ref={scrollRef}>
           {
             Object.entries(sections).map(([day, content]) => (
               <View style={styles.dayContainer} key={day}>
@@ -174,6 +173,8 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     width: '95%',
-    marginHorizontal: 'auto'
+    marginHorizontal: 'auto',
+    flex: 1,
+    paddingBottom: 16
   }
 });
