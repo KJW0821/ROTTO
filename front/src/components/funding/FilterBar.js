@@ -34,18 +34,11 @@ const FilterBar = () => {
     ],
     beanType: [
       { text: '선택 안함', value: null },
-      { text: '브라질 산토스', value: '브라질 산토스' },
-      { text: '콜롬비아 수프리모', value: '콜롬비아 수프리모' },
+      { text: '예멘 모카 아이리시', value: '예멘 모카 아이리시' },
+      { text: '예멘 애플 마티니', value: '예멘 애플 마티니' },
       { text: '자메이카 블루마운틴', value: '자메이카 블루마운틴' },
-      { text: '에티오피아 예가체프', value: '에티오피아 예가체프' },
-      { text: '케냐 AA', value: '케냐 AA' },
-      { text: '코스타리카 따라주', value: '코스타리카 따라주' },
-      { text: '탄자니아 AA', value: '탄자니아 AA' },
-      { text: '예멘 모카 마타리', value: '예멘 모카 마타리' },
-      { text: '하와이 코나', value: '하와이 코나' },
-      { text: '과테말라 안티구아', value: '과테말라 안티구아' },
       { text: '파나마 게이샤', value: '파나마 게이샤' },
-      { text: '엘살바도르', value: '엘살바도르' }
+      { text: '하와이 코나', value: '하와이 코나' }
     ]
   };
 
