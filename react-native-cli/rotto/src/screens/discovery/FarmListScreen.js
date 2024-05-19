@@ -129,6 +129,7 @@ const FarmListScreen = () => {
   };
 
   useEffect(() => {
+    setPage(1)
     getList(
       1,
       selectedSort.value,
