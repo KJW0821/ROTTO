@@ -17,10 +17,22 @@ import FaqBanner from "../../components/home/FaqBanner";
 import FarmILike from "../../components/home/FarmILike";
 import FarmNews from "../../components/home/FarmNews";
 import { useEffect } from "react";
+import { getAlertList } from "../../utils/AlertApi";
+import { useDispatch } from "react-redux";
+import { setAlertList } from "../../stores/alertSlice";
 
 const HomeScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
 
+  const getAlert = async () => {
+    const res = await getAlertList()
+    // console.log("getAlert")
+    dispatch(setAlertList(res))
+
+  }
   useEffect(() => {
+    getAlert()
+
     BackHandler.addEventListener('hardwareBackPress', () => {
       if (navigation.isFocused()) {
         Alert.alert('앱 종료', '앱을 종료하시겠습니까?', [
