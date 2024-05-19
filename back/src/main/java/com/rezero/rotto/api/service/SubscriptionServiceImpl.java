@@ -173,9 +173,9 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         Integer applyCount = applyHistoryRepository.sumApplyCountBySubscriptionCode(subscriptionCode);
         ApplyHistory applyHistory1 = applyHistoryRepository.findByUserCodeAndSubscriptionCode(userCode, subscriptionCode);
 
-        int isApplies = 0;
+        int isApplies = 0; // 청약 신청 여부 (0 : 신청하지 않음 or 신청 취소, 1 : 신청함) -> isDelete와 반대됨.
         if (applyHistory1 != null && subscriptionCode == applyHistory1.getSubscriptionCode()){
-            isApplies = 1;
+            isApplies = (applyHistory1.getIsDelete() + 1) % 2;
         }
 
         // 현재 시각
