@@ -49,8 +49,8 @@ const OnboardingScreen = () => {
             </View>
           </View>
           <Image
-            source={require("../../../assets/images/farmfarm.png")}
-            style={styles.itemImage}
+            source={require("../../../assets/images/coffeefarmfarm.png")}
+            style={[styles.itemImage, {marginRight: 30}]}
           />
         </View>
         <View style={styles.item}>
@@ -67,8 +67,8 @@ const OnboardingScreen = () => {
             </View>
           </View>
           <Image
-            source={require("../../../assets/images/farmfarm.png")}
-            style={styles.itemImage}
+            source={require("../../../assets/images/farmfarmfarm.png")}
+            style={[styles.itemImage, {}]}
           />
         </View>
         <View style={styles.item}>
@@ -82,8 +82,8 @@ const OnboardingScreen = () => {
             </View>
           </View>
           <Image
-            source={require("../../../assets/images/farmfarm.png")}
-            style={styles.itemImage}
+            source={require("../../../assets/images/coinfarmfarm.png")}
+            style={[styles.itemImage, {marginTop: 20}]}
           />
         </View>
       </ScrollView>
@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     alignItems: "baseline",
+    marginBottom: 40
   },
   itemTitle: {
     fontFamily: "pretendard-extraBold",
@@ -140,6 +141,7 @@ const styles = StyleSheet.create({
   },
   itemImage: {
     width: width - 60,
+    height: width,
     resizeMode: "contain",
   },
   btnContainer: {
