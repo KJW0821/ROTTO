@@ -29,6 +29,7 @@ import org.web3j.tx.gas.StaticGasProvider;
 import com.google.api.Http;
 import com.rezero.rotto.contracts.TokenManager;
 import com.rezero.rotto.dto.request.CreateTokenRequest;
+import com.rezero.rotto.dto.request.DistributeRequest;
 import com.rezero.rotto.dto.request.PayTokensRequest;
 import com.rezero.rotto.dto.request.RefundsTokenRequest;
 import com.rezero.rotto.entity.Subscription;
@@ -97,10 +98,66 @@ public class BlockChainServiceImpl implements BlockChainService{
 		}
 	}
 
+
+	@Override
+	public ResponseEntity<?> distributeTokens(DistributeRequest request) {
+		if(tokenManager == null) initContract();
+		User user = userRepository.findByUserCode(request.getUserCode());
+		if(request.getSubscription() == null)
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("요청하신 청약을 찾을 수 없습니다.");
+		else if(request.getAmount() > request.getSubscription().getLimitNum())
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("요청하신 수량이 1인당 가질 수 있는 개수를 초과하였습니다.");
+		else if(user == null || !WalletUtils.isValidAddress(user.getBcAddress())){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않는 주소입니다.");
+		}
+		TokenManager.Subscription requestSubscription = changeVariable(request.getSubscription());
+		BigInteger amount = BigInteger.valueOf(request.getAmount());
+
+		ResponseEntity<?> check = checkWhiteList(user.getBcAddress());
+		if(check.getStatusCode() == HttpStatus.OK){
+			boolean isWhitelisted = (boolean)check.getBody();
+			if(!isWhitelisted)  InsertWhiteList(user.getBcAddress());
+		}
+		else ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("작업 중 오류가 발생하였습니다.");
+
+		try {
+			TransactionReceipt transactionReceipt = tokenManager.distributeToken(requestSubscription,
+				user.getBcAddress(), amount).send();
+
+			if(transactionReceipt.isStatusOK()){
+				TradeHistory history = new TradeHistory();
+				history.setSubscriptionCode(request.getSubscription().getSubscriptionCode());
+				history.setBcAddress(user.getBcAddress());
+				history.setUserCode(user.getUserCode());
+				history.setRefund(0);
+				history.setTradeNum(request.getAmount());
+				history.setTokenPrice(request.getSubscription().getConfirmPrice());
+
+				tradeHistoryRepository.save(history);
+
+				return ResponseEntity.status(HttpStatus.OK).body("ROTTO 발급 완료");
+			}
+			else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ROTTO 발급 실패");
+		} catch(Exception ex){
+			Throwable cause = ex.getCause();
+			if(cause instanceof TransactionException){
+				String revertReason = getRevertReason((TransactionException)cause);
+				logger.info("[distributeToken] revertReason: " + revertReason);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(revertReason);
+			}
+			String errorMessage = (cause != null ? cause.getMessage() : ex.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+		}
+	}
+
 	@Override
 	public ResponseEntity<?> distributeToken(PayTokensRequest request) {
 		if(tokenManager == null) initContract();
 		Subscription subscription = subscriptionRepository.findBySubscriptionCode(request.getCode());
+		logger.info("[distributeToken] getAddress: " + request.getCode());
+		logger.info("[distributeToken] getAddress: " + request.getAddress());
+		logger.info("[distributeToken] getAddress: " + request.getAmount());
 		Optional<User> user = userRepository.findByBcAddress(request.getAddress());
 		if(subscription == null)
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("요청하신 청약을 찾을 수 없습니다.");
@@ -193,8 +250,6 @@ public class BlockChainServiceImpl implements BlockChainService{
 	@Override
 	public ResponseEntity<?> InsertWhiteList(String wallet){
 		if(tokenManager == null) initContract();
-
-		logger.info("[InsertWhiteList] wallet: " + wallet);
 
 		try {
 			TransactionReceipt transactionReceipt = tokenManager.insertList(wallet).send();

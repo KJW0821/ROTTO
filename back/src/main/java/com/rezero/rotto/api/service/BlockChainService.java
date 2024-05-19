@@ -3,6 +3,7 @@ package com.rezero.rotto.api.service;
 import org.springframework.http.ResponseEntity;
 
 import com.rezero.rotto.dto.request.CreateTokenRequest;
+import com.rezero.rotto.dto.request.DistributeRequest;
 import com.rezero.rotto.dto.request.PayTokensRequest;
 import com.rezero.rotto.dto.request.RefundsTokenRequest;
 import com.rezero.rotto.entity.Subscription;
@@ -21,4 +22,6 @@ public interface BlockChainService {
 	ResponseEntity<?> checkWhiteList(String address);
 
 	ResponseEntity<?> burnToken(Subscription subscription);
+
+	ResponseEntity<?> distributeTokens(DistributeRequest request);
 }
