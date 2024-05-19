@@ -46,7 +46,8 @@ const FarmILike = () => {
           </Pressable>
         </View>
         <View style={styles.container}>
-          {farmILikeList.map((farm, index) => index < 3 && (
+          {/* {farmILikeList.map((farm, index) => index < 3 && ( */}
+          {farmILikeList.map((farm, index) => (
             <Pressable key={farm.farmCode} style={styles.itemStyle}>
               <View style={styles.itemContentStyle}>
                 <Image

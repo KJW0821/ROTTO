@@ -9,7 +9,6 @@ import {
   Text,
   TextInput,
   View,
-  useWindowDimensions,
 } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import { getFarmList } from "../../utils/farmAPi";
@@ -17,8 +16,6 @@ import { Ionicons } from "@expo/vector-icons";
 
 import Colors from "../../constants/Colors";
 import StackHeader from "../../components/common/StackHeader";
-import MyBottomSheet from "../../components/common/MyBottomSheet";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FarmDetail from "../../components/discovery/FarmDetail";
 import FilterButton from "../../components/discovery/FilterButton";
 import ResetButton from "../../components/discovery/ResetButton";
@@ -50,7 +47,6 @@ const { width } = Dimensions.get("window");
 
 const FarmListScreen = () => {
   const [farms, setFarms] = useState([]);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState(sortData[0]); // 기본순 선택
   const [fundingStatus, setFundingStatus] = useState(fundingData[0]); // 청약 진행 여부 선택
   const [selectedBean, setSelectedBean] = useState(beanData[0]); // 원두 종류 선택
@@ -129,7 +125,6 @@ const FarmListScreen = () => {
       setSelectedBean(beanData.find((item) => item.index === id));
     } else if (category === "search") {
     }
-    setIsBottomSheetOpen(false); // 바텀시트 닫기
   };
 
   useEffect(() => {
@@ -157,13 +152,6 @@ const FarmListScreen = () => {
     return <FarmDetail data={itemData.item} />;
   };
 
-  const handleGestureEvent = (event) => {
-    const { translationY } = event.nativeEvent;
-    if (translationY > 0) {
-      setIsBottomSheetOpen(false); // 바텀 시트를 닫습니다.
-    }
-  };
-
   const handlePressResetButton = () => {
     setSelectedSort(sortData[0]);
     setFundingStatus(fundingData[0]);
@@ -181,7 +169,6 @@ const FarmListScreen = () => {
         color={Colors.bgOrg}
         search={true}
         onPress={() => {
-          // setIsBottomSheetOpen(true);
           setModalVisible(true);
           setSelectedCategory("search");
         }}
@@ -195,7 +182,6 @@ const FarmListScreen = () => {
           <Pressable
             style={styles.sortButton}
             onPress={() => {
-              // setIsBottomSheetOpen(true);
               setModalVisible(true);
               setSelectedCategory("sort");
             }}
@@ -223,7 +209,6 @@ const FarmListScreen = () => {
             filterName={fundingStatus.index != 0 ? fundingStatus.name : "청약"}
             isChecked={fundingStatus.name != fundingData[0].name}
             onPress={() => {
-              // setIsBottomSheetOpen(true);
               setModalVisible(true);
               setSelectedCategory("funding");
             }}
@@ -232,7 +217,6 @@ const FarmListScreen = () => {
             filterName={selectedBean.index != 0 ? selectedBean.name : "원두"}
             isChecked={selectedBean.name !== beanData[0].name}
             onPress={() => {
-              // setIsBottomSheetOpen(true);
               setModalVisible(true);
               setSelectedCategory("bean");
             }}
@@ -256,7 +240,6 @@ const FarmListScreen = () => {
             }
             isChecked={minPrice || maxPrice}
             onPress={() => {
-              // setIsBottomSheetOpen(true);
               setModalVisible(true);
               setSelectedCategory("price");
             }}
@@ -264,13 +247,6 @@ const FarmListScreen = () => {
         </View>
       </ScrollView>
       {farms && (
-        // <FlatList
-        //   contentContainerStyle={styles.farmsContainer}
-        //   showsVerticalScrollIndicator={false}
-        //   data={farms}
-        //   keyExtractor={(item) => item.farmCode}
-        //   renderItem={renderFarmList}
-        // />
         <FlatList
           contentContainerStyle={styles.farmsContainer}
           showsVerticalScrollIndicator={false}
@@ -282,15 +258,10 @@ const FarmListScreen = () => {
           ListFooterComponent={renderFooter}
         />
       )}
-      {/* <MyBottomSheet
-        isOpen={isBottomSheetOpen}
-        onGestureEvent={handleGestureEvent}
-      > */}
       <Modal
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        // onRequestClose={() => setModalVisible(false)}
       >
         <Pressable
           style={styles.modalBack}
@@ -485,7 +456,6 @@ const FarmListScreen = () => {
           </View>
         </Pressable>
       </Modal>
-      {/* </MyBottomSheet> */}
     </View>
   );
 };

@@ -10,6 +10,7 @@ import CustomButton from '../../components/common/CustomButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { setApplyModal, setFundingData } from '../../stores/fundingSlice';
 import ApplyModal from '../../components/funding/ApplyModal';
+import { S3URL } from "@env"
 
 const FundingDetailScreen = ({navigation, route}) => {
   const subscriptionCode = route.params.subscriptionCode;
