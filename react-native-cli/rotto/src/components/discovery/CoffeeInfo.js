@@ -63,7 +63,7 @@ const {width} = Dimensions.get('window');
 
 const CoffeeInfo = () => {
   const [selectedItem, setSelectedItem] = useState(null);
-  const [imagePath, setImagePath] = useState(require('../../../assets/images/discovery/coffeebean4.png'));
+  const [imagePath, setImagePath] = useState(require('../../../assets/images/discovery/coffeebean3.png'));
 
   const updateSelect = id => {
     if (id === selectedItem) {
@@ -95,7 +95,7 @@ const CoffeeInfo = () => {
         source={
           imagePath
             ? imagePath
-            : require('../../../assets/images/discovery/coffeebean4.png')
+            : require('../../../assets/images/discovery/coffeebean3.png')
         }
         style={{width: width - 30, height: 300}}
         resizeMode="cover"
