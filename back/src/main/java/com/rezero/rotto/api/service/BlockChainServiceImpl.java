@@ -193,15 +193,16 @@ public class BlockChainServiceImpl implements BlockChainService{
 	@Override
 	public ResponseEntity<?> InsertWhiteList(String wallet){
 		if(tokenManager == null) initContract();
-		CompletableFuture<TransactionReceipt> transactionReceiptFuture = tokenManager.insertList(wallet).sendAsync();
 
-		try{
-			TransactionReceipt transactionReceipt = transactionReceiptFuture.join();
-			if(transactionReceipt.isStatusOK())
+		logger.info("[InsertWhiteList] wallet: " + wallet);
+
+		try {
+			TransactionReceipt transactionReceipt = tokenManager.insertList(wallet).send();
+			if(transactionReceipt.isStatusOK()){
 				return ResponseEntity.ok().body("list 추가 작업 완료");
-			else
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("list 추가 작업 실패");
-		} catch (Exception ex) {
+			}
+			else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("list 추가 작업 실패");
+		} catch (Exception ex){
 			Throwable cause = ex.getCause();
 			if(cause instanceof TransactionException){
 				String revertReason = getRevertReason((TransactionException)cause);
