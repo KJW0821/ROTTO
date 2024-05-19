@@ -56,7 +56,8 @@ const SignInScreen = ({navigation}) => {
             <View style={[styles.inputContainer , { marginBottom: 8 }]}>
               <Text style={styles.inputText}>010-</Text>
               <TextInput 
-                style={[styles.inputText, {flex: 1}]} 
+                // style={[styles.inputText, {flex: 1}]} 
+                style={[styles.inputText, {flex: 1, padding: 0}]} 
                 autoCorrect={false}
                 autoCapitalize="none"
                 underlineColorAndroid="transparent"
@@ -73,7 +74,7 @@ const SignInScreen = ({navigation}) => {
             <Text style={[styles.title, { marginTop: 8 }]}>비밀번호</Text>
             <View style={[styles.inputContainer, { marginBottom: 16 }]}>
               <TextInput 
-                style={[styles.inputText, {flex: 1}]} 
+                style={[styles.inputText, {flex: 1, padding:0}]} 
                 autoCorrect={false}
                 autoCapitalize="none"
                 underlineColorAndroid="transparent"
