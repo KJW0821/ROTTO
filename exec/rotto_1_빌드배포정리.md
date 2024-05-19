@@ -118,8 +118,8 @@
 
         listen [::]:443 ssl ipv6only=on; # managed by Certbot
         listen 443 ssl; # managed by Certbot
-        ssl_certificate /etc/letsencrypt/live/j10e205.p.ssafy.io/fullchain.pem; # managed by Certbot
-        ssl_certificate_key /etc/letsencrypt/live/j10e205.p.ssafy.io/privkey.pem; # managed by Certbot
+        ssl_certificate /etc/letsencrypt/live/k10e105.p.ssafy.io/fullchain.pem; # managed by Certbot
+        ssl_certificate_key /etc/letsencrypt/live/k10e105.p.ssafy.io/privkey.pem; # managed by Certbot
         include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
         ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 
