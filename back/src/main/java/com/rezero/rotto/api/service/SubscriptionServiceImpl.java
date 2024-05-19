@@ -441,7 +441,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         subscription.setTotalProceed(totalProceed);
         subscriptionRepository.save(subscription);
 
-        int ROTTOprice = (int)Math.ceil((double)totalProceed / subscription.getTotalTokenCount());
+        double ROTTOprice = Math.ceil((double)totalProceed / subscription.getTotalTokenCount());
         logger.info("[refundSubscription] ROTTOprice: " + ROTTOprice);
         Optional<List<ApplyHistory>> applyHistories = applyHistoryRepository.findBySubscriptionCodeAndIsDelete(
             subscription.getSubscriptionCode(), 0);
@@ -451,7 +451,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 // 사업자 → 이용자 이체
                 int applyCount = applyHistory.getApplyCount();
                 User user = userRepository.findByUserCode(applyHistory.getUserCode());
-                if(!RefundMoney(user, ROTTOprice * applyCount)){
+                if(!RefundMoney(user, (int)Math.floor(ROTTOprice * applyCount))){
                     ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("환급 중 에러 발생.");
                 }
 
