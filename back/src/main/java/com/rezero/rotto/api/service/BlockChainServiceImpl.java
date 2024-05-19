@@ -75,11 +75,8 @@ public class BlockChainServiceImpl implements BlockChainService{
 
 		logger.info("ROTTO 생성 이전,  code: " + requestSubscription.code + ", amount: " + amount);
 
-		CompletableFuture<TransactionReceipt> transactionReceiptFuture =
-			tokenManager.createToken(requestSubscription, amount).sendAsync();
-
 		try {
-			TransactionReceipt transactionReceipt = transactionReceiptFuture.join();
+			TransactionReceipt transactionReceipt = tokenManager.createToken(requestSubscription, amount).send();
 			if(transactionReceipt.isStatusOK()) {
 				logger.info("ROTTO 생성 완료. amount: " + amount);
 				return ResponseEntity.status(HttpStatus.CREATED).body("ROTTO 생성 완료");
