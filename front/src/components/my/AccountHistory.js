@@ -72,7 +72,7 @@ const AccountHistory = () => {
         </Pressable>
       </View>
       <View style={styles.scrollContainer}>
-        <ScrollView contentContainerStyle={{rowGap: 16}} ref={scrollRef}>
+        <ScrollView contentContainerStyle={{rowGap: 16}} ref={scrollRef} showsVerticalScrollIndicator={false}>
           {
             Object.entries(sections).map(([day, content]) => (
               <View style={styles.dayContainer} key={day}>

@@ -20,7 +20,7 @@ const TermsScreen = ({navigation}) => {
       <DetailTopBar title="이용 약관" navigation={navigation} />
       {
         terms &&
-        <ScrollView style={styles.contentContainer}>
+        <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
           <Text>{terms}</Text>
         </ScrollView>
       }

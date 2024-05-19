@@ -47,6 +47,7 @@ const ApplyList = ({navigation}) => {
   return(
     data &&
     <FlatList 
+      showsVerticalScrollIndicator={false}
       data={data}
       renderItem={itemData => {
         return (

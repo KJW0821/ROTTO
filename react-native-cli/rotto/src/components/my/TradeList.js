@@ -21,6 +21,7 @@ const TradeList = ({navigation}) => {
   return (
     data &&
     <FlatList 
+      showsVerticalScrollIndicator={false} 
       data={data}
       renderItem={itemData => {
         return (
