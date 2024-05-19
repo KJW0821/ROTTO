@@ -8,6 +8,7 @@ import UserTopBar from '../../components/user/UserTopBar';
 import { signUp, signIn } from '../../utils/userApi';
 import { useSelector } from 'react-redux';
 import TokenService from '../../utils/token';
+import ProgressBar from '../../components/user/ProgressBar';
 
 const PasswordInputScreen = ({navigation}) => {
   const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*]).{8,}$/;
@@ -70,6 +71,7 @@ const PasswordInputScreen = ({navigation}) => {
       <UserTopBar navigation={navigation} />
       <View style={styles.dataContainer}>
         <Title>회원가입</Title>
+        <ProgressBar step={4} />
         <View style={styles.inputsContainer}>
           <View>
             <Text style={styles.description}>비밀번호를 입력하세요</Text>

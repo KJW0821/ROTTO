@@ -9,6 +9,7 @@ import UserTopBar from '../../components/user/UserTopBar';
 import { useDispatch } from 'react-redux';
 import { inputPhoneNumber } from '../../stores/signUpSlice';
 import { checkPhoneNumber } from '../../utils/userApi';
+import ProgressBar from '../../components/user/ProgressBar';
 
 const PhoneNumberInputScreen = ({navigation}) => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -42,6 +43,7 @@ const PhoneNumberInputScreen = ({navigation}) => {
       <UserTopBar navigation={navigation} />
       <View style={styles.dataContainer}>
         <Title>회원가입</Title>
+        <ProgressBar step={2} />
         <View style={styles.inputsContainer}>
           <InputBox 
             description="전화번호를 입력해주세요"

@@ -8,6 +8,7 @@ import { useRef, useState } from 'react';
 import UserTopBar from '../../components/user/UserTopBar';
 import { useDispatch } from 'react-redux';
 import { inputName, inputPersonId } from '../../stores/signUpSlice';
+import ProgressBar from '../../components/user/ProgressBar';
 
 const NameIdInputScreen = ({navigation}) => {
   const emptyCells = '●●●●●●●';
@@ -35,6 +36,7 @@ const NameIdInputScreen = ({navigation}) => {
       <UserTopBar navigation={navigation} />
       <View style={styles.dataContainer}>
         <Title>회원가입</Title>
+        <ProgressBar step={1} />
         <View style={styles.inputsContainer}>
           <InputBox 
             description="이름을 입력해주세요"

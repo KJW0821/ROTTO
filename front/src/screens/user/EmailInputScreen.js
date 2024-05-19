@@ -9,6 +9,7 @@ import UserTopBar from '../../components/user/UserTopBar';
 import { useDispatch } from 'react-redux';
 import { inputEmail } from '../../stores/signUpSlice';
 import { checkEmail } from '../../utils/userApi';
+import ProgressBar from '../../components/user/ProgressBar';
 
 const EmailInputScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -40,6 +41,7 @@ const EmailInputScreen = ({navigation}) => {
       <UserTopBar navigation={navigation} />
       <View style={styles.dataContainer}>
         <Title>회원가입</Title>
+        <ProgressBar step={3} />
         <View style={styles.inputsContainer}>
           <InputBox 
             description="이메일을 입력해주세요"
