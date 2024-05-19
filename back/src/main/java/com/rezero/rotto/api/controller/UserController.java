@@ -5,6 +5,7 @@ import com.rezero.rotto.dto.request.CheckEmailRequest;
 import com.rezero.rotto.dto.request.CheckPhoneNumRequest;
 import com.rezero.rotto.dto.request.ModifyPasswordRequest;
 import com.rezero.rotto.dto.request.SignUpRequest;
+import com.rezero.rotto.dto.request.UpdateAddressRequest;
 import com.rezero.rotto.dto.response.CheckEmailResponse;
 import com.rezero.rotto.dto.response.CheckPhoneNumResponse;
 import com.rezero.rotto.dto.response.UserInfoResponse;
@@ -19,7 +20,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -106,8 +106,9 @@ public class UserController {
         @ApiResponse(responseCode = "400", description = "유효하지 않는 지갑 주소")
     })
     @PatchMapping("/updateAddress")
-    public ResponseEntity<?> updateBCAddress(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestBody String wallet){
+    public ResponseEntity<?> updateBCAddress(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestBody
+        UpdateAddressRequest wallet){
         int userCode = Integer.parseInt(jwtTokenProvider.getPayload(authorizationHeader.substring(7)));
-        return userService.updateBCAddress(userCode, wallet);
+        return userService.updateBCAddress(userCode, wallet.getWallet());
     }
 }
