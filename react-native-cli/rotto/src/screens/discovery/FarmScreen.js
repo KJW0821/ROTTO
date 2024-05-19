@@ -111,8 +111,7 @@ const FarmScreen = ({ route }) => {
               </View>
               <View style={styles.content}>
                 <Text>
-                  안녕하세요. 농부 후안입니다. 저는 바리스타가 아니라 농장
-                  주인인데요..
+                  {farm.farmIntroduce}
                 </Text>
               </View>
             </View>
