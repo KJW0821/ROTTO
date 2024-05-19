@@ -110,29 +110,26 @@ public class FarmSpecification {
     public static Specification<Farm> applySorting(String sort) {
         return (root, query, criteriaBuilder) -> {
             if ("rate".equals(sort)) {
-                // 서브쿼리: 현재 시간(now)과 가장 가까운 endedTime 선택
-                Subquery<LocalDateTime> closestEndedTimeSubquery = query.subquery(LocalDateTime.class);
-                Root<Subscription> subscriptionRoot = closestEndedTimeSubquery.from(Subscription.class);
-                closestEndedTimeSubquery.select(criteriaBuilder.greatest(
-                        criteriaBuilder.<LocalDateTime>selectCase()
-                                .when(criteriaBuilder.greaterThan(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp()), subscriptionRoot.get("endedTime"))
-                                .otherwise(LocalDateTime.MIN)
-                ));
-                closestEndedTimeSubquery.where(criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode")));
+                Root<Subscription> subscriptionRoot = query.from(Subscription.class);
 
-                // 서브쿼리: 선택된 가장 가까운 endedTime 중에서 returnRate가 가장 높은 것 선택
-                Subquery<Double> maxReturnRateSubquery = query.subquery(Double.class);
-                Root<Subscription> subscriptionRoot2 = maxReturnRateSubquery.from(Subscription.class);
-                maxReturnRateSubquery.select(criteriaBuilder.max(subscriptionRoot2.get("returnRate")));
-                maxReturnRateSubquery.where(
-                        criteriaBuilder.and(
-                                criteriaBuilder.equal(subscriptionRoot2.get("farmCode"), root.get("farmCode")),
-                                criteriaBuilder.equal(subscriptionRoot2.get("endedTime"), closestEndedTimeSubquery)
-                        )
-                );
+                // 서브쿼리: 각 농장별로 가장 최근에 종료된 데이터의 endedTime 구하기
+                Subquery<LocalDateTime> maxEndedTimeSubquery = query.subquery(LocalDateTime.class);
+                Root<Subscription> maxEndedTimeRoot = maxEndedTimeSubquery.from(Subscription.class);
+                maxEndedTimeSubquery.select(maxEndedTimeRoot.get("endedTime"))
+                        .where(criteriaBuilder.and(
+                                        criteriaBuilder.equal(maxEndedTimeRoot.get("farmCode"), root.get("farmCode")),
+                                        criteriaBuilder.lessThan(maxEndedTimeRoot.get("endedTime"), LocalDateTime.now())),
+                                criteriaBuilder.greaterThanOrEqualTo(maxEndedTimeRoot.get( "endedTime"), LocalDateTime.now().minusMonths(4))
+                        );
 
-                // 서브쿼리 결과를 통해 정렬
-                query.orderBy(criteriaBuilder.desc(maxReturnRateSubquery));
+                // 메인 쿼리: 서브쿼리에서 구한 가장 최근에 종료된 데이터에 해당하는 returnRate 선택
+                Predicate joinCondition = criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode"));
+                Predicate withinPeriod = criteriaBuilder.lessThan(subscriptionRoot.get("endedTime"), LocalDateTime.now());
+                Predicate maxEndedTimeCondition = subscriptionRoot.get("endedTime").in(maxEndedTimeSubquery);
+                query.where(criteriaBuilder.and(joinCondition, withinPeriod, maxEndedTimeCondition));
+
+                query.orderBy(criteriaBuilder.desc(subscriptionRoot.get("returnRate")));
+
 
 
             } else if ("like".equals(sort)) {
