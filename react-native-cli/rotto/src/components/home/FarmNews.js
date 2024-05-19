@@ -81,7 +81,7 @@ export default FarmNews;
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    margin: 10,
+    marginHorizontal: 10,
     backgroundColor: "white",
   },
   header: {

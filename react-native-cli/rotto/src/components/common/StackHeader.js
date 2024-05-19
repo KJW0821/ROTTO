@@ -13,7 +13,8 @@ const StackHeader = ({
   detail,
   isLiked,
   onPressHeart,
-  returnTo
+  returnTo,
+  empty
 }) => {
   const Navigation = useNavigation();
 
@@ -56,6 +57,7 @@ const StackHeader = ({
           )}
         </Pressable>
       )}
+      {empty && <View style={{width: 50}}></View>}
     </View>
   );
 };
