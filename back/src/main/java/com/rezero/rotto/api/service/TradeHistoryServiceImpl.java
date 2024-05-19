@@ -143,7 +143,7 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
                 .farmName(farm.getFarmName())
                 .farmCode(farm.getFarmCode())
                 .totalSoldPrice(subscription.getTotalSales())
-                .totalExpense(totalExpenses)
+                .totalExpense(totalExpenses + subscription.getFee())
                 .tradeTime(tradeHistory.getTradeTime())
                 .tradeNum(tradeHistory.getTradeNum())
                 .totalProceed(subscription.getTotalProceed())
