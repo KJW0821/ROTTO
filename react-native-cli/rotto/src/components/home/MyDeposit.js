@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image, Dimensions } from "react-native";
-import Colors from "../../constants/Colors";
-import { getMyInvestment } from "../../utils/myInvestmentAmount";
+import {useState, useEffect} from 'react';
+import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
+import Colors from '../../constants/Colors';
+import {getMyInvestment} from '../../utils/myInvestmentAmount';
 
-const { width } = Dimensions.get("window");
+const {width} = Dimensions.get('window');
 
 const MyDeposit = () => {
   const [MyInvestment, setMyInvestment] = useState([]);
@@ -17,32 +17,39 @@ const MyDeposit = () => {
     getList();
   }, []);
 
-
-
   return (
-    
     <View style={styles.componentContainer}>
       <Text style={styles.header}>나의 자산</Text>
       <View style={styles.boxContainer}>
         <View style={styles.depositContainer}>
-          <View style={{ flex: 1, alignItems: "baseline" }}>
+          <View style={{flex: 1, alignItems: 'baseline'}}>
             <Text style={styles.content}>순 자산</Text>
             <Text>
               <Text style={styles.highlight}>
-                {MyInvestment && MyInvestment.totalInvestAmount ? MyInvestment.totalInvestAmount: '-'}
-              </Text>{" "}
+                {MyInvestment && MyInvestment.totalInvestAmount
+                  ? MyInvestment.totalInvestAmount
+                  : '-'}
+              </Text>{' '}
               원
             </Text>
           </View>
 
-          <View style={{ flex: 1, alignItems: "flex-end" }}>
-            <View style={{ flexDirection: "row" }}>
+          <View style={{flex: 1, alignItems: 'flex-end'}}>
+            <View style={{flexDirection: 'row'}}>
               <Text>손익</Text>
-              <Text style={styles.variance}>{MyInvestment && MyInvestment.totalProceed ? MyInvestment.totalProceed : '-'}</Text>
+              <Text style={styles.variance}>
+                {MyInvestment && MyInvestment.totalProceed
+                  ? MyInvestment.totalProceed
+                  : '-'}
+              </Text>
             </View>
-            <View style={{ flexDirection: "row" }}>
+            <View style={{flexDirection: 'row'}}>
               <Text>수익률</Text>
-              <Text style={styles.variance}>{MyInvestment && MyInvestment.totalPercent ? MyInvestment.totalPercent : '-'}</Text>
+              <Text style={styles.variance}>
+                {MyInvestment && MyInvestment.totalPercent
+                  ? MyInvestment.totalPercent
+                  : '-'}
+              </Text>
             </View>
           </View>
         </View>
@@ -51,33 +58,35 @@ const MyDeposit = () => {
           <View>
             <Text style={styles.content}> 투자 현황</Text>
           </View>
-          {MyInvestment.tradeHistoryHomeInfoDtoss && MyInvestment.tradeHistoryHomeInfoDtoss.map((token, index) => (
-            <View key={index}>
-              <View style={styles.itemStyle}>
-                <View style={styles.itemContentStyle}>
-                  <Image
-                    source={require("../../../assets/images/farmfarm.png")}
-                    style={{ width: 60, height: 60 }}
-                  />
-                  <View style={{ marginLeft: 10 }}>
-                    <Text style={styles.itemContent}>{token.title}</Text>
-                    <Text style={styles.itemSubContent}>{token.tokenNum} ROTTO </Text>
+          {MyInvestment && MyInvestment.tradeHistoryHomeInfoDtoss &&
+            MyInvestment.tradeHistoryHomeInfoDtoss.map((token, index) => (
+              <View key={index}>
+                <View style={styles.itemStyle}>
+                  <View style={styles.itemContentStyle}>
+                    <Image
+                      source={require('../../../assets/images/farmfarm.png')}
+                      style={{width: 60, height: 60}}
+                    />
+                    <View style={{marginLeft: 10}}>
+                      <Text style={styles.itemContent}>{token.title}</Text>
+                      <Text style={styles.itemSubContent}>
+                        {token.tokenNum} ROTTO{' '}
+                      </Text>
+                    </View>
+                  </View>
+                  <View>
+                    <Text style={{marginRight: 10}}></Text>
+                    <Text style={{marginRight: 5}}>{token.expenses}원</Text>
                   </View>
                 </View>
-                <View>
-                  <Text style={{ marginRight: 10 }}></Text>
-                  <Text style={{ marginRight: 5 }}>{token.expenses}원</Text>
-                </View>
               </View>
-            </View>
-          ))}
+            ))}
           <View>
             <Text>상세 보기</Text>
           </View>
         </View>
       </View>
     </View>
-
   );
 };
 
@@ -86,13 +95,13 @@ export default MyDeposit;
 const styles = StyleSheet.create({
   componentContainer: {
     marginTop: 20,
-    position: "relative",
+    position: 'relative',
   },
   header: {
-    fontFamily: "pretendard-extraBold",
+    fontFamily: 'pretendard-extraBold',
     fontSize: 18,
     marginHorizontal: 25,
-    color: "white",
+    color: 'white',
   },
   boxContainer: {
     marginTop: 10,
@@ -101,38 +110,38 @@ const styles = StyleSheet.create({
     // height: 200,
     borderRadius: 15,
     padding: 25,
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
   depositContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    alignContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: 'space-between',
     flex: 1,
   },
   iconContainer: {
     marginTop: 15,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
-    fontFamily: "pretendard-bold",
+    fontFamily: 'pretendard-bold',
     fontSize: 17,
     marginBottom: 10,
   },
   content: {
-    fontFamily: "pretendard-regular",
+    fontFamily: 'pretendard-regular',
     fontSize: 18,
     margin: 10,
   },
   highlight: {
-    fontFamily: "pretendard-bold",
+    fontFamily: 'pretendard-bold',
     fontSize: 25,
   },
   variance: {
-    fontFamily: "pretendard-regular",
+    fontFamily: 'pretendard-regular',
     fontSize: 15,
-    color: "red",
+    color: 'red',
   },
   depositDetail: {
     marginTop: 20,
@@ -146,23 +155,23 @@ const styles = StyleSheet.create({
   },
   itemStyle: {
     marginBottom: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   itemContentStyle: {
     marginHorizontal: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   itemContent: {
-    fontFamily: "pretendard-regular",
+    fontFamily: 'pretendard-regular',
     fontSize: 12,
-    coloc: "grey",
+    coloc: 'grey',
   },
   itemSubContent: {
-    fontFamily: "pretendard-bold",
+    fontFamily: 'pretendard-bold',
     fontSize: 16,
   },
 });
