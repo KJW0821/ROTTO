@@ -33,6 +33,7 @@ const TransactionScreen = ({navigation}) => {
 
   const transactionHandler = () => {
     navigation.navigate('transactionBioAuth', { amount });
+    setAmount();
   };
   
   return (
