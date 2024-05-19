@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.rezero.rotto.dto.dto.SubscriptionListDto;
 import com.rezero.rotto.dto.request.AccountDepositRequest;
 import com.rezero.rotto.dto.request.CreateTokenRequest;
+import com.rezero.rotto.dto.request.DistributeRequest;
 import com.rezero.rotto.dto.request.PayTokensRequest;
 import com.rezero.rotto.dto.request.RefundsTokenRequest;
 import com.rezero.rotto.dto.response.SubscriptionDetailResponse;
@@ -258,13 +259,15 @@ public class SubscriptionServiceImpl implements SubscriptionService{
             if(count == 0) continue;
             User user = userRepository.findByUserCode(history.getUserCode());
             String walletAddress = user.getBcAddress();
-            PayTokensRequest request = new PayTokensRequest();
-            request.setCode(subscription.getSubscriptionCode());
-            request.setAddress(walletAddress);
+            DistributeRequest request = new DistributeRequest();
+            request.setSubscription(subscription);
+            request.setUserCode(user.getUserCode());
             request.setAmount(count);
 
+
+
             // ROTTO 발급 수행
-            ResponseEntity<?> responseEntity = blockChainService.distributeToken(request);
+            ResponseEntity<?> responseEntity = blockChainService.distributeTokens(request);
              if(responseEntity.getStatusCode() != HttpStatus.OK){
                 return responseEntity;
              }
@@ -320,8 +323,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                     int getTokens = Math.min(temp, applyCount);
                     result.replace(history.getUserCode(), getTokens);
 
-                    if(getTokens < limit)   queue.offer(history);
-                    else currentCount += (temp - applyCount);
+                    if(getTokens < limit && applyCount > getTokens)   queue.offer(history);
+                    if(temp > applyCount) currentCount += (temp - applyCount);
                 }
             }while(!queue.isEmpty() && currentCount >= list.size());
 
@@ -441,7 +444,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         subscription.setTotalProceed(totalProceed);
         subscriptionRepository.save(subscription);
 
-        double ROTTOprice = Math.ceil((double)totalProceed / subscription.getTotalTokenCount());
+        double ROTTOprice = (double)totalProceed / subscription.getTotalTokenCount();
         logger.info("[refundSubscription] ROTTOprice: " + ROTTOprice);
         Optional<List<ApplyHistory>> applyHistories = applyHistoryRepository.findBySubscriptionCodeAndIsDelete(
             subscription.getSubscriptionCode(), 0);
