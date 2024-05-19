@@ -38,7 +38,7 @@ const MyDeposit = () => {
               <Text style={styles.variance}>
                 ( +{' '}
                 {MyInvestment && MyInvestment.totalPercent
-                  ? MyInvestment.totalPercent
+                  ? MyInvestment.totalPercent.toFixed(2)
                   : '-'}
                 % )
               </Text>
