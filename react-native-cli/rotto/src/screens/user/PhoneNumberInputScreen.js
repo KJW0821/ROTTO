@@ -49,7 +49,7 @@ const PhoneNumberInputScreen = ({navigation}) => {
           >
             <Text style={styles.inputText}>010-</Text>
             <TextInput 
-              style={[styles.inputText, {flex: 1}]} 
+              style={[styles.inputText, {flex: 1, padding: 0}]} 
               autoCorrect={false}
               underlineColorAndroid="transparent"
               onChangeText={phoneNumberInputHandler}
@@ -61,7 +61,7 @@ const PhoneNumberInputScreen = ({navigation}) => {
               phoneNumber.length ?
               <MaterialIcons style={{ marginRight: 4 }} name="cancel" size={18} color={Colors.iconGray} onPress={() => setPhoneNumber('')} /> : <></>
             }
-            <CustomButton disabled={phoneNumber.length !== 9} onPress={checkPhoneNumberValidity} style={{ backgroundColor: 'black', width: '16%', height: 22 }} btnColor='black'>중복 확인</CustomButton>
+            <CustomButton disabled={phoneNumber.length !== 9} onPress={checkPhoneNumberValidity} style={{ backgroundColor: 'black', width: '18%', height: 22 }} btnColor='black'>중복 확인</CustomButton>
           </InputBox>
         </View>
         { isChecked === false && <Text style={[styles.warnText, styles.caution]}>이미 가입된 번호입니다.</Text> }

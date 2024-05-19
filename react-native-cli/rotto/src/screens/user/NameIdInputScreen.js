@@ -41,7 +41,7 @@ const NameIdInputScreen = ({navigation}) => {
             title="이름"
           >
             <TextInput 
-              style={[styles.inputText, {flex: 1}]} 
+              style={[styles.inputText, {flex: 1, padding: 0}]} 
               autoCorrect={false}
               autoCapitalize="none"
               underlineColorAndroid="transparent"

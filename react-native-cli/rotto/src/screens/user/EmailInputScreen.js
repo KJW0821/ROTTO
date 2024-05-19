@@ -46,7 +46,7 @@ const EmailInputScreen = ({navigation}) => {
             title="이메일"
           >
             <TextInput 
-              style={[styles.inputText, {flex: 1}]} 
+              style={[styles.inputText, {flex: 1, padding: 0}]} 
               underlineColorAndroid="transparent"
               onChangeText={emailInputHandler}
               autoCorrect={false}
@@ -57,7 +57,7 @@ const EmailInputScreen = ({navigation}) => {
               email.length ?
               <MaterialIcons style={{ marginRight: 4 }} name="cancel" size={18} color={Colors.iconGray} onPress={() => setEmail('')} /> : <></>
             }
-            <CustomButton disabled={!isValidEmail} onPress={checkEmailValidity} style={{ backgroundColor: 'black', width: '16%', height: 22 }} btnColor='black'>중복 확인</CustomButton>
+            <CustomButton disabled={!isValidEmail} onPress={checkEmailValidity} style={{ backgroundColor: 'black', width: '18%', height: 22 }} btnColor='black'>중복 확인</CustomButton>
           </InputBox>
         </View>
         {
