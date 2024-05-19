@@ -1,4 +1,6 @@
 import {
+  ActivityIndicator,
+  Dimensions,
   FlatList,
   Modal,
   Pressable,
@@ -35,21 +37,6 @@ let fundingData = [
   { index: 2, name: "진행중", value: 1 },
 ];
 
-// let beanData = [
-//   { index: 0, name: "선택 안함", value: null },
-//   { index: 1, name: "브라질 산토스", value: "브라질 산토스" },
-//   { index: 2, name: "콜롬비아 수프리모", value: "콜롬비아 수프리모" },
-//   { index: 3, name: "자메이카 블루마운틴", value: "자메이카 블루마운틴" },
-//   { index: 4, name: "에티오피아 예가체프", value: "에티오피아 예가체프" },
-//   { index: 5, name: "케냐 AA", value: "케냐 AA" },
-//   { index: 6, name: "코스타리카 따라주", value: "코스타리카 따라주" },
-//   { index: 7, name: "탄자니아 AA", value: "탄자니아 AA" },
-//   { index: 8, name: "예멘 모카 마타리", value: "예멘 모카 마타리" },
-//   { index: 9, name: "하와이 코나", value: "하와이 코나" },
-//   { index: 10, name: "과테말라 안티구아", value: "과테말라 안티구아" },
-//   { index: 11, name: "파나마 게이샤", value: "파나마 게이샤" },
-//   { index: 12, name: "엘살바도르", value: "엘살바도르" },
-// ];
 let beanData = [
   { index: 0, name: "선택 안함", value: null },
   { index: 1, name: "자메이카 블루마운틴", value: "자메이카 블루마운틴" },
@@ -59,10 +46,9 @@ let beanData = [
   { index: 5, name: "파나마 게이샤", value: "파나마 게이샤" },
 ];
 
-let deviceWidth;
+const { width } = Dimensions.get("window");
 
 const FarmListScreen = () => {
-  const { width, height } = useWindowDimensions();
   const [farms, setFarms] = useState([]);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState(sortData[0]); // 기본순 선택
@@ -74,10 +60,13 @@ const FarmListScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState(null); // 바텀 시트 표시 내용 선택
   const [keyword, setKeyword] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-
-  deviceWidth = width;
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   const getList = async (
+    page,
     sort,
     keyword,
     isLiked,
@@ -86,7 +75,9 @@ const FarmListScreen = () => {
     maxPrice,
     beanType
   ) => {
+    if (!page) return;
     const res = await getFarmList(
+      page,
       sort,
       keyword,
       isLiked,
@@ -96,6 +87,37 @@ const FarmListScreen = () => {
       beanType
     );
     setFarms(res.farms);
+    setPage((prevPage) => prevPage + 1);
+    setTotalPages(res.totalPages);
+  };
+
+  const loadFarms = async () => {
+    if (page > totalPages) return;
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+    const newFarms = await getFarmList(
+      page,
+      selectedSort.value,
+      keyword,
+      isLiked ? true : null,
+      fundingStatus.value,
+      minPrice,
+      maxPrice,
+      selectedBean.value
+    );
+    if (newFarms.farms.length > 0) {
+      setFarms((prevFarms) => [...prevFarms, ...newFarms.farms]);
+      setPage((prevPage) => prevPage + 1);
+    } else {
+      setHasMore(false); // 더 이상 데이터가 없을 경우
+    }
+    setLoading(false);
+  };
+
+  const renderFooter = () => {
+    if (!loading) return null;
+    return <ActivityIndicator size="large" color={Colors.bgOrg} />;
   };
 
   const applyFilter = (category, name, id) => {
@@ -112,6 +134,7 @@ const FarmListScreen = () => {
 
   useEffect(() => {
     getList(
+      1,
       selectedSort.value,
       keyword,
       isLiked ? true : null,
@@ -241,12 +264,22 @@ const FarmListScreen = () => {
         </View>
       </ScrollView>
       {farms && (
+        // <FlatList
+        //   contentContainerStyle={styles.farmsContainer}
+        //   showsVerticalScrollIndicator={false}
+        //   data={farms}
+        //   keyExtractor={(item) => item.farmCode}
+        //   renderItem={renderFarmList}
+        // />
         <FlatList
           contentContainerStyle={styles.farmsContainer}
           showsVerticalScrollIndicator={false}
           data={farms}
           keyExtractor={(item) => item.farmCode}
           renderItem={renderFarmList}
+          onEndReached={loadFarms}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={renderFooter}
         />
       )}
       {/* <MyBottomSheet
@@ -429,14 +462,16 @@ const FarmListScreen = () => {
                         onChangeText={(keyword) => setKeyword(keyword)}
                         value={keyword}
                         placeholder="검색"
-                        style={{width:"83%"}}
+                        style={{ width: "83%" }}
                       />
-                      {keyword && <Ionicons
-                        name="close-circle-outline"
-                        size={24}
-                        color={Colors.fontGray}
-                        onPress={() => setKeyword(null)}
-                      />}
+                      {keyword && (
+                        <Ionicons
+                          name="close-circle-outline"
+                          size={24}
+                          color={Colors.fontGray}
+                          onPress={() => setKeyword(null)}
+                        />
+                      )}
                     </View>
                   </View>
                 )}

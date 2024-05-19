@@ -17,7 +17,7 @@ const FarmDetail = ({ data }) => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    console.log(data);
+    // console.log(data);
   }, []);
 
   return (
