@@ -94,7 +94,7 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
                     .tradeNum(tradeHistory.getTradeNum())
                     .refund(tradeHistory.getRefund())
                     .totalTokenCount(subscription.getTotalTokenCount())
-                    .proceed(tradeHistory.getTradeNum() * tradeHistory.getTokenPrice())
+                    .proceed((int)Math.floor(tradeHistory.getTradeNum() * tradeHistory.getTokenPrice()))
                     .build();
 
             tradeHistoryOwnListDtos.add(tradeHistoryListDto);
@@ -147,10 +147,11 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
                 .tradeTime(tradeHistory.getTradeTime())
                 .tradeNum(tradeHistory.getTradeNum())
                 .totalProceed(subscription.getTotalProceed())
-                .myProceed(tradeHistory.getTradeNum() * tradeHistory.getTokenPrice())
+                .myProceed((int)Math.floor(tradeHistory.getTradeNum() * tradeHistory.getTokenPrice()))
                 .refund(tradeHistory.getRefund())
                 .totalTokenCount(subscription.getTotalTokenCount())
                 .tradeHistoryExpenseDetailOfSubDtoList(tradeHistoryExpenseDetailOfSubDtos)
+                .fee(subscription.getFee())
                 .build();
 
 

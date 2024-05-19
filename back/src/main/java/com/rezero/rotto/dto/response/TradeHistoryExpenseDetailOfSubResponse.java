@@ -26,4 +26,5 @@ public class TradeHistoryExpenseDetailOfSubResponse {
     private int refund;
     private int totalTokenCount;
     private List<TradeHistoryExpenseDetailOfSubDto> tradeHistoryExpenseDetailOfSubDtoList;
+    private int fee;
 }
