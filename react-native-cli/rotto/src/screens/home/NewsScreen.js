@@ -11,7 +11,6 @@ const NewsScreen = () => {
   const getList = async () => {
     try {
       const res = await getFarmNewsList();
-      console.log(res);
       setfarmNewsList(res);
     } catch (err) {
       //console.error("FarmNews getList error: ", error);

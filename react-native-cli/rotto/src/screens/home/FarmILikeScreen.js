@@ -22,7 +22,6 @@ const FarmILikeListScreen = () => {
 
   const getList = async () => {
     const res = await getFarmILikeList();
-    console.log(res.data.farms);
     setfarmILikeList(res.data.farms);
   };
 
@@ -33,7 +32,6 @@ const FarmILikeListScreen = () => {
   const Navigation = useNavigation();
 
   const rendeFarmILikeList = itemData => {
-    console.log(itemData);
     return (
       <Pressable
         key={itemData.item.farmCode}
