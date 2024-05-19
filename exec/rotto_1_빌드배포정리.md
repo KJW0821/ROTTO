@@ -277,3 +277,27 @@
         expiration_time: <expiration time>
     EOF
     ```
+
+### 4. BlockChain 빌드 및 배포
+1. env 파일 추가
+```
+MNEMONIC="(관리자 metamask 지갑 비밀복구구문)"
+rpcUrl="https://rpc.ssafy-blockchain.com"
+networkId=31221
+```
+
+2. Truffle 설치
+```
+npm install -g truffle@5.11.5
+```
+
+3. BlockChain 폴더 이동 및 빌드
+```
+cd smartContract
+truffle compile
+```
+
+4. 배포
+```
+truffle migrate
+```
