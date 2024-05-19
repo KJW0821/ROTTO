@@ -25,6 +25,7 @@ const MyWallet = () => {
     address,
     chainId: CHAIN_ID,
     token: tokenAddress,
+    watch: true,
     onSuccess: () => {
       //console.log(data);
     },
