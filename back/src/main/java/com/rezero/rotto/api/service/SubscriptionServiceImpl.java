@@ -113,7 +113,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         for (Subscription subscription : pageSubscriptions) {
             Farm farm = farmRepository.findByFarmCode(subscription.getFarmCode());
             int subscriptionCode = subscription.getSubscriptionCode();
-            Integer applyCount = applyHistoryRepository.sumApplyCountBySubscriptionCode(subscriptionCode);
+            Integer applyCount = applyHistoryRepository.sumApplyCountBySubscriptionCodeAndIsDelete(subscriptionCode);
             applyCount = (applyCount != null) ? applyCount : 0;
 
             // 현재 시각
