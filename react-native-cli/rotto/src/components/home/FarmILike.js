@@ -69,7 +69,7 @@ const FarmILike = () => {
             )}
             <Pressable
               style={styles.itemStyle}
-              onPress={() => Navigation.navigate('farmList')}>
+              onPress={() => Navigation.navigate('발견', {screen: 'farmList'})}>
               <View style={styles.itemContentStyle}>
                 <View
                   style={{

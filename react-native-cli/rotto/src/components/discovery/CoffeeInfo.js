@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     width: '95%',
     alignItems: 'flex-start',
     marginTop: 10,
-    height: width * 0.3,
+    height: width * 0.35,
   },
   descriptionFont: {
     fontFamily: 'pretendard-regular',
