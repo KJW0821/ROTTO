@@ -170,7 +170,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("청약내역이 없습니다.");
         }
 
-        Integer applyCount = applyHistoryRepository.sumApplyCountBySubscriptionCode(subscriptionCode);
+        Integer applyCount = applyHistoryRepository.sumApplyCountBySubscriptionCodeAndIsDelete(subscriptionCode);
         ApplyHistory applyHistory1 = applyHistoryRepository.findByUserCodeAndSubscriptionCode(userCode, subscriptionCode);
 
         int isApplies = 0; // 청약 신청 여부 (0 : 신청하지 않음 or 신청 취소, 1 : 신청함) -> isDelete와 반대됨.
