@@ -11,6 +11,7 @@ const MyDeposit = () => {
   const getList = async () => {
     const res = await getMyInvestment();
     setMyInvestment(res);
+    console.log('MyDeposit mounted', res);
   };
 
   useEffect(() => {
@@ -23,7 +24,7 @@ const MyDeposit = () => {
       <View style={styles.boxContainer}>
         <View style={styles.depositContainer}>
           <View style={{flex: 1, alignItems: 'baseline'}}>
-            <Text style={styles.content}>순 자산</Text>
+            <Text style={styles.content}>총 투자금액</Text>
             <Text>
               <Text style={styles.highlight}>
                 {MyInvestment && MyInvestment.totalInvestAmount
@@ -32,41 +33,62 @@ const MyDeposit = () => {
               </Text>{' '}
               원
             </Text>
-          </View>
-
-          <View style={{flex: 1, alignItems: 'flex-end'}}>
             <View style={{flexDirection: 'row'}}>
-              <Text>손익</Text>
+              {/* <Text> */}
               <Text style={styles.variance}>
-                {MyInvestment && MyInvestment.totalProceed
-                  ? MyInvestment.totalProceed
-                  : '-'}
-              </Text>
-            </View>
-            <View style={{flexDirection: 'row'}}>
-              <Text>수익률</Text>
-              <Text style={styles.variance}>
+                ( +{' '}
                 {MyInvestment && MyInvestment.totalPercent
                   ? MyInvestment.totalPercent
                   : '-'}
+                % )
               </Text>
+              {/* </Text> */}
             </View>
           </View>
+
+          {/* <View style={{flex: 1, alignItems: 'flex-end'}}>
+            <View style={{flexDirection: 'row'}}>
+              <Text>
+                손익
+                <Text style={styles.variance}>
+                  {MyInvestment && MyInvestment.totalProceed
+                    ? MyInvestment.totalProceed.toLocaleString('ko-KR')
+                    : '-'}
+                </Text>
+                원
+              </Text>
+            </View>
+          </View> */}
         </View>
         <View style={styles.line}></View>
         <View>
           <View>
-            <Text style={styles.content}> 투자 현황</Text>
+            <Text style={styles.content}>투자 현황</Text>
           </View>
-          {MyInvestment && MyInvestment.tradeHistoryHomeInfoDtoss &&
+          {MyInvestment &&
+            MyInvestment.tradeHistoryHomeInfoDtoss &&
             MyInvestment.tradeHistoryHomeInfoDtoss.map((token, index) => (
               <View key={index}>
                 <View style={styles.itemStyle}>
                   <View style={styles.itemContentStyle}>
-                    <Image
-                      source={require('../../../assets/images/farmfarm.png')}
-                      style={{width: 60, height: 60}}
-                    />
+                    {token.title === '투자 신청' && (
+                      <Image
+                        source={require('../../../assets/images/home/submit.png')}
+                        style={{width: 40, height: 60, resizeMode: 'contain'}}
+                      />
+                    )}
+                    {token.title === '투자 보유' && (
+                      <Image
+                        source={require('../../../assets/images/home/coin.png')}
+                        style={{width: 40, height: 60, resizeMode: 'contain'}}
+                      />
+                    )}
+                    {token.title === '투자 정산' && (
+                      <Image
+                        source={require('../../../assets/images/home/money.png')}
+                        style={{width: 40, height: 60, resizeMode: 'contain'}}
+                      />
+                    )}
                     <View style={{marginLeft: 10}}>
                       <Text style={styles.itemContent}>{token.title}</Text>
                       <Text style={styles.itemSubContent}>
@@ -76,14 +98,13 @@ const MyDeposit = () => {
                   </View>
                   <View>
                     <Text style={{marginRight: 10}}></Text>
-                    <Text style={{marginRight: 5}}>{token.expenses.toLocaleString('ko-KR')}원</Text>
+                    <Text style={{marginRight: 5}}>
+                      {token.expenses.toLocaleString('ko-KR')}원
+                    </Text>
                   </View>
                 </View>
               </View>
             ))}
-          <View>
-            <Text>상세 보기</Text>
-          </View>
         </View>
       </View>
     </View>
@@ -130,17 +151,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   content: {
-    fontFamily: 'pretendard-regular',
+    fontFamily: 'pretendard-bold',
     fontSize: 18,
-    margin: 10,
+    marginBottom: 10,
   },
   highlight: {
-    fontFamily: 'pretendard-bold',
+    fontFamily: 'pretendard-extraBold',
     fontSize: 25,
   },
   variance: {
     fontFamily: 'pretendard-regular',
-    fontSize: 15,
+    fontSize: 13,
     color: 'red',
   },
   depositDetail: {
@@ -149,7 +170,7 @@ const styles = StyleSheet.create({
   },
   line: {
     // height:1,
-    marginTop: 20,
+    marginVertical: 20,
     borderColor: Colors.fontGray,
     borderWidth: 0.5,
   },

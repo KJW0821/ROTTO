@@ -26,7 +26,7 @@ const MyBanner = () => {
   return (
     <View style={styles.carouselContainer}>
       <Text style={styles.header}>공지사항</Text>
-      <ScrollView
+      {/* <ScrollView
         horizontal={true}
         pagingEnabled={true}
         showsHorizontalScrollIndicator={false}
@@ -34,7 +34,7 @@ const MyBanner = () => {
         onScroll={handleScroll}
         ref={scrollViewRef}
         scrollEventThrottle={16}
-      >
+      > */}
         <TouchableOpacity onPress={() => Navigation.navigate("announcement")}>
           <View
             style={[
@@ -43,7 +43,7 @@ const MyBanner = () => {
                 backgroundColor: "#209FF9",
                 flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "space-between",
+                justifyContent: "space-between"
               },
             ]}
           >
@@ -53,6 +53,7 @@ const MyBanner = () => {
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
+                  paddingTop: 20,
                 },
               ]}
             >
@@ -70,10 +71,10 @@ const MyBanner = () => {
               </View>
               <Image
                 source={require("../../../assets/images/farmfarm.png")}
-                style={{ width: 140, height: 140, resizeMode: "contain", flex:1 }}
+                style={{width: width * 0.25, height:  width*0.25, resizeMode: "contain", flex:1 }}
               />
             </View>
-            <View style={styles.indicatorContainer}>
+            {/* <View style={styles.indicatorContainer}>
               {[...Array(3).keys()].map((index) => (
                 <View
                   key={index}
@@ -83,11 +84,11 @@ const MyBanner = () => {
                   ]}
                 />
               ))}
-            </View>
+            </View> */}
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => Navigation.navigate("announcement")}>
+        {/* <TouchableOpacity onPress={() => Navigation.navigate("announcement")}>
           <View
             style={[
               styles.item,
@@ -105,6 +106,7 @@ const MyBanner = () => {
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
+                  paddingTop: 20,
                 },
               ]}
             >
@@ -121,7 +123,7 @@ const MyBanner = () => {
               </View>
               <Image
                 source={require("../../../assets/images/farmfarm.png")}
-                style={{ width: 150, height: 150, resizeMode: "contain" }}
+                style={{width: width * 0.25, height:  width*0.25, resizeMode: "contain" }}
               />
             </View>
             <View style={styles.indicatorContainer}>
@@ -156,6 +158,7 @@ const MyBanner = () => {
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
+                  paddingTop: 20,
                 },
               ]}
             >
@@ -173,8 +176,8 @@ const MyBanner = () => {
               <Image
                 source={require("../../../assets/images/farmfarm.png")}
                 style={{
-                  width: 160,
-                  height: 160,
+                  width: width * 0.25,
+                  height:  width*0.25,
                   resizeMode: "contain",
                   marginLeft: 30,
                 }}
@@ -192,8 +195,8 @@ const MyBanner = () => {
               ))}
             </View>
           </View>
-        </TouchableOpacity>
-      </ScrollView>
+        </TouchableOpacity> */}
+      {/* </ScrollView> */}
     </View>
   );
 };
@@ -214,10 +217,10 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   item: {
-    width: width - 40,
+    width: width * 0.9,
     borderRadius: 15,
     marginTop: 10,
-    marginHorizontal: 20,
+    marginHorizontal: width * 0.05,
     height: 160,
     justifyContent: "center",
     alignItems: "center",

@@ -140,8 +140,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   itemImage: {
-    width: width - 60,
-    height: width,
+    width: width * 0.7,
+    height: width * 0.7,
     resizeMode: "contain",
   },
   btnContainer: {
