@@ -8,7 +8,7 @@ export const getAccountInfo = async () => {
     return res.data;
   } catch (err) {
     console.error(err);
-    return err;
+    return null;
   }
 };
 
@@ -69,7 +69,7 @@ export const getAccountHistory = async (accountCode) => {
     return res.data;
   } catch (err) {
     console.error('입출금내역 조회 실패' + err)
-    return err;
+    return null;
   }
 };
 
@@ -79,7 +79,7 @@ export const getAccountDeposit = async (accountCode) => {
     return res.data;
   } catch (err) {
     console.error('입금내역 조회 실패' + err)
-    return err;
+    return null;
   }
 };
 
@@ -89,6 +89,6 @@ export const getAccountWithdrawal = async (accountCode) => {
     return res.data;
   } catch (err) {
     console.error('출금내역 조회 실패' + err)
-    return err;
+    return null;
   }
 };

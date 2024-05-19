@@ -56,6 +56,8 @@ const ConnectionScreen = ({navigation}) => {
       if (res.status === 200) {
         dispatch(setSelectedBank(null));
         navigation.navigate('account');
+      } else if (res.status == 302) {
+        navigation.navigate('account');
       } else {
         Alert.alert('계좌번호와 비밀번호를 다시 확인해주세요', '', [{text: '재입력', onPress: resetInfo}]);
       }

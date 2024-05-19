@@ -26,7 +26,7 @@ export const getUserInfo = async () => {
     return res;
   } catch (err) {
     console.error('유저 정보 조회 실패' + err);
-    return err;
+    return null;
   }
 };
 
