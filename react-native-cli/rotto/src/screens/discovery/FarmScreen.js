@@ -171,13 +171,13 @@ const FarmScreen = ({ route }) => {
                     key={item}
                     onPress={() =>
                       openModal(
-                        `${S3URL}/farm_img/1/farm${item}.jpg`
+                        `${S3URL}/farm_img/${farm.farmCode}/farm${item}.jpg`
                       )
                     }
                   >
                     <Image
                       source={{
-                        uri: `${S3URL}/farm_img/1/farm${item}.jpg`,
+                        uri: `${S3URL}/farm_img/${farm.farmCode}/farm${item}.jpg`,
                       }}
                       style={{
                         width: (width / 100) * 32,
