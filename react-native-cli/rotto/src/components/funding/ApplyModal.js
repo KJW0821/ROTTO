@@ -40,7 +40,7 @@ const ApplyModal = () => {
 
   const applyHandler = async () => {
     if (fundingAccount.accountBalance < fundingData.confirmPrice * amount) {
-      return Alert.alert('', '펀딩 계좌에 잔액이 부족합니다.', [
+      return Alert.alert('', '청약 계좌에 잔액이 부족합니다.', [
         { text: '확인', onPress: () => {
           dispatch(setApplyModal(false));
           setAmount('');

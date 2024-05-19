@@ -29,9 +29,9 @@ const FilterBar = () => {
     ],
     subsStatus: [
       { value: null, text: '전체' },
-      { value: 0, text: '펀딩 예정' },
-      { value: 1, text: '펀딩 진행중' },
-      { value: 2, text: '펀딩 마감' }
+      { value: 0, text: '청약 예정' },
+      { value: 1, text: '청약 진행중' },
+      { value: 2, text: '청약 마감' }
     ],
     beanType: [
       { text: '선택 안함', value: null },

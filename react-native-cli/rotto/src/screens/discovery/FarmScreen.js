@@ -76,7 +76,7 @@ const FarmScreen = ({ route }) => {
                   <View
                     style={[styles.badge, { backgroundColor: Colors.btnBlue }]}
                   >
-                    <Text style={styles.badgeText}>펀딩진행중</Text>
+                    <Text style={styles.badgeText}>청약진행중</Text>
                   </View>
                 )}
                 {farm.isFunding && (

@@ -72,7 +72,7 @@ const FundingList = ({navigation}) => {
         };
       case 1:
         return {
-          text: '펀딩 진행중',
+          text: '청약 진행중',
           color: Colors.btnBlue
         }
       case 2:

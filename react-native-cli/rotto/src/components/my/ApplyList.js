@@ -56,7 +56,7 @@ const ApplyList = ({navigation}) => {
             onPress={() => {
               if (dayjs(itemData.item.endTime) >= dayjs()) {
                 navigation.navigate('Routers', {
-                  screen: '펀딩',
+                  screen: '청약',
                   params: {
                     screen: 'fundingDetail',
                     params: { subscriptionCode: itemData.item.subscriptionCode }

@@ -40,7 +40,7 @@ const Routers = () => {
         }}
       />
       <Tab.Screen
-        name="펀딩"
+        name="청약"
         component={FundingRouters}
         options={{
           tabBarIcon: () => (

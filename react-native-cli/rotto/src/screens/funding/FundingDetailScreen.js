@@ -40,9 +40,9 @@ const FundingDetailScreen = ({navigation, route}) => {
         };
       case 1:
         return {
-          text: '펀딩 진행중',
+          text: '청약 진행중',
           color: Colors.btnBlue,
-          endText: `펀딩 마감 D-${Math.floor(dayjs(endTime).add(9, 'hour').diff(dayjs(), "day", true))}`
+          endText: `청약 마감 D-${Math.floor(dayjs(endTime).add(9, 'hour').diff(dayjs(), "day", true))}`
         }
       case 2:
         return {
@@ -95,14 +95,14 @@ const FundingDetailScreen = ({navigation, route}) => {
           <View style={styles.contentContainer}>
             <View style={styles.menuContainer}>
               <MaterialCommunityIcons name="registered-trademark" size={18} color="black" />
-              <Text style={styles.menuText}>펀딩 목표 수량</Text>
+              <Text style={styles.menuText}>청약 목표 수량</Text>
             </View>
             <Text style={styles.contentText}>{fundingData.totalTokenCount.toLocaleString('ko-KR')} ROTTO</Text>
           </View>
           <View style={styles.contentContainer}>
             <View style={styles.menuContainer}>
               <MaterialCommunityIcons name="registered-trademark" size={18} color="black" />
-              <Text style={styles.menuText}>펀딩 최대 수량</Text>
+              <Text style={styles.menuText}>청약 최대 수량</Text>
             </View>
             <Text style={styles.contentText}>{fundingData.limitNum} ROTTO</Text>
           </View>
@@ -128,7 +128,7 @@ const FundingDetailScreen = ({navigation, route}) => {
           <View style={styles.contentContainer}>
             <View style={styles.menuContainer}>
               <MaterialCommunityIcons name="chart-line" size={18} color="black" />
-              <Text style={styles.menuText}>지난 펀딩 수익률</Text>
+              <Text style={styles.menuText}>지난 청약 수익률</Text>
             </View>
             <Text style={[styles.contentText, { color: fundingData.returnRate < 0 ? 'blue' : 'red' }]}>{fundingData.returnRate > 0 && '+'}{fundingData.returnRate}%</Text>
           </View>
@@ -141,7 +141,7 @@ const FundingDetailScreen = ({navigation, route}) => {
               screen: '발견',
               params: {
                 screen: 'farm',
-                params: { farmCode: fundingData.farmCode, returnTo: '펀딩' }
+                params: { farmCode: fundingData.farmCode, returnTo: '청약' }
               }
             })}>
               <Text style={styles.contentText}>농장 상세 정보 {'>'}</Text>
