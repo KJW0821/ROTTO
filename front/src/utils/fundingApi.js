@@ -10,7 +10,7 @@ export const getFundingList = async (params) => {
     return res.data;
   } catch (err) {
     console.error(err);
-    return err;
+    return null;
   }
 };
 
@@ -20,7 +20,7 @@ export const getFundingDetail = async (subscriptionCode) => {
     return res.data;
   } catch (err) {
     console.error(err);
-    return err;
+    return null;
   }
 };
 

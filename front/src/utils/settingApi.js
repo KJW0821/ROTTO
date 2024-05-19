@@ -8,7 +8,7 @@ export const createRequest = async (data) => {
     return res.data;
   } catch (err) {
     console.error(err);
-    return err;
+    return null;
   }
 };
 
@@ -18,7 +18,7 @@ export const getRequestList = async () => {
     return res.data;
   } catch (err) {
     console.error(err);
-    return err;
+    return null;
   }
 };
 
@@ -28,7 +28,7 @@ export const getRequestDetail = async (reqBoardCode) => {
     return res.data;
   } catch (err) {
     console.error(err);
-    return err;
+    return null;
   }
 };
 
@@ -38,6 +38,6 @@ export const getTerms = async () => {
     return res.data;
   } catch (err) {
     console.error(err);
-    return err;
+    return null;
   }
 };

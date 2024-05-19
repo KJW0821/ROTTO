@@ -6,7 +6,7 @@ export const getApplyHistory = async () => {
     return res.data;
   } catch (err) {
     console.error(err);
-    return err;
+    return null;
   }
 };
 
@@ -16,7 +16,7 @@ export const getTradeHistory = async () => {
     return res.data;
   } catch (err) {
     console.error(err);
-    return err;
+    return null;
   }
 };
 
@@ -26,7 +26,7 @@ export const getCancelHistory = async () => {
     return res.data;
   } catch (err) {
     console.error(err);
-    return err;
+    return null;
   }
 };
 
@@ -36,7 +36,7 @@ export const getOwnHistory = async () => {
     return res.data;
   } catch (err) {
     console.error(err);
-    return err;
+    return null;
   }
 };
 
@@ -46,6 +46,6 @@ export const getOwnDetail = async (subscriptionCode) => {
     return res.data;
   } catch (err) {
     console.error(err);
-    return err;
+    return null;
   }
 };
