@@ -127,14 +127,14 @@
 
 
     server {
-        if ($host = j10e205.p.ssafy.io) {
+        if ($host = k10e105.p.ssafy.io) {
             return 301 https://$host$request_uri;
         } # managed by Certbot
 
 
             listen 80 ;
             listen [::]:80 ;
-        server_name j10e205.p.ssafy.io;
+        server_name k10e105.p.ssafy.io;
         return 404; # managed by Certbot
     }
 
