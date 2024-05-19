@@ -273,9 +273,8 @@ const FarmListScreen = () => {
               <ScrollView>
                 {selectedCategory === "sort" &&
                   sortData.map((sortItem) => (
-                    <View style={styles.filterItem}>
+                    <View key={sortItem.index} style={styles.filterItem}>
                       <Pressable
-                        key={sortItem.index}
                         onPress={() =>
                           applyFilter("sort", sortItem.name, sortItem.index)
                         }
@@ -304,9 +303,8 @@ const FarmListScreen = () => {
                   ))}
                 {selectedCategory === "funding" &&
                   fundingData.map((item) => (
-                    <View style={styles.filterItem}>
+                    <View style={styles.filterItem} key={item.index}>
                       <Pressable
-                        key={item.index}
                         onPress={() =>
                           applyFilter("funding", item.name, item.index)
                         }
@@ -335,9 +333,8 @@ const FarmListScreen = () => {
                   ))}
                 {selectedCategory === "bean" &&
                   beanData.map((item) => (
-                    <View style={styles.filterItem}>
+                    <View key={item.index} style={styles.filterItem}>
                       <Pressable
-                        key={item.index}
                         onPress={() =>
                           applyFilter("bean", item.name, item.index)
                         }
