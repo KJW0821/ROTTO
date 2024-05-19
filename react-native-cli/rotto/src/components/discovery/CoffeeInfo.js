@@ -37,7 +37,7 @@ export const COFFEE_BEAN_INFO = [
     height: '해발 2350 미터',
     harvest: '12월 ~ 2월',
     description:
-      "아라비아 반도 남서부에 위치한 예멘 국가 마타리에서 생산되는 커피로 '마타리'는 예맨의 최고급 커피 등급으로, 한때 세계 커피 무역의 최고로 꼽혔던 항구인 '모카항'이름을 딴 커피입니다. 세계 3대 원두 중 하나로, 과일맛이 풍부하고 흙 냄새와 다크 초콜릿의 향이 조화롭고, 적절한 쓴맛과 단맛을 지니고 있습니다.",
+      '예멘의 고지대인 퀴마에서 생산되는 커피로, 이름에서 알 수 있듯이 애플 마티니와 같은 상큼한 사과 향을 가지고 있습니다. 또한, 카라멜과 같은 달콤한 맛과 함께 복합적인 향미를 즐길 수 있습니다. 맛의 밸런스가 뛰어나며, 부드럽고 긴 여운이 남습니다.',
     imageUrl: require('../../../assets/images/discovery/coffeebean1.png'),
   },
   {
@@ -63,7 +63,9 @@ const {width} = Dimensions.get('window');
 
 const CoffeeInfo = () => {
   const [selectedItem, setSelectedItem] = useState(null);
-  const [imagePath, setImagePath] = useState(require('../../../assets/images/discovery/coffeebean3.png'));
+  const [imagePath, setImagePath] = useState(
+    require('../../../assets/images/discovery/coffeebean3.png'),
+  );
 
   const updateSelect = id => {
     if (id === selectedItem) {
