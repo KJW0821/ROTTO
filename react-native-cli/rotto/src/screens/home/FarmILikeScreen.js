@@ -1,6 +1,13 @@
 import {useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
-import {FlatList, Pressable, StyleSheet, View, Image, Dimensions} from 'react-native';
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  View,
+  Image,
+  Dimensions,
+} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {Text} from 'react-native-paper';
 import Colors from '../../constants/Colors';
@@ -26,9 +33,17 @@ const FarmILikeListScreen = () => {
   const Navigation = useNavigation();
 
   const rendeFarmILikeList = itemData => {
-    console.log(itemData)
+    console.log(itemData);
     return (
-      <Pressable key={itemData.item.farmCode} style={styles.itemStyle} onPress={() => Navigation.navigate("farm", {farmCode: itemData.item.farmCode})}>
+      <Pressable
+        key={itemData.item.farmCode}
+        style={styles.itemStyle}
+        onPress={() =>
+          Navigation.navigate('발견', {
+            screen: 'farmDetail',
+            params: {farmCode: itemData.item.farmCode},
+          })
+        }>
         <View style={styles.itemContentStyle}>
           <Image
             source={{
@@ -42,7 +57,9 @@ const FarmILikeListScreen = () => {
           </View>
         </View>
         <View>
-          <Text style={{marginRight: 10}}>{itemData.item.isFunding ? "청약 진행중" : "청약 기간 아님" }</Text>
+          <Text style={{marginRight: 10}}>
+            {itemData.item.isFunding ? '청약 진행중' : '청약 기간 아님'}
+          </Text>
         </View>
       </Pressable>
     );
@@ -59,10 +76,10 @@ const FarmILikeListScreen = () => {
             renderItem={rendeFarmILikeList}
           />
         )}
-        <Pressable
-          style={styles.itemStyle}
+        {/* <Pressable
+        style={{height: 40, width: width* 0.9, alignItems: "flex-end"}}
           onPress={() => Navigation.navigate('farmList')}>
-          <View style={styles.itemContentStyle}>
+          <View>
             <Text
               style={{
                 marginLeft: 20,
@@ -73,7 +90,7 @@ const FarmILikeListScreen = () => {
               농장 목록으로 이동
             </Text>
           </View>
-        </Pressable>
+        </Pressable> */}
       </View>
     </>
   );
@@ -90,7 +107,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: 'white',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   header: {
     fontFamily: 'pretendard-extraBold',

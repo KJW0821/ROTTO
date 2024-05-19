@@ -23,7 +23,7 @@ const Top10ListItem = ({ data, index }) => {
   return (
     <Pressable
       onPress={() => {
-        Navigation.navigate("farm", {
+        Navigation.navigate("farmDetail", {
           farmCode: data.farmCode,
         });
       }}

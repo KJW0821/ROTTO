@@ -10,7 +10,7 @@ const DiscoveryRouters = () => {
     <DiscoveryStack.Navigator screenOptions={{ headerShown: false }}>
       <DiscoveryStack.Screen name="discovery" component={DiscoveryScreen} />
       <DiscoveryStack.Screen name="farmList" component={FarmListScreen} />
-      <DiscoveryStack.Screen name="farm" component={FarmScreen} />
+      <DiscoveryStack.Screen name="farmDetail" component={FarmScreen} />
     </DiscoveryStack.Navigator>
   );
 };

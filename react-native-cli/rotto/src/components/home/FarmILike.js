@@ -42,7 +42,10 @@ const FarmILike = () => {
                     key={farm.farmCode}
                     style={styles.itemStyle}
                     onPress={() =>
-                      Navigation.navigate('farm', {farmCode: farm.farmCode})
+                      Navigation.navigate('발견', {
+                        screen: 'farmDetail',
+                        params: {farmCode: farm.farmCode},
+                      })
                     }>
                     <View style={styles.itemContentStyle}>
                       <Image

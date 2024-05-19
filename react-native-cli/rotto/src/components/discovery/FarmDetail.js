@@ -23,7 +23,7 @@ const FarmDetail = ({ data }) => {
   return (
     <Pressable
       onPress={() => {
-        Navigation.navigate("farm", {
+        Navigation.navigate("farmDetail", {
           farmCode: data.farmCode,
         });
       }}
