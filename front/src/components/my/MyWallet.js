@@ -23,6 +23,7 @@ const MyWallet = () => {
     address,
     chainId: process.env.EXPO_PUBLIC_CHAIN_ID,
     token: tokenAddress,
+    watch: true,
     onSuccess: () => {
       //console.log(data);
     },
