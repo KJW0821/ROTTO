@@ -12,7 +12,7 @@ const FarmTOP10 = () => {
   const getList = async () => {
     const res = await getFarmTOP10();
     setFarmsTOP(res.farms);
-    console.log(res)
+    //console.log(res)
   };
 
   useEffect(() => {

@@ -21,7 +21,7 @@ const BioAuthScreen = ({navigation}) => {
           });
   
           if (bioAuth.success) {
-            console.log('생체 인증 성공');
+            //console.log('생체 인증 성공');
             navigation.reset({
               index: 1,
               routes: [{ name: 'Routers' }]
@@ -29,7 +29,7 @@ const BioAuthScreen = ({navigation}) => {
           } else if (bioAuth.error === 'user_fallback') {
             navigation.navigate('PINInput');
           } else {
-            console.log('생체 인증 실패');
+            //console.log('생체 인증 실패');
             navigation.navigate('PINInput');
           }
         } else {

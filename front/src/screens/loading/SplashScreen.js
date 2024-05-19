@@ -25,7 +25,7 @@ const SplashScreen = ({navigation}) => {
           navigation.replace('Onboarding');
         }
       } catch (err) {
-        console.error(err);
+        //console.error(err);
       }
     };
 

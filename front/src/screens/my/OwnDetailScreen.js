@@ -13,7 +13,7 @@ const OwnDetailScreen = ({navigation, route}) => {
     useCallback(() => {
       const getDetailData = async () => {
         const res = await getOwnDetail(subscriptionCode);
-        console.log(res);
+        //console.log(res);
         setData(res);
       };
 

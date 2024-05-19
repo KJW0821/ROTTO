@@ -23,7 +23,7 @@ const TransactionScreen = ({navigation}) => {
       };
 
       getRealAccountData();
-      console.log(connectedAccount);
+      //console.log(connectedAccount);
     }, [])
   );
 
@@ -33,6 +33,7 @@ const TransactionScreen = ({navigation}) => {
 
   const transactionHandler = () => {
     navigation.navigate('transactionBioAuth', { amount });
+    setAmount();
   };
   
   return (

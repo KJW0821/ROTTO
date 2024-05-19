@@ -18,7 +18,7 @@ const FAQScreen = () => {
 
   const getList = async () => {
     const res = await getFAQList();
-    console.log(res);
+    //console.log(res);
     setFaqList(res.faqListDtos);
   };
 

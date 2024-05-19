@@ -13,7 +13,7 @@ const FarmILike = () => {
 
   const getList = async () => {
     const res = await getFarmILikeList();
-    console.log(res.data.farms);
+    //console.log(res.data.farms);
     setfarmILikeList(res.data.farms);
   };
 

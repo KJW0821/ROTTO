@@ -91,7 +91,7 @@ const FarmListScreen = () => {
     beanType
   ) => {
     if (!page) return;
-    console.log("################getList page", page, "#################");
+    //console.log("################getList page", page, "#################");
     const res = await getFarmList(
       page,
       sort,
@@ -102,7 +102,7 @@ const FarmListScreen = () => {
       maxPrice,
       beanType
     );
-    console.log(page, res, "##########################");
+    //console.log(page, res, "##########################");
     setFarms(res.farms);
     setPage((prevPage) => prevPage + 1);
     setTotalPages(res.totalPages);
@@ -123,7 +123,7 @@ const FarmListScreen = () => {
       maxPrice,
       selectedBean.value
     );
-    console.log(newFarms, "loadFarms#########################");
+    //console.log(newFarms, "loadFarms#########################");
     if (newFarms.farms.length > 0) {
       setFarms((prevFarms) => [...prevFarms, ...newFarms.farms]);
       setPage((prevPage) => prevPage + 1);

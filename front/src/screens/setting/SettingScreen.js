@@ -44,8 +44,8 @@ const SettingScreen = ({navigation}) => {
       const getToken = async () => {
         const token = await TokenService.getAccessToken();
         const refresh = await TokenService.getRefreshToken();
-        console.log(token);
-        console.log(refresh);
+        //console.log(token);
+        //console.log(refresh);
       };
   
       getToken();

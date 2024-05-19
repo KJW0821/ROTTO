@@ -7,10 +7,10 @@ export const getFAQList = async (page) => {
         page,
       },
     });
-    console.log(res);
+    //console.log(res);
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
   }
 };
 
@@ -19,6 +19,6 @@ export const getFAQDetail = async (code) => {
     const res = await API.get(`/faq/${code}`);
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
   }
 };

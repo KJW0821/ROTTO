@@ -21,12 +21,12 @@ const BioAuthScreen = ({navigation, route}) => {
           });
   
           if (bioAuth.success) {
-            console.log('생체 인증 성공');
+            //console.log('생체 인증 성공');
             navigation.navigate('transactionResult', { amount });
           } else if (bioAuth.error === 'user_cancel') {
             navigation.goBack();
           } else {
-            console.log('생체 인증 실패');
+            //console.log('생체 인증 실패');
             navigation.navigate('transactionPinAuth', { amount });
           }
         } else {

@@ -29,7 +29,7 @@ const AlertListScreen = () => {
 
   const getList = async () => {
     const res = await getAlertList();
-    console.log(res.alert);
+    //console.log(res.alert);
     setalerts(res.alerts); // 상태 업데이트
   };
 
@@ -98,7 +98,7 @@ const AlertListScreen = () => {
                     alertCode: itemData.item.alertCode,
                   });
                   const readCheck = alerts.map((item) => {
-                    console.log;
+                    //console.log;
                     if (item.alertCode === itemData.item.alertCode) {
                       return { ...item, isRead: true };
                     }

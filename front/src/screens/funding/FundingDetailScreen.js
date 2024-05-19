@@ -21,7 +21,7 @@ const FundingDetailScreen = ({navigation, route}) => {
     useCallback(() => {
       const getDetailedData = async () => {
         const res = await getFundingDetail(subscriptionCode);
-        console.log(res);
+        //console.log(res);
         dispatch(setFundingData(res));
       };
 
