@@ -50,7 +50,7 @@ const InquiryListScreen = ({navigation}) => {
         </View>
         {
           inquiryList && 
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
             {
               inquiryList.map(el => <InquiryCard key={el.reqBoardCode} navigation={navigation} data={el} />)
             }

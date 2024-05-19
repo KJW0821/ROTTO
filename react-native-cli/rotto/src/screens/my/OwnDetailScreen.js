@@ -57,7 +57,7 @@ const OwnDetailScreen = ({navigation, route}) => {
           </View>
           <View style={styles.detailContainer}>
             <Text style={styles.title}>경매 상세 내역</Text>
-            <ScrollView contentContainerStyle={{rowGap: 12}}>
+            <ScrollView contentContainerStyle={{rowGap: 12}} showsVerticalScrollIndicator={false}>
               <Text style={styles.subTitle}>판매 수익</Text>
               <View style={styles.contentContainer}>
                 <Text style={styles.menu}>판매 금액</Text>

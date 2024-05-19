@@ -56,7 +56,7 @@ const FundingDetailScreen = ({navigation, route}) => {
       <DetailTopBar navigation={navigation} />
       {
         fundingData && fundingData.subscriptionCode === subscriptionCode &&
-        <ScrollView style={styles.scrollContainer} contentContainerStyle={{ rowGap: 14 }}>
+        <ScrollView style={styles.scrollContainer} contentContainerStyle={{ rowGap: 14 }} showsVerticalScrollIndicator={false}>
           <View style={styles.badgeContainer}>
             <View style={[styles.badge, { backgroundColor: getState(fundingData.subsStatus, fundingData.startedTime, fundingData.endTime).color }]}>
               <Text style={styles.badgeText}>{getState(fundingData.subsStatus, fundingData.startedTime, fundingData.endTime).text}</Text>

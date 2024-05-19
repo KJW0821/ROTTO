@@ -98,6 +98,7 @@ const FundingList = ({navigation}) => {
   return (
     <View style={styles.container}>
       <FlatList 
+        showsVerticalScrollIndicator={false} 
         ref={listRef}
         data={data}
         renderItem={itemData => {

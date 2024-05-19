@@ -100,6 +100,7 @@ const FundingList = ({navigation}) => {
       <FlatList 
         ref={listRef}
         data={data}
+        showsVerticalScrollIndicator={false}
         renderItem={itemData => {
           return (
             <Pressable 
@@ -153,7 +154,7 @@ const FundingList = ({navigation}) => {
         }}
         contentContainerStyle={{ flexGrow: 1 }}
         onEndReached={onEndReached}
-        onEndReachedThreshold={0.6}
+        onEndReachedThreshold={1}
         ListFooterComponent={loading && <ActivityIndicator />}
         onRefresh={onRefresh}
         refreshing={refreshing}
