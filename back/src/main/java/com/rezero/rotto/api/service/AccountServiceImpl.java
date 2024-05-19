@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -215,6 +216,12 @@ public class AccountServiceImpl implements AccountService{
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
+        }
+
+        // 계좌와 연결되어 있는지 판단함.
+        Account isConnected = accountRepository.findByUserCodeAndAccountType(userCode, 1);
+        if(isConnected != null){
+            return ResponseEntity.status(HttpStatus.FOUND).body("이미 계좌와 연결되어 있습니다.");
         }
 
         LocalDateTime now = LocalDateTime.now();
