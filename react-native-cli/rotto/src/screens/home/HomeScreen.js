@@ -26,8 +26,8 @@ const HomeScreen = ({ navigation }) => {
 
   const getAlert = async () => {
     const res = await getAlertList()
-    // console.log("getAlert")
-    dispatch(setAlertList(res))
+    // console.log("getAlert1", res)
+    dispatch(setAlertList(res.alerts))
 
   }
   useEffect(() => {
