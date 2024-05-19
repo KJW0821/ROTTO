@@ -22,26 +22,7 @@ const FarmTOP10 = () => {
     <View style={styles.container}>
       {farmsTOP &&
         farmsTOP.map((item, index) => 
-          <Top10ListItem data={item} index={index} />
-          // return (
-          //   <View key={item.farmCode} style={styles.listItem}>
-          //     <View style={styles.imageContainer}>
-          //       <Image
-          //         source={require("../../../assets/images/coffee-bean-logo.png")}
-          //         style={{resizeMode: "stretch", width: 30, height: 30}}
-          //       />
-          //     </View>
-          //     <View>
-          //       <Text style={styles.textNormal}>
-          //         <Text style={styles.textEmp}>{item.farmName}</Text> ( 원두:{" "}
-          //         {item.beanName} )
-          //       </Text>
-          //       <Text>
-          //         지난 수익률 : <Text>+ 10.0 %</Text>
-          //       </Text>
-          //     </View>
-          //   </View>
-          // );
+          <Top10ListItem key={index} data={item} index={index} />
         )}
     </View>
   );
