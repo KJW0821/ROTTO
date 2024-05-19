@@ -22,7 +22,7 @@ const FarmTOP10 = () => {
     <View style={styles.container}>
       {farmsTOP &&
         farmsTOP.map((item, index) => 
-          <Top10ListItem key={index} data={item} index={index} />
+          <Top10ListItem key={item.farmCode} data={item} index={index} />
         )}
     </View>
   );

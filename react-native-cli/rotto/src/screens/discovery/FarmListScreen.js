@@ -32,6 +32,7 @@ let fundingData = [
   { index: 0, name: "선택 안함", value: null },
   { index: 1, name: "진행 예정", value: 0 },
   { index: 2, name: "진행중", value: 1 },
+  { index: 3, name: "종료", value: 2 },
 ];
 
 let beanData = [

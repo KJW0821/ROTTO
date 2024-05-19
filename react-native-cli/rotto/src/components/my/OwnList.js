@@ -21,7 +21,7 @@ const OwnList = ({navigation}) => {
 
   return(
     data &&
-    <FlatList 
+    <FlatList
       showsVerticalScrollIndicator={false} 
       data={data}
       renderItem={itemData => {

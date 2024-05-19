@@ -22,7 +22,7 @@ const CancelList = ({navigation}) => {
   return(
     data &&
     <FlatList 
-      showsVerticalScrollIndicator={false} 
+      showsVerticalScrollIndicator={false}
       data={data}
       renderItem={itemData => {
         return (
