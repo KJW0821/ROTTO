@@ -27,7 +27,7 @@ const MyDeposit = () => {
             <Text>
               <Text style={styles.highlight}>
                 {MyInvestment && MyInvestment.totalInvestAmount
-                  ? MyInvestment.totalInvestAmount
+                  ? MyInvestment.totalInvestAmount.toLocaleString('ko-KR')
                   : '-'}
               </Text>{' '}
               원
@@ -76,7 +76,7 @@ const MyDeposit = () => {
                   </View>
                   <View>
                     <Text style={{marginRight: 10}}></Text>
-                    <Text style={{marginRight: 5}}>{token.expenses}원</Text>
+                    <Text style={{marginRight: 5}}>{token.expenses.toLocaleString('ko-KR')}원</Text>
                   </View>
                 </View>
               </View>
