@@ -6,6 +6,7 @@ import com.rezero.rotto.entity.Subscription;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -64,7 +65,7 @@ public class FarmSpecification {
                         criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
                 );
             } else if (subsStatus == 2) { // 청약 종료
-                statusPredicate = criteriaBuilder.lessThan(subscriptionRoot.get("endTime"), criteriaBuilder.currentTimestamp());
+                statusPredicate = criteriaBuilder.lessThan(subscriptionRoot.get("endedTime"), criteriaBuilder.currentTimestamp());
             } else {
                 statusPredicate = null;
             }
@@ -109,7 +110,27 @@ public class FarmSpecification {
     public static Specification<Farm> applySorting(String sort) {
         return (root, query, criteriaBuilder) -> {
             if ("rate".equals(sort)) {
-                orderByRecentSubscriptionReturnRate(root, query, criteriaBuilder);
+                Root<Subscription> subscriptionRoot = query.from(Subscription.class);
+
+                // 서브쿼리: 각 농장별로 가장 최근에 종료된 데이터의 endedTime 구하기
+                Subquery<LocalDateTime> maxEndedTimeSubquery = query.subquery(LocalDateTime.class);
+                Root<Subscription> maxEndedTimeRoot = maxEndedTimeSubquery.from(Subscription.class);
+                maxEndedTimeSubquery.select(maxEndedTimeRoot.get("endedTime"))
+                        .where(criteriaBuilder.and(
+                                        criteriaBuilder.equal(maxEndedTimeRoot.get("farmCode"), root.get("farmCode")),
+                                        criteriaBuilder.lessThan(maxEndedTimeRoot.get("endedTime"), LocalDateTime.now())),
+                                criteriaBuilder.greaterThanOrEqualTo(maxEndedTimeRoot.get( "endedTime"), LocalDateTime.now().minusMonths(4))
+                        );
+
+                // 메인 쿼리: 서브쿼리에서 구한 가장 최근에 종료된 데이터에 해당하는 returnRate 선택
+                Predicate joinCondition = criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode"));
+                Predicate withinPeriod = criteriaBuilder.lessThan(subscriptionRoot.get("endedTime"), LocalDateTime.now());
+                Predicate maxEndedTimeCondition = subscriptionRoot.get("endedTime").in(maxEndedTimeSubquery);
+                query.where(criteriaBuilder.and(joinCondition, withinPeriod, maxEndedTimeCondition));
+
+                query.orderBy(criteriaBuilder.desc(subscriptionRoot.get("returnRate")));
+
+
 
             } else if ("like".equals(sort)) {
                 Subquery<Long> likeCountSubquery = query.subquery(Long.class);
@@ -119,18 +140,26 @@ public class FarmSpecification {
 
                 query.orderBy(criteriaBuilder.desc(likeCountSubquery));
             } else if ("deadline".equals(sort)) {
-                // 마감 기한이 가장 빠른 순으로 정렬
-                Subquery<Number> deadlineSubquery = query.subquery(Number.class);
-                Root<Subscription> deadlineRoot = deadlineSubquery.from(Subscription.class);
-                deadlineSubquery.select(criteriaBuilder.min(deadlineRoot.get("endedTime")))
-                        .where(criteriaBuilder.and(
-                                        criteriaBuilder.equal(deadlineRoot.get("farmCode"), root.get("farmCode")),
-                                        criteriaBuilder.lessThanOrEqualTo(deadlineRoot.get("startedTime"), criteriaBuilder.currentTimestamp()),
-                                        criteriaBuilder.greaterThanOrEqualTo(deadlineRoot.get("endedTime"), criteriaBuilder.currentTimestamp())
-                                )
-                        );
+                // 명시적으로 Subscription 테이블과 조인
+                Root<Subscription> subscriptionRoot = query.from(Subscription.class);
 
-                query.orderBy(criteriaBuilder.desc(deadlineSubquery));
+                // 현재 시간
+                LocalDateTime now = LocalDateTime.now();
+
+                // 정렬 조건
+                query.orderBy(criteriaBuilder.asc(subscriptionRoot.get("endedTime")));
+
+                // 필터링된 농장만 조인
+                Predicate joinCondition = criteriaBuilder.equal(subscriptionRoot.get("farmCode"), root.get("farmCode"));
+
+                // 현재 시간이 startedTime과 endedTime 사이인 조건
+                Predicate withinPeriod = criteriaBuilder.and(
+                        criteriaBuilder.lessThanOrEqualTo(subscriptionRoot.get("startedTime"), now),
+                        criteriaBuilder.greaterThanOrEqualTo(subscriptionRoot.get("endedTime"), now)
+                );
+
+                query.where(criteriaBuilder.and(joinCondition, withinPeriod));
+
             } else if ("highPrice".equals(sort) || "lowPrice".equals(sort)) {
                 Subquery<Integer> priceSubquery = query.subquery(Integer.class);
                 Root<Subscription> subscriptionRoot = priceSubquery.from(Subscription.class);
