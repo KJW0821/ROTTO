@@ -1,4 +1,4 @@
-import { View, FlatList, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
+import { View, FlatList, Text, StyleSheet, Pressable, ActivityIndicator, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -133,7 +133,7 @@ const FundingList = ({navigation}) => {
                       <Text style={styles.menu}>신청률</Text>
                     </View>
                     <Text style={styles.content}>
-                      {itemData.item.applyCount.toLocaleString('ko-KR')} / {itemData.item.totalTokenCount.toLocaleString('ko-KR')} ROT ({Math.round(itemData.item.applyCount / itemData.item.totalTokenCount * 100 * 100) / 100}%)
+                    {itemData.item.applyCount.toLocaleString('ko-KR')} / {itemData.item.totalTokenCount.toLocaleString('ko-KR')} ROT
                     </Text>
                   </View>
                 }
@@ -190,7 +190,8 @@ const styles = StyleSheet.create({
   bottomContainer: {
     flexDirection: 'row',
     alignContent: 'center',
-    gap: 28
+    gap: (Dimensions.get('window').width - 64) * 0.01 * 0.5,
+    width: '100%'
   },
   date: {
     fontSize: 10,
@@ -228,6 +229,7 @@ const styles = StyleSheet.create({
     color: Colors.fontGray
   },
   contentContainer: {
-    gap: 5
+    gap: 5,
+    width: '33%'
   }
 });
