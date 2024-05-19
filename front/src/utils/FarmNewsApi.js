@@ -9,7 +9,7 @@ export const getFarmNewsList = async (page) => {
     });
     return res.data.newsList;
   } catch (err) {
-    console.error('FarmNewsApi getFarmNewsList error: ',err);
+    //console.error('FarmNewsApi getFarmNewsList error: ',err);
   }
 };
 
@@ -18,6 +18,6 @@ export const getFarmNewsDetail = async (newsCode) => {
     const res = await API.get(`/news/${newsCode}`);
     return res;
   } catch (err) {
-    console.error('FarmNewsApi getFarmNewsDetail error: ',err);
+    //console.error('FarmNewsApi getFarmNewsDetail error: ',err);
   }
 };

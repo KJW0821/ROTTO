@@ -17,7 +17,7 @@ const MyAccount = ({navigation, detail}) => {
     useCallback(() => {
       const getFundingAccount = async () => {
         const res = await getAccountInfo();
-        console.log(res)
+        //console.log(res)
         dispatch(setFundingAccount(res));
       };
       

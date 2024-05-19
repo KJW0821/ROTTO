@@ -12,7 +12,7 @@ const SettingService = {
       await AsyncStorage.setItem(StorageKeys.BIOMETRIC_ENABLED, JSON.stringify(isEnabled));
       return true;
     } catch (e) {
-      console.log(e);
+      //console.log(e);
       return false;
     }
   },
@@ -23,7 +23,7 @@ const SettingService = {
       const value = await AsyncStorage.getItem(StorageKeys.BIOMETRIC_ENABLED);
       return value !== null ? JSON.parse(value) : null;
     } catch(e) {
-      console.log(e);
+      //console.log(e);
       return null;
     }
   },
@@ -34,7 +34,7 @@ const SettingService = {
       await AsyncStorage.setItem(StorageKeys.PUSH_ENABLED, JSON.stringify(isEnabled));
       return true;
     } catch (e) {
-      console.log(e);
+      //console.log(e);
       return false;
     }
   },
@@ -45,7 +45,7 @@ const SettingService = {
       const value = await AsyncStorage.getItem(StorageKeys.PUSH_ENABLED);
       return value !== null ? JSON.parse(value) : null;
     } catch(e) {
-      console.log(e);
+      //console.log(e);
       return null;
     }
   }

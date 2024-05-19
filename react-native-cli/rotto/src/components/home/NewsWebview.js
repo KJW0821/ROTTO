@@ -7,7 +7,7 @@ const windowHeight = Dimensions.get('window').height;
 
 const NewsWebview = ({route}) => {
   const {newsDetailLink} = route.params;
-  console.log(newsDetailLink);
+  //console.log(newsDetailLink);
 
   return (
     <SafeAreaView style={styles.container}>

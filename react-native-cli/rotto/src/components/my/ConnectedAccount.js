@@ -23,7 +23,7 @@ const ConnectedAccount = ({navigation}) => {
       };
 
       getRealAccountData();
-      console.log(connectedAccount);
+      //console.log(connectedAccount);
     }, [])
   );
 

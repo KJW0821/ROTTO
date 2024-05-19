@@ -10,7 +10,7 @@ const KeyService = {
     try {
       await SecureStore.setItemAsync(StorageKeys.PinCode, pinCode);
     } catch (error) {
-      console.error('핀번호 저장 실패', error);
+      //console.error('핀번호 저장 실패', error);
     }
   },
 
@@ -19,7 +19,7 @@ const KeyService = {
     try {
       return await SecureStore.getItemAsync(StorageKeys.PinCode);
     } catch (error) {
-      console.error('핀번호 조회 실패', error);
+      //console.error('핀번호 조회 실패', error);
       return null;
     }
   },
@@ -29,7 +29,7 @@ const KeyService = {
     try {
       await SecureStore.deleteItemAsync(StorageKeys.PinCode);
     } catch (error) {
-      console.error(error);
+      //console.error(error);
     }
   },
 };

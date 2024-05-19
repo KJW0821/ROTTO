@@ -5,7 +5,7 @@ export const getApplyHistory = async () => {
     const res = await API.get('/apply');
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
     return null;
   }
 };
@@ -15,7 +15,7 @@ export const getTradeHistory = async () => {
     const res = await API.get('/trade-history');
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
     return null;
   }
 };
@@ -25,7 +25,7 @@ export const getCancelHistory = async () => {
     const res = await API.get('/apply/terminated');
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
     return null;
   }
 };
@@ -35,7 +35,7 @@ export const getOwnHistory = async () => {
     const res = await API.get('/trade-history/own');
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
     return null;
   }
 };
@@ -45,7 +45,7 @@ export const getOwnDetail = async (subscriptionCode) => {
     const res = await API.get(`/trade-history/own/${subscriptionCode}`);
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
     return null;
   }
 };

@@ -24,7 +24,7 @@ const MyWallet = () => {
     chainId: process.env.EXPO_PUBLIC_CHAIN_ID,
     token: tokenAddress,
     onSuccess: () => {
-      console.log(data);
+      //console.log(data);
     },
   })
   
@@ -34,9 +34,9 @@ const MyWallet = () => {
   };
   
   useEffect(() => {
-    console.log("주소", address)
+    //console.log("주소", address)
     address && updateWalletAddress({ wallet : address })
-    console.log("토큰 조회 데이터", data)    
+    //console.log("토큰 조회 데이터", data)    
   }, [data])
 
   return (

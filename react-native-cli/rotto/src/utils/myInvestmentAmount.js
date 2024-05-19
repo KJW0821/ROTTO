@@ -5,6 +5,6 @@ export const getMyInvestment = async () => {
     const res = await API.get("/trade-history/home");
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
   }
 };

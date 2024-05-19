@@ -41,7 +41,7 @@ const FarmScreen = ({ route }) => {
   const getDetail = async () => {
     const res = await getFarmDetail(route.params.farmCode);
     setFarm(res);
-    console.log(res);
+    //console.log(res);
   };
 
   useEffect(() => {

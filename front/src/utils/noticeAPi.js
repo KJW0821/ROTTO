@@ -7,19 +7,19 @@ export const getNoticeList = async (page) => {
         page,
       },
     });
-    console.log(res.data);
+    //console.log(res.data);
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
   }
 };
 
 export const getNoticeDetail = async (code) => {
   try {
     const res = await API.get(`/notice/${code}`);
-    console.log(res.data);
+    //console.log(res.data);
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
   }
 };

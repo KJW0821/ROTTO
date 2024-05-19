@@ -11,7 +11,7 @@ const MyDeposit = () => {
   const getList = async () => {
     const res = await getMyInvestment();
     setMyInvestment(res);
-    console.log('MyDeposit mounted', res);
+    //console.log('MyDeposit mounted', res);
   };
 
   useEffect(() => {

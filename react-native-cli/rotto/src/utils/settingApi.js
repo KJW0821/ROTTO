@@ -7,7 +7,7 @@ export const createRequest = async (data) => {
     const res = await API.post(URL, data);
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
     return null;
   }
 };
@@ -17,7 +17,7 @@ export const getRequestList = async () => {
     const res = await API.get(URL);
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
     return null;
   }
 };
@@ -27,7 +27,7 @@ export const getRequestDetail = async (reqBoardCode) => {
     const res = await API.get(URL + `/${reqBoardCode}`);
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
     return null;
   }
 };
@@ -37,7 +37,7 @@ export const getTerms = async () => {
     const res = await API.get('/terms');
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
     return null;
   }
 };

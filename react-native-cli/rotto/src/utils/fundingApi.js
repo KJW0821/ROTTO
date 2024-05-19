@@ -9,7 +9,7 @@ export const getFundingList = async (params) => {
     });
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
     return null;
   }
 };
@@ -19,7 +19,7 @@ export const getFundingDetail = async (subscriptionCode) => {
     const res = await API.get(URL + `/${subscriptionCode}`);
     return res.data;
   } catch (err) {
-    console.error(err);
+    //console.error(err);
     return null;
   }
 };
@@ -33,7 +33,7 @@ export const applyFunding = async (subscriptionCode, applyCount) => {
     });
     return res;
   } catch (err) {
-    console.error('청약 신청 실패' + err);
+    //console.error('청약 신청 실패' + err);
     return err.response;
   }
 };
@@ -43,7 +43,7 @@ export const cancelFunding = async (subscriptionCode) => {
     const res = await API.patch(`/apply/${subscriptionCode}`);
     return res;
   } catch (err) {
-    console.error('청약 취소 실패' + err);
+    //console.error('청약 취소 실패' + err);
     return err.response;
   }
 };
