@@ -116,7 +116,7 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
         }
 
         Subscription subscription = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
-        TradeHistory tradeHistory = tradeHistoryRepository.findByUserCodeAndSubscriptionCode(userCode, subscriptionCode);
+        TradeHistory tradeHistory = tradeHistoryRepository.findByUserCodeAndSubscriptionCodeAndRefund(userCode, subscriptionCode, 1);
 
         if (tradeHistory == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("신청내역이 없습니다.");

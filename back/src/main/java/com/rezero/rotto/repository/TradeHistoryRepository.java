@@ -12,5 +12,7 @@ public interface TradeHistoryRepository extends JpaRepository<TradeHistory, Inte
     List<TradeHistory> findByUserCodeAndRefund(int userCode, int refund);
     TradeHistory findByUserCodeAndSubscriptionCode(int userCode, int subscriptionCode);
 
+    TradeHistory findByUserCodeAndSubscriptionCodeAndRefund(int userCode, int subscriptionCode, int refund);
+
 }
 
