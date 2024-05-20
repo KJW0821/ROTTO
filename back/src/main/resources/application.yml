@@ -1,0 +1,99 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /api
+
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ENC(XFl0Kt80CSouAOd3u0Q8kyjQMHuJb0izBE8pH/KJzzZyMZlNIJWCpwCBGNEoTkL25445VkNqXdBscRlM2hkluBlS8em0PrnC3BFWqCADXzOTUqZJlGCmjW7SbgxLiCDZ1yJBmSNVFQYwWZUAKnCh/ghbPcksQVVqglRPO+Uebrtzq5qwMYQ5g6omJhMeYcs4)
+    username: ENC(27xTCeTSZsIf1cTtHXRLuM8yJeFCDiHW2T3uf3D3F/2JvBVDQptDP23jD+0bDBK+)
+    password: ENC(5BFEeQ86FtklvViD+7KpKMotIVDDkWYzuAyOvHP8V+UN0QpKPFdgG0Dx+u08jamM)
+
+
+
+  security:
+    user:
+      name: admin
+      password: admin
+
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+  jpa:
+    open-in-view: false
+
+
+jwt:
+  token:
+    secret-key: ENC(HFgq9BQv+A2rNULnmfkEvD1BXVAiUZQt58MniHjoyfqYjqbthDpR0bJ82Xb6tuJAAP6xtpUHCL+SM9W+U5jSE6EkOww2LotYyOC36qwPF5hZunKnEdzjorKuWDZmHM7nL0vi2rboU6KIZIjoYOh+cQ==)
+  access-token:
+    expire-length: 1800000
+  refresh-token:
+    expire-length: 1209600000
+  redis:
+    host: redis
+    port: 6379
+    password: ENC(0LQhpdG4GOEszoH6I6tf4kh/WXdM0YDEhlsEJ/mP7JCYXc0cktUk66iXUw+PP0GN)
+
+
+# Multipart File Upload Setting
+file:
+  multipart:
+    maxUploadSize: 1000000
+    maxUploadSizePerFile: 1000000
+
+
+# Swagger setting
+springdoc:
+  packages-to-scan: com.rezero.rotto.api.controller
+  swagger-ui:
+    path: /api-docs
+    groups-order: DESC
+    tags:sorter: alpha
+    operations-sorter: alpha
+    disabled-swagger-default-url: true
+    display-request-duration: true
+  api-docs:
+    path: /api-docs/json
+    groups:
+      enabled: true
+  show-actuator: true
+  cache:
+    disabled: true
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+
+
+  # log level Setting
+  logging:
+    level:
+      root: info
+      org:
+        springframework:
+          root: debug
+          web: debug
+      com:
+        rotto: debug
+      zaxxer:
+        hikari:
+          pool:
+            HikariPool: debug
+
+
+# S3 Bucket
+cloud:
+  aws:
+    s3:
+      # 수정 필요
+      bucket: ENC(DAkgpEnEp7szmh9BYMHAHeVB2+megH6a9RwUjJIXQNLNb/3t55+8j0IIHpUxSXp6)
+    region:
+      static: ENC(Lr5TujExoZ6kj+9RAOqLk17l/K7x3Wle6T8oHXJ1Cdbn4F2rennKK3R1WAjBgJSx)
+    credentials:
+      access-key: ENC(iOpcBO4YJG8mWy1IrkTmqUXpbC6oxjQFhEVFpC5/1z5Fa3yBBjAiGl5fdZYQyrJCyD6lrJy/uz/WULBLvrYGkw==)
+      secret-key: ENC(RXE6XMOTa4uPoGnR9A1h7AwysdvXMrAMChWIOhxuEoeekjHfammZrUDxgVtc5GqGo+aE6celFZQtWmVXQWvuGN62r4fcO/erStuw5DDvYeI=)
+    stack:
+      auto: false
+
