@@ -70,6 +70,10 @@ public class BeanServiceImpl implements BeanService {
 
         // 원두 불러오기
         Bean bean = beanRepository.findByBeanCode(beanCode);
+        // 해당 원두가 존재하는지 검사
+        if (bean == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 원두입니다");
+        }
         // 리스폰스 생성
         BeanDetailResponse response = BeanDetailResponse.builder()
                 .beanCode(beanCode)
