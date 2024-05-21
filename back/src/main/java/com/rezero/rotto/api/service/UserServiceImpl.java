@@ -144,6 +144,7 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+
     // 비밀번호 수정
     public ResponseEntity<?> modifyPassword(int userCode, ModifyPasswordRequest request) {
         // 해당 유저가 존재하는지 검사
@@ -162,7 +163,8 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body("비밀번호 수정 성공");
     }
 
-    @Override
+
+    // 농장주 계좌번호 변경
     public ResponseEntity<?> updateBCAddress(int userCode, String address) {
         // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
@@ -170,14 +172,16 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
+        // 유효한 지갑 주소인지 검사
         if(!WalletUtils.isValidAddress(address)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않는 지갑 주소입니다.");
         }
 
+        // 수정후 저장
         user.setBcAddress(address);
         userRepository.save(user);
         
-        // 입력받은 지갑 주소를 whitelist에 추가
+        // 입력받은 지갑 주소를 whitelist 에 추가
         blockChainService.InsertWhiteList(address);
 
         return ResponseEntity.ok().body("지갑 주소 업데이트 완료.");
