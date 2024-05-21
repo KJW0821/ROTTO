@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserService {
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
-
+        // 리스폰스 생성
         UserInfoResponse response = UserInfoResponse.builder()
                 .userCode(user.getUserCode())
                 .name(user.getName())
