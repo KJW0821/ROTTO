@@ -102,9 +102,11 @@ public class FarmServiceImpl implements FarmService {
             isLiked = true;
         }
 
+        // 종료된 청약 리스트(최신순 정렬) 불러오기
         LocalDateTime now = LocalDateTime.now();
         List<Subscription> latestEndedSubscriptions = subscriptionRepository.findLatestEndedSubscription(farmCode, now);
         Subscription latestEndedSubscription = null;
+        // 최근 종료 청약이 있으면 첫번째 요소 가져옴
         if (!latestEndedSubscriptions.isEmpty()) {
             latestEndedSubscription = latestEndedSubscriptions.get(0);
         }
@@ -115,10 +117,12 @@ public class FarmServiceImpl implements FarmService {
             returnRate = latestEndedSubscription.getReturnRate();
         }
 
+        // 좋아요 수 가져오기
         Long likeCount = interestFarmRepository.countByFarmCode(farmCode);
+        // 펀딩 진행 여부
         Boolean isFunding = isFunding(farmCode);
 
-        // 펀딩 종료까지 남은 기간
+        // 펀딩 종료까지 남은 기간 계산
         // endedTime >= 현재 시간 인 것. endedTime - 현재 시간 (일수로만)
         Integer deadline = null;
         List<Subscription> impendingOngoingSubscriptions = subscriptionRepository.findImpedingOngoingSubscription(farmCode, now);
@@ -132,7 +136,7 @@ public class FarmServiceImpl implements FarmService {
             deadline = (int) daysBetween;
         }
 
-
+        // 리스폰스 생성
         FarmDetailResponse response = FarmDetailResponse.builder()
                 .farmCode(farmCode)
                 .farmName(farm.getFarmName())
