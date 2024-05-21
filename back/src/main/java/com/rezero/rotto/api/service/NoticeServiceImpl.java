@@ -62,6 +62,8 @@ public class NoticeServiceImpl implements NoticeService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+
+    // 공지사항 상세 조회
     public ResponseEntity<?> getNoticeDetail(int userCode, int noticeCode) {
         // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
