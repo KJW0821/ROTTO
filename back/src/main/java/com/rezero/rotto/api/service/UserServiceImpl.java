@@ -44,8 +44,11 @@ public class UserServiceImpl implements UserService {
     // 회원가입
     public ResponseEntity<?> signUp(SignUpRequest request) {
         try {
+            // 휴대폰 번호 암호화
             String encryptedPhoneNum = AESUtil.encrypt(request.getPhoneNum(), aesKey);
+            // 주민번호 암호화
             String encryptedJuminNo = AESUtil.encrypt(request.getJuminNo(), aesKey);
+            // 패스워드 해쉬화
             String hashedPassword = passwordEncoder.encode(request.getPassword());
 
             // 이미 존재하는 휴대폰 번호로 가입을 시도할 경우 예외 처리
@@ -53,8 +56,8 @@ public class UserServiceImpl implements UserService {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 휴대폰 번호입니다.");
             }
 
+            // 이메일을 받고 금융망 API 와 연결하여 금융망 계정 생성
             String userEmail = request.getEmail();
-
             JsonNode jsonNode = WebClient.create("https://finapi.p.ssafy.io")
                     .post()
                     .uri("/ssafy/api/v1/member/")
@@ -62,8 +65,6 @@ public class UserServiceImpl implements UserService {
                     .retrieve()
                     .bodyToMono(JsonNode.class)
                     .block();
-
-            System.out.println("jsonNode: " + jsonNode.toString());
 
             // 'userKey' 값을 추출
             String userKeyOfFinance = jsonNode.path("payload").path("userKey").asText();
