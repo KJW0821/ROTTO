@@ -68,7 +68,9 @@ public class BeanServiceImpl implements BeanService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
+        // 원두 불러오기
         Bean bean = beanRepository.findByBeanCode(beanCode);
+        // 리스폰스 생성
         BeanDetailResponse response = BeanDetailResponse.builder()
                 .beanCode(beanCode)
                 .beanName(bean.getBeanName())
