@@ -204,9 +204,10 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    // 금융망 API 를 통해 계좌를 생성하는 메소드
     public void financeAccountCreate(int userCode, String userKey) {
 
-        User user = userRepository.findByUserCode(userCode);
+        // 현재 시간 불러와서 적절한 형태로 파싱
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
