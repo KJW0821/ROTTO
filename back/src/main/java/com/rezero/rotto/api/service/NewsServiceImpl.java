@@ -80,6 +80,10 @@ public class NewsServiceImpl implements NewsService {
 
         // 소식 불러오기
         News news = newsRepository.findByNewsCode(newsCode);
+        // 소식이 존재하는지 검사
+        if (news == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 소식입니다.");
+        }
         // 리스폰스 생성
         NewsDetailResponse response = NewsDetailResponse.builder()
                 .newsCode(news.getNewsCode())
