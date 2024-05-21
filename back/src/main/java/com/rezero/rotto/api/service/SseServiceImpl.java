@@ -16,28 +16,37 @@ public class SseServiceImpl implements SseService {
 
     private final EmitterRepository emitterRepository;
 
+    
+    // SSE 구독 설정
     public SseEmitter subscribe(int userCode) {
+        // 1시간 타임 아웃 설정
         long TIME_OUT = 60 * 60 * 1000L;
         SseEmitter sseEmitter = new SseEmitter(TIME_OUT);
+        // SseEmitter 저장
         sseEmitter = emitterRepository.save(userCode, sseEmitter);
 
+        // SSE 완료 이벤트 리스너 설정
         sseEmitter.onCompletion(() -> {
             log.info("disconnected by complete server sent event : id={}", userCode);
         });
+        // SSE 타임아웃 이벤트 리스너 설정
         sseEmitter.onTimeout(() -> {
             log.info("server sent event timed out : id={}", userCode);
         });
+        // SSE 에러 이벤트 리스너 설정
         sseEmitter.onError((e) -> {
             log.info("server sent event error occurred : id={}, message={}", userCode, e.getMessage());
-            emitterRepository.deleteByUserCode(userCode);
+            emitterRepository.deleteByUserCode(userCode); // 에러 발생 시 해당 사용자 코드로 저장된 Emitter 삭제
         });
 
+        // 클라이언트에 연결 메시지 전송
         sendToClient(userCode, "connect", "SSE connected");
 
         return sseEmitter;
     }
 
 
+    // 클라이언트로 데이터 전송
     public void sendToClient(int userCode, String name, Object data) {
         SseEmitter sseEmitter = emitterRepository.findByUserCode(userCode);
 
@@ -47,17 +56,18 @@ public class SseServiceImpl implements SseService {
                 sseEmitter.send(SseEmitter.event()
                         .id(String.valueOf(userCode))
                         .name(name)
-                        .data(data, MediaType.APPLICATION_JSON));
+                        .data(data, MediaType.APPLICATION_JSON)); // JSON 형태로 데이터 전송
             } catch (IOException e) {
                 log.error("failure to send event, id={}, message={}", userCode, e.getMessage());
-                emitterRepository.deleteByUserCode(userCode);
+                emitterRepository.deleteByUserCode(userCode); // 전송 실패 시 Emitter 삭제
             }
         }
     }
 
 
+    // SSE 연결 종료
     public void disConnect(int userCode) {
-        sendToClient(userCode, "disconnect", "SSE disconnected");
-        emitterRepository.deleteByUserCode(userCode);
+        sendToClient(userCode, "disconnect", "SSE disconnected"); // 클라이언트에 연결 종료 메시지 전송
+        emitterRepository.deleteByUserCode(userCode); // Emitter 삭제
     }
 }
