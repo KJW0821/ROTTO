@@ -181,13 +181,16 @@ public class FarmServiceImpl implements FarmService {
             if (interestFarm != null) {
                 isLiked = true;
             }
+            // 종료된 청약 리스트(최신순 정렬) 불러오기
             int farmCode = farm.getFarmCode();
             LocalDateTime now = LocalDateTime.now();
             List<Subscription> latestEndedSubscriptions = subscriptionRepository.findLatestEndedSubscription(farmCode, now);
             Subscription latestEndedSubscription = null;
+            // 최근 종료 청약이 있으면 첫번째 요소 가져옴
             if (!latestEndedSubscriptions.isEmpty()) {
                 latestEndedSubscription = latestEndedSubscriptions.get(0);
             }
+            // 최근 종료 청약의 수익률 구하기
             BigDecimal returnRate;
             if (latestEndedSubscription == null) {
                 returnRate = null;
@@ -195,9 +198,12 @@ public class FarmServiceImpl implements FarmService {
                 returnRate = latestEndedSubscription.getReturnRate();
             }
 
+            // 좋아요 수 계산
             Long likeCount = interestFarmRepository.countByFarmCode(farmCode);
+            // 펀딩 진행여부 계산
             Boolean isFunding = isFunding(farmCode);
 
+            // Dto 생성
             FarmListDto farmListDto = FarmListDto.builder()
                     .farmCode(farmCode)
                     .farmName(farm.getFarmName())
