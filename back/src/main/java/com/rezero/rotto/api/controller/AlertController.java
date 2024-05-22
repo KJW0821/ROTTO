@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,11 +95,18 @@ public class AlertController {
 
     @Operation(summary = "알림 전송",
             description = "파라미터를 받아 알림 전송")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "알림 전송 성공"),
+            @ApiResponse(responseCode = "400", description = "알림 전송 실패")
+    })
     @PostMapping("/send")
     public ResponseEntity<?> alert(@RequestBody SseRequest request) {
-        alertService.createAlert(request);
+        boolean check = alertService.createAlert(request);
+        if (!check) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("알림 전송 실패");
+        }
         sseService.sendToClient(request.getUserCode(), request.getName(), request.getData());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.OK).body("알림 전송 성공");
     }
 
 }

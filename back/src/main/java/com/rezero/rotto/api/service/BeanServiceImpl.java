@@ -34,10 +34,12 @@ public class BeanServiceImpl implements BeanService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
+        // 원두 목록 불러오기
         List<Bean> beanList = beanRepository.findAll();
+        // 빈 리스트 생성
         List<BeanListDto> beans = new ArrayList<>();
-        Collections.reverse(beanList);
 
+        // 원두 목록 순회하며 Dto 에 담기
         for (Bean bean : beanList) {
             BeanListDto beanListDto = BeanListDto.builder()
                     .beanCode(bean.getBeanCode())
@@ -45,9 +47,11 @@ public class BeanServiceImpl implements BeanService {
                     .beanImgPath(bean.getBeanImgPath())
                     .build();
 
+            // 리스트에 담는다
             beans.add(beanListDto);
         }
 
+        // 리스폰스 생성
         BeanListResponse response = BeanListResponse.builder()
                 .beans(beans)
                 .build();
@@ -64,7 +68,13 @@ public class BeanServiceImpl implements BeanService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
+        // 원두 불러오기
         Bean bean = beanRepository.findByBeanCode(beanCode);
+        // 해당 원두가 존재하는지 검사
+        if (bean == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 원두입니다");
+        }
+        // 리스폰스 생성
         BeanDetailResponse response = BeanDetailResponse.builder()
                 .beanCode(beanCode)
                 .beanName(bean.getBeanName())
