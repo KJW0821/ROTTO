@@ -59,7 +59,7 @@ public class AccountHistoryController {
     @ApiResponses(value = {
             @ApiResponse(responseCode ="200", description = "가상계좌의 출금내역조회 성공",
                     content = @Content(schema = @Schema(implementation = AccountHistoryListResponse.class))),
-            @ApiResponse(responseCode = "404", description = "존재하지 않은 요청")
+            @ApiResponse(responseCode = "404", description = "사용자 혹은 출금 내역이 존재하지 않음")
     })
 
     // 받을값들
