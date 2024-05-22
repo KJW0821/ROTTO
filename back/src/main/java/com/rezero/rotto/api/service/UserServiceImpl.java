@@ -44,8 +44,11 @@ public class UserServiceImpl implements UserService {
     // 회원가입
     public ResponseEntity<?> signUp(SignUpRequest request) {
         try {
+            // 휴대폰 번호 암호화
             String encryptedPhoneNum = AESUtil.encrypt(request.getPhoneNum(), aesKey);
+            // 주민번호 암호화
             String encryptedJuminNo = AESUtil.encrypt(request.getJuminNo(), aesKey);
+            // 패스워드 해쉬화
             String hashedPassword = passwordEncoder.encode(request.getPassword());
 
             // 이미 존재하는 휴대폰 번호로 가입을 시도할 경우 예외 처리
@@ -53,8 +56,8 @@ public class UserServiceImpl implements UserService {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 휴대폰 번호입니다.");
             }
 
+            // 이메일을 받고 금융망 API 와 연결하여 금융망 계정 생성
             String userEmail = request.getEmail();
-
             JsonNode jsonNode = WebClient.create("https://finapi.p.ssafy.io")
                     .post()
                     .uri("/ssafy/api/v1/member/")
@@ -62,8 +65,6 @@ public class UserServiceImpl implements UserService {
                     .retrieve()
                     .bodyToMono(JsonNode.class)
                     .block();
-
-            System.out.println("jsonNode: " + jsonNode.toString());
 
             // 'userKey' 값을 추출
             String userKeyOfFinance = jsonNode.path("payload").path("userKey").asText();
@@ -134,7 +135,7 @@ public class UserServiceImpl implements UserService {
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
-
+        // 리스폰스 생성
         UserInfoResponse response = UserInfoResponse.builder()
                 .userCode(user.getUserCode())
                 .name(user.getName())
@@ -142,6 +143,7 @@ public class UserServiceImpl implements UserService {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
 
     // 비밀번호 수정
     public ResponseEntity<?> modifyPassword(int userCode, ModifyPasswordRequest request) {
@@ -161,7 +163,8 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body("비밀번호 수정 성공");
     }
 
-    @Override
+
+    // 농장주 계좌번호 변경
     public ResponseEntity<?> updateBCAddress(int userCode, String address) {
         // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
@@ -169,14 +172,16 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
+        // 유효한 지갑 주소인지 검사
         if(!WalletUtils.isValidAddress(address)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않는 지갑 주소입니다.");
         }
 
+        // 수정후 저장
         user.setBcAddress(address);
         userRepository.save(user);
         
-        // 입력받은 지갑 주소를 whitelist에 추가
+        // 입력받은 지갑 주소를 whitelist 에 추가
         blockChainService.InsertWhiteList(address);
 
         return ResponseEntity.ok().body("지갑 주소 업데이트 완료.");
@@ -199,9 +204,10 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    // 금융망 API 를 통해 계좌를 생성하는 메소드
     public void financeAccountCreate(int userCode, String userKey) {
 
-        User user = userRepository.findByUserCode(userCode);
+        // 현재 시간 불러와서 적절한 형태로 파싱
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");

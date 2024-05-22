@@ -54,6 +54,7 @@ public class NewsCrawler {
                 // 기사 detail 링크 가져오기
                 Element link = article.selectFirst("h2 > a");
                 if (link != null) {
+                    // link 에서 href 부분 가져오기
                     String href = link.attr("href");
                     // 이미 db에 존재하면 크롤링하지 않음
                     if (newsRepository.existsByNewsDetailLink(href)) {
@@ -78,6 +79,7 @@ public class NewsCrawler {
                 // 게시일 가져오기
                 Element dateElement = article.selectFirst("p.byline-date");
                 if (dateElement != null) {
+                    // 게시일은 "| May 29, 2024"와 같은 형태로 가져와지므로 파싱한다.
                     String dateText = dateElement.ownText().trim();
                     String[] dateParts = dateText.split("\\|");
                     datePart = dateParts[2].trim();
@@ -163,6 +165,8 @@ public class NewsCrawler {
         return imageUrl;
     }
 
+
+    // "May 14, 2024" 와 같은 데이터를 2024/5/14 로 파싱하는 메서드
     public static String parseDateToUrl(String dateString) {
         try {
             // 날짜 문자열을 LocalDate 객체로 파싱
