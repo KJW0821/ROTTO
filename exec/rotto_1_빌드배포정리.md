@@ -17,7 +17,9 @@
     2) IDE 
          - VSCode `1.85.1`
          - InteliJ `2023.3.2`
-    3) 데이터베이스 : MySQL `8.0.36`
+    3) 데이터베이스
+         - MySQL `8.0.35`
+         - Redis `7.0.2`
     4) 서버 : AWS EC2
          - Ubuntu `20.04 LTS`
          - Docker `25.0.1`
@@ -56,6 +58,14 @@
         -  API 문서화:
             *  Swagger
 
+    3) BlockChain
+        - Language: Solidity 8.0.19
+        - Framework:
+            * Truffle: `5.11.5`
+        - 주요 Libraries:
+            * openzeppelin/contracts: `4.9.6`
+            * truffle/hdwallet-provider: `2.1.15`
+            * dotenv: `16.4.5`
 
 
 ## 빌드 및 배포
@@ -106,38 +116,55 @@
     - nginx 설정 파일을 프로젝트에 맞게 수정
     ```
     sudo vim /etc/nginx/sites-available/default
+    ```
+    
+    ```
+    server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        root /var/www/html;
+
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+
+        location / {
+            try_files $uri $uri/ =404;
+        }
+    }
 
     server {
-            location /api/v1/ {
-            proxy_pass http://localhost:{백엔드 포트번호}/;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            }
 
+        root /var/www/html;
+
+        index index.html index.htm index.nginx-debian.html;
+        server_name {도메인 주소}; # managed by Certbot
+
+
+        location / {
+            try_files $uri $uri/ =404;
+        }
 
         listen [::]:443 ssl ipv6only=on; # managed by Certbot
         listen 443 ssl; # managed by Certbot
-        ssl_certificate /etc/letsencrypt/live/k10e105.p.ssafy.io/fullchain.pem; # managed by Certbot
-        ssl_certificate_key /etc/letsencrypt/live/k10e105.p.ssafy.io/privkey.pem; # managed by Certbot
+        ssl_certificate /etc/letsencrypt/live/{도메인 주소}/fullchain.pem; # managed by Certbot
+        ssl_certificate_key /etc/letsencrypt/live/{도메인 주소}/privkey.pem; # managed by Certbot
         include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
         ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 
     }
-
-
     server {
-        if ($host = k10e105.p.ssafy.io) {
+        if ($host = {도메인 주소}) {
             return 301 https://$host$request_uri;
         } # managed by Certbot
 
 
-            listen 80 ;
-            listen [::]:80 ;
-        server_name k10e105.p.ssafy.io;
+        listen 80 ;
+        listen [::]:80 ;
+        server_name {도메인 주소};
         return 404; # managed by Certbot
     }
-
     ```
 
     * nginx 테스트 후 재가동
@@ -148,7 +175,7 @@
 ### 2. FrontEnd 빌드 및 배포
 1) 프로젝트 clone
     ```
-    git clone https://lab.ssafy.com/s10-final/S10P31E105.git
+    git clone {프로젝트 git 주소}
     ```
 2) 프로젝트 폴더로 이동
     ```bash
@@ -166,12 +193,12 @@
     ```
 4) .env 파일 작성
     ```
-    S3URL=https://userdata-rotto.s3.ap-northeast-2.amazonaws.com
-    CONTRACT_ADDRESS=0x1b6d2910dA92c50fb4078A50fE81420EA29834e3
-    DOMAIN_URL=https://k10e105.p.ssafy.io
-    PROJECT_ID=41c800331b3143bdaddeef0fdefb7852
-    RPC_URL=https://rpc.ssafy-blockchain.com
-    CHAIN_ID=31221
+    S3URL={your_S3_url}
+    CONTRACT_ADDRESS={your_contract_address}
+    DOMAIN_URL={your_domain_url}
+    PROJECT_ID={your_walletconnect_project_ID}
+    RPC_URL={your_blockchain_network_rpc_url}
+    CHAIN_ID={your_blockchain_network_chain_ID}
     ```
 5) 프로젝트 실행
     ```
@@ -188,102 +215,124 @@
 ### 3. BackEnd 빌드 및 배포
 * BackEnd Dockerfile
     ```dockerfile
-    FROM openjdk:17-jdk-alpine as build
+    FROM openjdk:17-jdk
+    WORKDIR /app
+    COPY build/libs/rotto-0.0.1-SNAPSHOT.jar app.jar
+    EXPOSE 8080
 
-    WORKDIR /workspace
-
-    COPY gradlew .
-    COPY gradle gradle
-    COPY build.gradle .
-    COPY settings.gradle .
-    COPY src src
-
-    RUN chmod +x ./gradlew
-
-    RUN ./gradlew clean build
-
-    FROM openjdk:17-jdk-alpine
-
-    EXPOSE 8090
-
-    COPY --from=build /workspace/build/libs/*.jar /app/app.jar
-
-    ENTRYPOINT ["java","-jar","/app/app.jar"]
+    CMD ["java", "-jar", "app.jar", "--spring.profiles.active=production", ">>", "/home/ubuntu/applicationBE.log", "2>&1"]
     ```
 
-* jenkins에서 Push 알림을 받아 clone 후 자동 배포
-    ```bash
-    # Spring Project 폴더로 이동
-    cd /var/jenkins_home/workspace/back/back/minuet/
+* ❗ application.yml 파일은 git에 업로드되지 않음.
+    ```yml
+    server:
+    port: 8000
+    servlet:
+        context-path: /api
 
-    # Docker 이미지 빌드
-    docker build -t back-end-image .
 
-    # Docker 컨테이너를 실행합니다.
-    if docker ps -a --format '{{.Names}}' | grep -q "back-end-server"; then
-        echo "기존의 back-end-server 컨테이너 종료"
-        docker stop back-end-server
-        echo "기존의 back-end-server 컨테이너 삭제"
-        docker rm back-end-server
-        echo "새로운 back-end-server 컨테이너 시작"
-        docker run -d --name back-end-server -p 8090:8080 back-end-image
-    else
-        echo "새로운 back-end-server 컨테이너 시작"
-        docker run -d --name back-end-server -p 8090:8080 back-end-image
-    fi
-    ```
-
-* ❗ application.yaml 파일은 git에 업로드되지 않으므로 따로 설정해줌
-    ```bash
-    echo "branch에서 pull 받은 경로로 이동"
-    cd /var/jenkins_home/workspace/back/back/minuet/src/main/resources
-
-    echo "application.yaml 작성"
-    cat > application.yaml << EOF
     spring:
-        datasource:
-            driver-class-name: com.mysql.cj.jdbc.Driver
-            url: jdbc:mysql://<your-host>:<your-port>/<db-name>?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
-            username: <db-username>
-            password: <db-password>
-            
-        jpa:
-            hibernate:
-            ddl-auto: update
-            properties:
-            hibernate:
-                format_sql: true
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: ENC(insert-your-db-url)
+        username: ENC(db_your_username)
+        password: ENC(db_your_password)
 
-        logging:
+
+
+    security:
+        user:
+        name: username
+        password: password
+
+    servlet:
+        multipart:
+        max-file-size: 1000MB
+        max-request-size: 1000MB
+    jpa:
+        open-in-view: false
+
+
+    jwt:
+    token:
+        secret-key: ENC(insert_your_token_secret_key)
+    access-token:
+        expire-length: 1800000
+    refresh-token:
+        expire-length: 1209600000
+    redis:
+        host: redis
+        port: 6379
+        password: ENC(insert_your_redis_password)
+
+
+    # Multipart File Upload Setting
+    file:
+    multipart:
+        maxUploadSize: 1000000
+        maxUploadSizePerFile: 1000000
+
+
+    # Swagger setting
+    springdoc:
+    packages-to-scan: com.rezero.rotto.api.controller
+    swagger-ui:
+        path: /api-docs
+        groups-order: DESC
+        tags:sorter: alpha
+        operations-sorter: alpha
+        disabled-swagger-default-url: true
+        display-request-duration: true
+    api-docs:
+        path: /api-docs/json
+        groups:
+        enabled: true
+    show-actuator: true
+    cache:
+        disabled: true
+    default-consumes-media-type: application/json;charset=UTF-8
+    default-produces-media-type: application/json;charset=UTF-8
+
+
+    # log level Setting
+    logging:
         level:
-            org.hibernate.Sql: debug
+        root: info
+        org:
+            springframework:
+            root: debug
+            web: debug
+        com:
+            rotto: debug
+        zaxxer:
+            hikari:
+            pool:
+                HikariPool: debug
 
-        # Swagger
-        springdoc:
-        packages-to-scan: com.ssafy.minuet # 컨트롤러 가져오기
-        default-consumes-media-type: application/json;charset=UTF-8
-        default-produces-media-type: application/json;charset=UTF-8
-        swagger-ui:
-            path: /api-docs/
-            disable-swagger-default-url: true
-            display-request-duration: true
-            operations-sorter: method
-            use-fqn: true
 
-        # JWT
-        jwt:
-        #HS256 알고리즘을 사용할 것. 256bit, 즉 64bit 이상의 secret key를 사용
-        secret_key: <your-secret-key>
-        expiration_time: <expiration time>
-    EOF
+    # S3 Bucket
+    cloud:
+    aws:
+        s3:
+        # 수정 필요
+        bucket: ENC(insert_your_bucket_name)
+        region:
+        static: ENC(insert_your_s3_region)
+        credentials:
+        access-key: ENC(insert_your_access_key)
+        secret-key: ENC(insert_your_secret_key)
+        stack:
+        auto: false
+
+
     ```
 
 ### 4. BlockChain 빌드 및 배포
 1. env 파일 추가
 ```
-MNEMONIC="(관리자 metamask 지갑 비밀복구구문)"
-rpcUrl="https://rpc.ssafy-blockchain.com"
-networkId=31221
+MNEMONIC="{your_metamask_wallet_SRP(Secret Recovery Phrase)}"
+rpcUrl="{your_blockchain_network_rpc_url}"
+networkId="{your_blockchain_network_chain_ID}"
 ```
 
 2. Truffle 설치
