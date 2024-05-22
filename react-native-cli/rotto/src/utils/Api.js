@@ -2,6 +2,7 @@ import axios from "axios";
 import TokenService from "./token";
 import { useNavigation } from "@react-navigation/native";
 import { DOMAIN_URL } from "@env"
+import { AccessibilityInfo } from "react-native";
 
 const DOMAIN = DOMAIN_URL
 
@@ -18,6 +19,7 @@ const reissueAPI = axios.create({
 API.interceptors.request.use(
   async (config) => {
     const accessToken = await TokenService.getAccessToken();
+    console.log(accessToken)
     if (accessToken) {
       config.headers['Authorization'] = 'Bearer ' + accessToken;
     }
