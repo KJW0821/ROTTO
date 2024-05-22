@@ -34,9 +34,9 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "eb71a8e0-66f9-4c20-936a-7026fa7b91df"
+        "projectId": "insert_your_eas_project_id"
       }
     },
-    "owner": "wnsgud0895"
+    "owner": "insert_your_expo_owner_name"
   }
 }
