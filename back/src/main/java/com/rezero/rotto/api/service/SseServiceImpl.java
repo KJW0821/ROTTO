@@ -207,6 +207,7 @@ public class SseServiceImpl implements SseService {
                 int userCode = applyHistory.getUserCode();
                 // 해당 유저에게 알림 보내기
                 sendToClient(userCode, "청약 시작 일주일 전 알림", "청약 시작 일주일 전입니다. 청약 코드: " + subscriptionCode);
+                log.info("userCode: " + userCode + "유저에게 알림 전송 완료");
             }
         }
     }
