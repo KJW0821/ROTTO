@@ -19,7 +19,7 @@ const reissueAPI = axios.create({
 API.interceptors.request.use(
   async (config) => {
     const accessToken = await TokenService.getAccessToken();
-    console.log(accessToken)
+    // console.log(accessToken)
     if (accessToken) {
       config.headers['Authorization'] = 'Bearer ' + accessToken;
     }
