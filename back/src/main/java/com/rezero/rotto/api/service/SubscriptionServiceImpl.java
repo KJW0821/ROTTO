@@ -219,7 +219,6 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
 
     // 청약시작 (딸각)
-    @Override
     public ResponseEntity<?> calculateSubscription(int subscriptionCode) {
         Subscription subscription = subscriptionRepository.findBySubscriptionCode(subscriptionCode);
         if(subscription == null){
@@ -359,7 +358,6 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         return beanType == null || VALID_BEAN_TYPES.contains(beanType);
     }
 
-    @Override
     public ResponseEntity<?> postSubscription(int userCode, SubscriptionProduceRequest subscriptionProduceRequest) {
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
@@ -404,7 +402,6 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         return ResponseEntity.status(HttpStatus.CREATED).body(subscription);
     }
 
-    @Override
     public ResponseEntity<?> refundSubscription(int userCode, int subscriptionCode) {
         // 관리자만 요청 가능
         boolean checkAdmin = userRepository.findByUserCode(userCode).getAdmin();

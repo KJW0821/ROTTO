@@ -22,8 +22,8 @@ public class TermServiceImpl implements TermService{
     private final TermsRepository termsRepository;
 
 
-    @Override
     public ResponseEntity<?> getTerms(int userCode) {
+        // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
