@@ -10,14 +10,19 @@ spring:
     url: ENC(XFl0Kt80CSouAOd3u0Q8kyjQMHuJb0izBE8pH/KJzzZyMZlNIJWCpwCBGNEoTkL25445VkNqXdBscRlM2hkluBlS8em0PrnC3BFWqCADXzOTUqZJlGCmjW7SbgxLiCDZ1yJBmSNVFQYwWZUAKnCh/ghbPcksQVVqglRPO+Uebrtzq5qwMYQ5g6omJhMeYcs4)
     username: ENC(27xTCeTSZsIf1cTtHXRLuM8yJeFCDiHW2T3uf3D3F/2JvBVDQptDP23jD+0bDBK+)
     password: ENC(5BFEeQ86FtklvViD+7KpKMotIVDDkWYzuAyOvHP8V+UN0QpKPFdgG0Dx+u08jamM)
-
-
-
+    # hikariCp property setting
+    pool-name: HikariCP
+    maximum-pool-size: 20
+    minimum-idle: 5
+    connection-timeout: 30000
+    idle-timeout: 600000
+    max-lifetime: 1800000
+    auto-commit: true
+    connection-init-sql: SELECT 1
   security:
     user:
       name: admin
       password: admin
-
   servlet:
     multipart:
       max-file-size: 1000MB

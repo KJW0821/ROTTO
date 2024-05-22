@@ -41,7 +41,7 @@ public class BeanController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(schema = @Schema(implementation = BeanDetailResponse.class))),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
+            @ApiResponse(responseCode = "404", description = "사용자 혹은 원두가 존재하지 않음")
     })
     @GetMapping("/{beanCode}")
     public ResponseEntity<?> getBeanDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int beanCode) {

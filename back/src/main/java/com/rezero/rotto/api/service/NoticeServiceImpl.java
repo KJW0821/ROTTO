@@ -62,6 +62,8 @@ public class NoticeServiceImpl implements NoticeService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+
+    // 공지사항 상세 조회
     public ResponseEntity<?> getNoticeDetail(int userCode, int noticeCode) {
         // 해당 유저가 존재하는지 검사
         User user = userRepository.findByUserCode(userCode);
@@ -70,6 +72,9 @@ public class NoticeServiceImpl implements NoticeService {
         }
         // noticeCode 로 해당 공지사항 가져오기
         Notice notice = noticeRepository.findByNoticeCode(noticeCode);
+        if (notice == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("공지사항을 찾을 수 없습니다.");
+        }
         // 리스폰스 생성
         NoticeDetailResponse response = NoticeDetailResponse.builder()
                 .title(notice.getTitle())

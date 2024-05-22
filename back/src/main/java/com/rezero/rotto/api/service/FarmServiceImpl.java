@@ -48,7 +48,7 @@ public class FarmServiceImpl implements FarmService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다.");
         }
 
-        // 입력값 유효성 검사
+        // 파라미터 유효성 검사
         if (!isValidInput(isLiked, subsStatus, minPrice, maxPrice, beanType)) {
             return ResponseEntity.badRequest().body("잘못된 입력값입니다.");
         }
@@ -73,8 +73,10 @@ public class FarmServiceImpl implements FarmService {
         // 페이지네이션
         List<Farm> pageFarms = farms.subList(startIdx, endIdx);
 
+        // 마이페이지일 때와 마이페이지가 아닐 때를 분리하여 Dto 생성
         List<? extends FarmDto> farmDtos = convertToDtoList(pageFarms, userCode,  isLiked != null && isLiked && subsStatus == null && minPrice == null && maxPrice == null && beanType == null && sort == null && keyword == null);
 
+        // 마이페이지일 때와 마이페이지가 아닐 때를 분리하여 Dto 생성하고 반환
         return ResponseEntity.status(HttpStatus.OK).body(buildResponse(farmDtos, totalPages));
     }
 
@@ -100,9 +102,11 @@ public class FarmServiceImpl implements FarmService {
             isLiked = true;
         }
 
+        // 종료된 청약 리스트(최신순 정렬) 불러오기
         LocalDateTime now = LocalDateTime.now();
         List<Subscription> latestEndedSubscriptions = subscriptionRepository.findLatestEndedSubscription(farmCode, now);
         Subscription latestEndedSubscription = null;
+        // 최근 종료 청약이 있으면 첫번째 요소 가져옴
         if (!latestEndedSubscriptions.isEmpty()) {
             latestEndedSubscription = latestEndedSubscriptions.get(0);
         }
@@ -113,10 +117,12 @@ public class FarmServiceImpl implements FarmService {
             returnRate = latestEndedSubscription.getReturnRate();
         }
 
+        // 좋아요 수 가져오기
         Long likeCount = interestFarmRepository.countByFarmCode(farmCode);
+        // 펀딩 진행 여부
         Boolean isFunding = isFunding(farmCode);
 
-        // 펀딩 종료까지 남은 기간
+        // 펀딩 종료까지 남은 기간 계산
         // endedTime >= 현재 시간 인 것. endedTime - 현재 시간 (일수로만)
         Integer deadline = null;
         List<Subscription> impendingOngoingSubscriptions = subscriptionRepository.findImpedingOngoingSubscription(farmCode, now);
@@ -130,7 +136,7 @@ public class FarmServiceImpl implements FarmService {
             deadline = (int) daysBetween;
         }
 
-
+        // 리스폰스 생성
         FarmDetailResponse response = FarmDetailResponse.builder()
                 .farmCode(farmCode)
                 .farmName(farm.getFarmName())
@@ -175,13 +181,16 @@ public class FarmServiceImpl implements FarmService {
             if (interestFarm != null) {
                 isLiked = true;
             }
+            // 종료된 청약 리스트(최신순 정렬) 불러오기
             int farmCode = farm.getFarmCode();
             LocalDateTime now = LocalDateTime.now();
             List<Subscription> latestEndedSubscriptions = subscriptionRepository.findLatestEndedSubscription(farmCode, now);
             Subscription latestEndedSubscription = null;
+            // 최근 종료 청약이 있으면 첫번째 요소 가져옴
             if (!latestEndedSubscriptions.isEmpty()) {
                 latestEndedSubscription = latestEndedSubscriptions.get(0);
             }
+            // 최근 종료 청약의 수익률 구하기
             BigDecimal returnRate;
             if (latestEndedSubscription == null) {
                 returnRate = null;
@@ -189,9 +198,12 @@ public class FarmServiceImpl implements FarmService {
                 returnRate = latestEndedSubscription.getReturnRate();
             }
 
+            // 좋아요 수 계산
             Long likeCount = interestFarmRepository.countByFarmCode(farmCode);
+            // 펀딩 진행여부 계산
             Boolean isFunding = isFunding(farmCode);
 
+            // Dto 생성
             FarmListDto farmListDto = FarmListDto.builder()
                     .farmCode(farmCode)
                     .farmName(farm.getFarmName())
@@ -234,33 +246,53 @@ public class FarmServiceImpl implements FarmService {
     }
 
 
+    // RequestParam 에 따른 필터링 및 정렬 처리
     private Specification<Farm> buildSpecification(int userCode, Boolean isLiked, Integer subsStatus, Integer minPrice, Integer maxPrice, String beanType, String sort, String keyword) {
+        // Specification<Farm> 생성
         Specification<Farm> spec = Specification.where(null);
+        // keyword 값에 따른 검색어 필터링
         if (keyword != null) spec = spec.and(FarmSpecification.nameContains(keyword));
+        // 관심 농장 필터링
         if (isLiked != null && isLiked) spec = spec.and(FarmSpecification.hasInterest(userCode));
+        // 청약 상태에 따른 필터링
         if (subsStatus != null) spec = spec.and(FarmSpecification.filterBySubscriptionStatus(subsStatus));
+        // 최소 가격, 최대 가격에 따른 필터링
         if (minPrice != null || maxPrice != null)
             spec = spec.and(FarmSpecification.priceBetween(minPrice, maxPrice));
+        // 원두 종류에 따른 필터링
         if (beanType != null) spec = spec.and(FarmSpecification.filterByBeanType(beanType));
+        // 정렬
         spec = spec.and(FarmSpecification.applySorting(sort));
         return spec;
     }
 
+
+    // 마이페이지일 때와 마이페이지가 아닐 때를 분리하여 Dto 생성
     private List<? extends FarmDto> convertToDtoList(List<Farm> farms, int userCode, Boolean isMyPage) {
+        // 빈 리스트 생성
         List<FarmDto> farmDtos = new ArrayList<>();
+        // 현재 시간 가져오기
         LocalDateTime now = LocalDateTime.now();
 
+        // 농장들을 순회
         for (Farm farm : farms) {
+            // 해당 농장이 클라이언트의 관심 농장인지 판별
             Boolean farmIsLiked = interestFarmRepository.findByFarmCodeAndUserCode(farm.getFarmCode(), userCode) != null;
+            // 해당 농장이 펀딩 진행중인지 판별
             Boolean isFunding = isFunding(farm.getFarmCode());
 
+            // dto 생성
             FarmDto farmDto;
             int farmCode = farm.getFarmCode();
+            // 종료된 청약 리스트(최신순 정렬) 불러오기
             List<Subscription> latestEndedSubscriptions = subscriptionRepository.findLatestEndedSubscription(farmCode, now);
             Subscription latestEndedSubscription = null;
+            // 최근 종료 청약이 있으면 첫번째 요소 가져옴
             if (!latestEndedSubscriptions.isEmpty()) {
                 latestEndedSubscription = latestEndedSubscriptions.get(0);
             }
+
+            // 최근 수익률 가져오기
             BigDecimal returnRate;
             if (latestEndedSubscription == null) {
                 returnRate = null;
@@ -268,8 +300,10 @@ public class FarmServiceImpl implements FarmService {
                 returnRate = latestEndedSubscription.getReturnRate();
             }
 
+            // 좋아요 수 가져오기
             Long likeCount = interestFarmRepository.countByFarmCode(farmCode);
 
+            // 마이페이지에 따른 Dto 분리 및 추가
             if (isMyPage) {
                 farmDto = new MyPageFarmListDto(farmCode, farm.getFarmName(), farm.getFarmLogoPath(), farm.getFarmBeanName(), farmIsLiked, returnRate, isFunding, likeCount);
             } else {
@@ -280,12 +314,17 @@ public class FarmServiceImpl implements FarmService {
         return farmDtos;
     }
 
+
+    // 마이페이지일 때와 마이페이지가 아닐 때를 분리하여 리스폰스 생성
     private Object buildResponse(List<? extends FarmDto> farmDtos, int totalPages) {
+        // 빈 리스트가 들어오면 빈 리스폰스 반환
         if (farmDtos.isEmpty()) {
             return MyPageFarmListResponse.builder().farms(Collections.emptyList()).build();
         }
-
+        // instanceof : 객체가 특정 클래스나 인터페이스의 인스턴스인지 여부를 확인하는 연산자
+        // 이 블록은 farmDtos 의 첫 번째 요소가 MyPageFarmListDto 타입인 경우에만 실행
         if (farmDtos.get(0) instanceof MyPageFarmListDto) {
+            // Dto 생성하여 리스폰스에 넣고 반환
             List<MyPageFarmListDto> myPageFarmListDtos = farmDtos.stream()
                     .map(farmDto -> (MyPageFarmListDto) farmDto)
                     .collect(Collectors.toList());
@@ -293,7 +332,9 @@ public class FarmServiceImpl implements FarmService {
                     .farms(myPageFarmListDtos)
                     .totalPages(totalPages)
                     .build();
+        // 이 블록은 farmDtos 의 첫 번째 요소가 FarmListDto 타입인 경우에만 실행
         } else {
+            // Dto 생성하여 리스폰스에 넣고 반환
             List<FarmListDto> farmListDtos = farmDtos.stream()
                     .map(farmDto -> (FarmListDto) farmDto)
                     .collect(Collectors.toList());
@@ -307,9 +348,12 @@ public class FarmServiceImpl implements FarmService {
 
     // 펀딩 진행 여부 검사
     private boolean isFunding(int farmCode) {
+        // 현재 시간 가져오기
         LocalDateTime now = LocalDateTime.now();
+        // 농장과 연관된 청약 리스트 불러오기
         List<Subscription> subscriptions = subscriptionRepository.findByFarmCode(farmCode);
 
+        // startedTime < 현재 시간 < endedTime = 청약 진행중
         for (Subscription subscription : subscriptions) {
             if (subscription.getStartedTime().isBefore(now) && subscription.getEndedTime().isAfter(now)) {
                 return true;
