@@ -91,7 +91,7 @@ public class SseServiceImpl implements SseService {
         // 오늘 날짜 구하기
         LocalDateTime now = LocalDateTime.now().toLocalDate().atTime(9, 0, 0);
 
-        // 청약 시작 하루 전인 데이터 조회
+        // 청약 시작일이 오늘인 데이터 조회
         List<Subscription> subscriptions = subscriptionRepository.findByStartedTime(now);
         for (Subscription subscription : subscriptions) {
             // 청약 코드를 통해 해당 청약을 신청한 유저의 유저 코드 가져오기
@@ -190,8 +190,9 @@ public class SseServiceImpl implements SseService {
         LocalDateTime oneWeekLaterAt9AM = now.toLocalDate().plusDays(7).atTime(9, 0, 0);
 
 
-        // 청약 시작 일주일 전인 데이터 조회
+        // 청약 시작 일주일 전인 청약 조회
         List<Subscription> subscriptions = subscriptionRepository.findByStartedTime(oneWeekLaterAt9AM);
+        log.info("청약 시작 일주일 전인 청약 개수: " + subscriptions.size());
         for (Subscription subscription : subscriptions) {
             // 청약 코드를 통해 해당 청약을 신청한 유저의 유저 코드 가져오기
             int subscriptionCode = subscription.getSubscriptionCode();
@@ -202,6 +203,7 @@ public class SseServiceImpl implements SseService {
                 continue;
             }
             List<ApplyHistory> applyHistories = applyHistoriesOptional.get();
+            log.info("청약 시작 일주일 전인 청약을 신청한 신청 내역 데이터 개수: " + applyHistories.size());
             // 청약 내역 순회하면서 userCode 찾기
             for (ApplyHistory applyHistory : applyHistories) {
                 int userCode = applyHistory.getUserCode();
