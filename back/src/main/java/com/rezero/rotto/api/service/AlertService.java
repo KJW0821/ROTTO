@@ -10,6 +10,6 @@ public interface AlertService {
     ResponseEntity<?> deleteAlert(int userCode, int alertCode);
     ResponseEntity<?> readAllAlert(int userCode);
     ResponseEntity<?> deleteAllAlert(int userCode);
-    void createAlert(SseRequest request);
+    boolean createAlert(SseRequest request);
 
 }

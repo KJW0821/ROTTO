@@ -41,7 +41,7 @@ public class NoticeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(schema = @Schema(implementation = NoticeDetailResponse.class))),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자 혹은 공지사항")
     })
     @GetMapping("/{noticeCode}")
     public ResponseEntity<?> getNoticeDetail(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @PathVariable int noticeCode) {

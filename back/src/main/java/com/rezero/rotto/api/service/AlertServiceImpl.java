@@ -139,21 +139,25 @@ public class AlertServiceImpl implements AlertService {
 
 
     // 알림 생성
-    public void createAlert(SseRequest request) {
+    public boolean createAlert(SseRequest request) {
         int userCode = request.getUserCode();
 
         User user = userRepository.findByUserCode(userCode);
-
-        if (user != null) {
-            Alert alert = Alert.builder()
-                    .userCode(userCode)
-                    .title(request.getData().getTitle())
-                    .content(request.getData().getContent())
-                    .alertType(request.getName())
-                    .isRead(false)
-                    .build();
-
-            alertRepository.save(alert);
+        // 존재하지 않는 유저이면 false 반환
+        if (user == null) {
+            return false;
         }
+        // 알림 데이터 생성
+        Alert alert = Alert.builder()
+                .userCode(userCode)
+                .title(request.getData().getTitle())
+                .content(request.getData().getContent())
+                .alertType(request.getName())
+                .isRead(false)
+                .build();
+
+        alertRepository.save(alert);
+        // 알림 생성후 true 반환
+        return true;
     }
 }

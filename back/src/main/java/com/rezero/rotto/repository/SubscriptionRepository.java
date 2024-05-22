@@ -22,5 +22,8 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Inte
     @Query("SELECT s FROM Subscription s WHERE s.farmCode = :farmCode AND s.endedTime >= :now AND s.startedTime <= :now ORDER BY s.endedTime ASC")
     List<Subscription> findImpedingOngoingSubscription(int farmCode, LocalDateTime now);
 
+    // 청약 시작일로 데이터를 찾는 메서드
+    List<Subscription> findByStartedTime(LocalDateTime startDate);
+
 
 }
