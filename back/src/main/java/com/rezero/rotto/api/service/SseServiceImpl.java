@@ -188,12 +188,10 @@ public class SseServiceImpl implements SseService {
         // 일주일 후 날짜 구하기
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime oneWeekLaterAt9AM = now.toLocalDate().plusDays(7).atTime(9, 0, 0);
-        log.info("oneWeekLaterAt9AM: " + oneWeekLaterAt9AM);
 
 
         // 청약 시작 일주일 전인 청약 조회
         List<Subscription> subscriptions = subscriptionRepository.findByStartedTime(oneWeekLaterAt9AM);
-        log.info("청약 시작 일주일 전인 청약 개수: " + subscriptions.size());
         for (Subscription subscription : subscriptions) {
             // 청약 코드를 통해 해당 청약을 신청한 유저의 유저 코드 가져오기
             int subscriptionCode = subscription.getSubscriptionCode();
@@ -204,13 +202,12 @@ public class SseServiceImpl implements SseService {
                 continue;
             }
             List<ApplyHistory> applyHistories = applyHistoriesOptional.get();
-            log.info("청약 시작 일주일 전인 청약을 신청한 신청 내역 데이터 개수: " + applyHistories.size());
             // 청약 내역 순회하면서 userCode 찾기
             for (ApplyHistory applyHistory : applyHistories) {
                 int userCode = applyHistory.getUserCode();
                 // 해당 유저에게 알림 보내기
                 sendToClient(userCode, "청약 시작 일주일 전 알림", "청약 시작 일주일 전입니다. 청약 코드: " + subscriptionCode);
-                log.info("userCode: " + userCode + "유저에게 알림 전송 완료");
+                log.info("Successfully sent notification to user with userCode: " + userCode);
             }
         }
     }
