@@ -226,105 +226,103 @@
 * ❗ application.yml 파일은 git에 업로드되지 않음.
     ```yml
     server:
-    port: 8000
-    servlet:
-        context-path: /api
+        port: 8000
+        servlet:
+            context-path: /api
 
 
     spring:
-    datasource:
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        url: ENC(insert-your-db-url)
-        username: ENC(db_your_username)
-        password: ENC(db_your_password)
+        datasource:
+            driver-class-name: com.mysql.cj.jdbc.Driver
+            url: ENC(insert-your-db-url)
+            username: ENC(db_your_username)
+            password: ENC(db_your_password)
 
 
 
-    security:
-        user:
-        name: username
-        password: password
+        security:
+            user:
+                name: username
+                password: password
 
-    servlet:
-        multipart:
-        max-file-size: 1000MB
-        max-request-size: 1000MB
-    jpa:
-        open-in-view: false
+        servlet:
+            multipart:
+                max-file-size: 1000MB
+                max-request-size: 1000MB
+        jpa:
+            open-in-view: false
 
 
     jwt:
-    token:
-        secret-key: ENC(insert_your_token_secret_key)
-    access-token:
-        expire-length: 1800000
-    refresh-token:
-        expire-length: 1209600000
-    redis:
-        host: redis
-        port: 6379
-        password: ENC(insert_your_redis_password)
+        token:
+            secret-key: ENC(insert_your_token_secret_key)
+        access-token:
+            expire-length: 1800000
+        refresh-token:
+            expire-length: 1209600000
+        redis:
+            host: redis
+            port: 6379
+            password: ENC(insert_your_redis_password)
 
 
     # Multipart File Upload Setting
     file:
-    multipart:
-        maxUploadSize: 1000000
-        maxUploadSizePerFile: 1000000
+        multipart:
+            maxUploadSize: 1000000
+            maxUploadSizePerFile: 1000000
 
 
     # Swagger setting
     springdoc:
-    packages-to-scan: com.rezero.rotto.api.controller
-    swagger-ui:
-        path: /api-docs
-        groups-order: DESC
-        tags:sorter: alpha
-        operations-sorter: alpha
-        disabled-swagger-default-url: true
-        display-request-duration: true
-    api-docs:
-        path: /api-docs/json
-        groups:
-        enabled: true
-    show-actuator: true
-    cache:
-        disabled: true
-    default-consumes-media-type: application/json;charset=UTF-8
-    default-produces-media-type: application/json;charset=UTF-8
+        packages-to-scan: com.rezero.rotto.api.controller
+        swagger-ui:
+            path: /api-docs
+            groups-order: DESC
+            tags:sorter: alpha
+            operations-sorter: alpha
+            disabled-swagger-default-url: true
+            display-request-duration: true
+        api-docs:
+            path: /api-docs/json
+            groups:
+                enabled: true
+        show-actuator: true
+        cache:
+            disabled: true
+        default-consumes-media-type: application/json;charset=UTF-8
+        default-produces-media-type: application/json;charset=UTF-8
 
 
     # log level Setting
     logging:
         level:
-        root: info
-        org:
-            springframework:
-            root: debug
-            web: debug
-        com:
-            rotto: debug
-        zaxxer:
-            hikari:
-            pool:
-                HikariPool: debug
+            root: info
+            org:
+                springframework:
+                    root: debug
+                    web: debug
+            com:
+                rotto: debug
+            zaxxer:
+                hikari:
+                    pool:
+                        HikariPool: debug
 
 
     # S3 Bucket
     cloud:
-    aws:
-        s3:
-        # 수정 필요
-        bucket: ENC(insert_your_bucket_name)
-        region:
-        static: ENC(insert_your_s3_region)
-        credentials:
-        access-key: ENC(insert_your_access_key)
-        secret-key: ENC(insert_your_secret_key)
-        stack:
-        auto: false
-
-
+        aws:
+            s3:
+                # 수정 필요
+                bucket: ENC(insert_your_bucket_name)
+            region:
+                static: ENC(insert_your_s3_region)
+            credentials:
+                access-key: ENC(insert_your_access_key)
+                secret-key: ENC(insert_your_secret_key)
+            stack:
+                auto: false
     ```
 
 ### 4. BlockChain 빌드 및 배포
