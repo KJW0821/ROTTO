@@ -188,6 +188,7 @@ public class SseServiceImpl implements SseService {
         // 일주일 후 날짜 구하기
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime oneWeekLaterAt9AM = now.toLocalDate().plusDays(7).atTime(9, 0, 0);
+        log.info("oneWeekLaterAt9AM: " + oneWeekLaterAt9AM);
 
 
         // 청약 시작 일주일 전인 청약 조회
