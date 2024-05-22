@@ -31,7 +31,6 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
     private final ExpenseDetailRepository expenseDetailRepository;
     private final ApplyHistoryRepository applyHistoryRepository;
 
-    @Override
     public ResponseEntity<?> getTradeHistory(int userCode) {
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
@@ -67,7 +66,6 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
     }
 
 
-    @Override
     public ResponseEntity<?> getTradeHistoryOwn(int userCode) {
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
@@ -108,7 +106,6 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
     }
 
 
-    @Override
     public ResponseEntity<?> getExpenseDetailOfSub(int userCode, int subscriptionCode) {
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {
@@ -159,7 +156,6 @@ public class TradeHistoryServiceImpl implements TradeHistoryService{
     return ResponseEntity.status(HttpStatus.OK).body(tradeHistoryExpenseDetailOfSubResponse);
     }
 
-    @Override
     public ResponseEntity<?> getHomeInvestInfo(int userCode) {
         User user = userRepository.findByUserCode(userCode);
         if (user == null || user.getIsDelete()) {

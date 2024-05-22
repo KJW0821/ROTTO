@@ -107,7 +107,7 @@ public class SseServiceImpl implements SseService {
             for (ApplyHistory applyHistory : applyHistories) {
                 int userCode = applyHistory.getUserCode();
                 // 해당 유저에게 알림 보내기
-                sendToClient(userCode, "청약 시작 알림", "청약이 시작되었습니다. 청약 코드: " + subscriptionCode);
+                sendToClient(userCode, "subscription", "청약이 시작되었습니다. 청약 코드: " + subscriptionCode);
             }
         }
     }
@@ -140,7 +140,7 @@ public class SseServiceImpl implements SseService {
             for (ApplyHistory applyHistory : applyHistories) {
                 int userCode = applyHistory.getUserCode();
                 // 해당 유저에게 알림 보내기
-                sendToClient(userCode, "청약 시작 하루전 알림", "청약 시작 하루전입니다. 청약 코드: " + subscriptionCode);
+                sendToClient(userCode, "subscription-1", "청약 시작 하루전입니다. 청약 코드: " + subscriptionCode);
             }
         }
     }
@@ -173,7 +173,7 @@ public class SseServiceImpl implements SseService {
             for (ApplyHistory applyHistory : applyHistories) {
                 int userCode = applyHistory.getUserCode();
                 // 해당 유저에게 알림 보내기
-                sendToClient(userCode, "청약 시작 3일 전 알림", "청약 시작 3일 전입니다. 청약 코드: " + subscriptionCode);
+                sendToClient(userCode, "subscription-3", "청약 시작 3일 전입니다. 청약 코드: " + subscriptionCode);
             }
         }
     }
@@ -207,7 +207,7 @@ public class SseServiceImpl implements SseService {
             for (ApplyHistory applyHistory : applyHistories) {
                 int userCode = applyHistory.getUserCode();
                 // 해당 유저에게 알림 보내기
-                sendToClient(userCode, "청약 시작 일주일 전 알림", "청약 시작 일주일 전입니다. 청약 코드: " + subscriptionCode);
+                sendToClient(userCode, "subscription-7", "청약 시작 일주일 전입니다. 청약 코드: " + subscriptionCode);
                 log.info("Successfully sent notification to user with userCode: " + userCode + ", subscriptionCode: " + subscriptionCode);
             }
         }
