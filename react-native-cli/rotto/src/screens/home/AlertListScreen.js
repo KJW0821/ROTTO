@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useDebugValue, useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import {
   getAlertList,
@@ -22,10 +22,13 @@ import {
   GestureHandlerRootView,
   Swipeable,
 } from "react-native-gesture-handler";
+import { useDispatch } from "react-redux";
+import { setIsAlert } from "../../stores/alertSlice";
 
 const AlertListScreen = () => {
   const Navigation = useNavigation();
   const [alerts, setalerts] = useState([]);
+  const dispatch = useDispatch()
 
   const getList = async () => {
     const res = await getAlertList();
@@ -125,6 +128,7 @@ const AlertListScreen = () => {
               onPress={() => {
                 readAllAlert();
                 getList();
+                dispatch(setIsAlert(false))
               }}
             >
               모두 읽음
