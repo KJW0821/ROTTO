@@ -29,6 +29,8 @@ spring:
       max-request-size: 1000MB
   jpa:
     open-in-view: false
+  jackson:
+    time-zone: Asia/Seoul
 
 
 jwt:
