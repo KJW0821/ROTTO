@@ -182,7 +182,7 @@ public class SseServiceImpl implements SseService {
     /** 청약 시작 일주일 전 오전 9시에 SSE 알림 보내기
      청약 시작일을 항상 09:00:00 으로 정의한다.
      **/
-    @Scheduled(cron = "0 0 9 * * *")
+    @Scheduled(fixedRate = 30000) // 30초마다 스케쥴 실행
     public void sendSubscriptionAlertOneWeekBefore() {
         log.info("Send a alert a Week Before the subscription starts");
         // 일주일 후 날짜 구하기
