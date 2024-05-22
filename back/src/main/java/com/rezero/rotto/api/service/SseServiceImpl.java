@@ -187,8 +187,9 @@ public class SseServiceImpl implements SseService {
         log.info("Send a alert a Week Before the subscription starts");
         // 일주일 후 날짜 구하기
         LocalDateTime now = LocalDateTime.now();
+        log.info("now: " + now);
         LocalDateTime oneWeekLaterAt9AM = now.toLocalDate().plusDays(7).atTime(9, 0, 0);
-
+        log.info("oneWeekLaterAt9AM: " + oneWeekLaterAt9AM);
 
         // 청약 시작 일주일 전인 청약 조회
         List<Subscription> subscriptions = subscriptionRepository.findByStartedTime(oneWeekLaterAt9AM);
