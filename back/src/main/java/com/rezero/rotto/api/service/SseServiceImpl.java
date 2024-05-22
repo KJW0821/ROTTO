@@ -147,4 +147,36 @@ public class SseServiceImpl implements SseService {
         }
     }
 
+
+    /** 청약 시작 일주일 전 오전 9시에 SSE 알림 보내기
+     청약 시작일을 항상 09:00:00 으로 정의한다.
+     **/
+    @Scheduled(cron = "0 0 9 * * *")
+    public void sendSubscriptionAlertOneWeekBefore() {
+        log.info("Send a alert a Week Before the subscription starts");
+        // 내일 날짜 구하기
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime oneWeekLaterAt9AM = now.toLocalDate().plusDays(7).atTime(9, 0, 0);
+
+
+        // 청약 시작 하루 전인 데이터 조회
+        List<Subscription> subscriptions = subscriptionRepository.findByStartedTime(oneWeekLaterAt9AM);
+        for (Subscription subscription : subscriptions) {
+            // 청약 코드를 통해 해당 청약을 신청한 유저의 유저 코드 가져오기
+            int subscriptionCode = subscription.getSubscriptionCode();
+            // 청약 내역에서 삭제되지 않은 데이터를 가져옴
+            Optional<List<ApplyHistory>> applyHistoriesOptional = applyHistoryRepository.findBySubscriptionCodeAndIsDelete(subscriptionCode, 0);
+            // 청약 내역이 없으면 continue
+            if (applyHistoriesOptional.isEmpty()) {
+                continue;
+            }
+            List<ApplyHistory> applyHistories = applyHistoriesOptional.get();
+            // 청약 내역 순회하면서 userCode 찾기
+            for (ApplyHistory applyHistory : applyHistories) {
+                int userCode = applyHistory.getUserCode();
+                // 해당 유저에게 알림 보내기
+                sendToClient(userCode, "청약 시작 하루전 알림", "청약 시작 하루전입니다. 청약 코드: " + subscriptionCode);
+            }
+        }
+    }
 }
