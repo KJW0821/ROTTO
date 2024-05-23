@@ -136,19 +136,17 @@
 <br>
 
 ### 📱 Front-End
-> - lang: HTML5, CSS3, JAVASCRIPT, Node.js `21.5.0` 
+> - lang: JAVASCRIPT, Node.js `21.5.0` 
 > - Framework: 
 >   - react-native: `0.73.5`
->   - reduxjs/toolkit: `2.2.1`
 > - 주요 Libraries
+>   - reduxjs/toolkit: `2.2.1`
 >   - axios: `1.6.7`
+    - web3modal: `1.3.0`
+    - wagmi: `1.4.13`
 >   - firebase `10.8.1`
 > - build 환경
 >   - expo: `~ 50.0.13`
-> - 개발 도구
->   - Vite: `5.0.8`
->   - ESLint: `8.56.0`
->   - Prettier `3.2.4`
 
 <br>
 
