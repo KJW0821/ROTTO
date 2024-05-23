@@ -1,5 +1,5 @@
 import {StatusBar} from 'expo-status-bar';
-import {StyleSheet, SafeAreaView} from 'react-native';
+import {StyleSheet, SafeAreaView, Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {store} from './src/stores/Store';
 import {Provider} from 'react-redux';
@@ -19,7 +19,7 @@ import {
 import {jsonRpcProvider} from 'wagmi/providers/jsonRpc';
 import {PROJECT_ID, CHAIN_ID, RPC_URL} from '@env';
 import {useEffect} from 'react';
-
+import messaging from '@react-native-firebase/messaging';
 import SseComponent from './src/components/home/SseComponent';
 
 const customChain = {
@@ -85,6 +85,20 @@ export default function App() {
   });
   const statusBarStyle = 'light';
   const statusBarColor = Colors.bgOrg;
+
+  const getFcmToken = async () => {
+    const fcmToken = await messaging().getToken();
+    console.log('[FCM Token] ', fcmToken);
+  };
+
+  useEffect(() => {
+    getFcmToken();
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+  }, []);
 
   return (
     <SafeAreaProvider>
