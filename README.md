@@ -176,28 +176,28 @@
 <br><br>
 
 # ⛺ 아키텍처
-![아키텍처](assets/service/.png)
+![아키텍처](assets/docs/Architecture.png)
 
 <br><br>
 
 
 # 📄 설계 문서
 ## 요구사항 및 기능 정의서
-![요구사항](assets/service/.png)
+![요구사항](assets/docs/요구사항.png)
 <br><br>
 
 ## API 명세서
-![요구사항](assets/service/.png)
+![요구사항](assets/docs/API_명세서.png)
 <br><br>
 
 
 ## Swagger
-![Swagger](assets/service/.png)
+![Swagger](assets/docs/Swagger.png)
 <br><br>
 
 ## ERD
-![ERD](assets/service/.png)
+![ERD](assets/docs/ERD.png)
 <br><br>
 
 # 👨‍👨‍👧👨‍👧‍👦 팀원 소개
-![팀원소개](assets/service/.png)
+![팀원소개](assets/docs/팀원소개.png)
