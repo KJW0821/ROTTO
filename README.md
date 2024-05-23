@@ -142,8 +142,8 @@
 > - 주요 Libraries
 >   - reduxjs/toolkit: `2.2.1`
 >   - axios: `1.6.7`
-    - web3modal: `1.3.0`
-    - wagmi: `1.4.13`
+>   - web3modal: `1.3.0`
+>   - wagmi: `1.4.13`
 >   - firebase `10.8.1`
 > - build 환경
 >   - expo: `~ 50.0.13`
