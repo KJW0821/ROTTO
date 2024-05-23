@@ -13,10 +13,10 @@
 3. 빌드/배포 관리 : Jenkins `2.426.3`
 4. 커뮤니케이션 : MatterMost, Notion, Discord
 5. 개발 환경
-    1) 운영체제 Window10
+    1) 운영체제 Window 10
     2) IDE 
          - VSCode `1.85.1`
-         - InteliJ `2023.3.2`
+         - IntelliJ `2023.3.2`
     3) 데이터베이스
          - MySQL `8.0.35`
          - Redis `7.0.2`
