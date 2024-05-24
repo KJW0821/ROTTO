@@ -1,8 +1,15 @@
 package com.rezero.rotto.api.service;
 
+import com.rezero.rotto.dto.request.SendMessageToAllUsersRequest;
+import com.rezero.rotto.dto.request.SendMessageToRequest;
+import org.springframework.http.ResponseEntity;
+
 public interface FirebaseService {
 
-    void sendScheduledNotification();
-    void sendMessage(String topic, String title, String body);
+    ResponseEntity<?> sendMessageTo(SendMessageToRequest request);
+
+    ResponseEntity<?> sendMessageToAllUsers(SendMessageToAllUsersRequest request);
+
+    boolean sendMessage(String token, String topic, String title, String body);
 
 }
