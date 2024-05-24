@@ -41,7 +41,5 @@ public class FirebaseConfig {
                     .build();
             return FirebaseApp.initializeApp(options);
 
-        }
     }
-
 }
