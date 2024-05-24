@@ -60,13 +60,12 @@ public class ScheduledTasks {
 
                 // 데이터 만들어서 DB에 저장하기
                 String farmName = farmRepository.findByFarmCode(subscription.getFarmCode()).getFarmName();
-                String topic = "청약 시작 알림";
                 String title = farmName + " 청약이 시작되었습니다.";
                 String content = user.getName() + "님이 신청하신 " + farmName + "의 청약이 시작되었습니다.";
                 String alertType = "알림";
 
                 // Firebase 푸시 알림 보내기
-                firebaseService.sendMessage(deviceToken, topic, title, content);
+                firebaseService.sendMessage(deviceToken, title, content);
 
                 Alert alert = Alert.builder()
                         .userCode(userCode)
@@ -117,13 +116,12 @@ public class ScheduledTasks {
 
                 // 데이터 만들어서 DB에 저장하기
                 String farmName = farmRepository.findByFarmCode(subscription.getFarmCode()).getFarmName();
-                String topic = "청약 시작 알림";
                 String title =  farmName + " 청약 시작 하루 전입니다.";
                 String content = user.getName() + "님이 신청하신 " + farmName + "의 청약 시작이 하루 남았습니다.";
                 String alertType = "알림";
 
                 // Firebase 푸시 알림 보내기
-                firebaseService.sendMessage(deviceToken, topic, title, content);
+                firebaseService.sendMessage(deviceToken, title, content);
 
                 Alert alert = Alert.builder()
                         .userCode(userCode)
@@ -174,14 +172,13 @@ public class ScheduledTasks {
 
                 // 데이터 만들어서 DB에 저장하기
                 String farmName = farmRepository.findByFarmCode(subscription.getFarmCode()).getFarmName();
-                String topic = "청약 시작 알림";
 
                 String title =  farmName + " 청약 시작 3일 전입니다.";
                 String content = user.getName() + "님이 신청하신 " + farmName + "의 청약 시작이 3일 남았습니다.";
                 String alertType = "알림";
 
                 // Firebase 푸시 알림 보내기
-                firebaseService.sendMessage(deviceToken, topic, title, content);
+                firebaseService.sendMessage(deviceToken, title, content);
 
                 Alert alert = Alert.builder()
                         .userCode(userCode)
@@ -232,13 +229,12 @@ public class ScheduledTasks {
 
                 // 데이터 만들어서 DB에 저장하기
                 String farmName = farmRepository.findByFarmCode(subscription.getFarmCode()).getFarmName();
-                String topic = "청약 시작 알림";
                 String title =  farmName + " 청약 시작 일주일 전입니다.";
                 String content = user.getName() + "님이 신청하신 " + farmName + "의 청약 시작이 일주일 남았습니다.";
                 String alertType = "알림";
 
                 // Firebase 푸시 알림 보내기
-                firebaseService.sendMessage(deviceToken, topic, title, content);
+                firebaseService.sendMessage(deviceToken, title, content);
 
                 Alert alert = Alert.builder()
                         .userCode(userCode)
