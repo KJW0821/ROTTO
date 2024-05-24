@@ -25,7 +25,7 @@ public class FirebaseController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 기기에 대한 요청")
     })
-    @PostMapping
+    @PostMapping("/user")
     public ResponseEntity<?> sendMessageTo(@RequestBody SendMessageToRequest request) {
         return firebaseService.sendMessageTo(request);
     }
@@ -36,7 +36,7 @@ public class FirebaseController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
-    @PostMapping()
+    @PostMapping("/all")
     public ResponseEntity<?> sendMessageToAllUsers(@RequestBody SendMessageToAllUsersRequest request) {
         return firebaseService.sendMessageToAllUsers(request);
     }
