@@ -25,7 +25,7 @@ public class ScheduledTasks {
     private final FarmRepository farmRepository;
     private final AlertRepository alertRepository;
     private final SseService sseService;
-    private final PushNotificationService pushNotificationService;
+    private final FirebaseService firebaseService;
 
 
     /** 청약 시작일 오전 9시에 SSE 알림 보내기
@@ -66,7 +66,7 @@ public class ScheduledTasks {
                 String alertType = "알림";
 
                 // Firebase 푸시 알림 보내기
-                pushNotificationService.sendPushNotification(deviceToken, topic, title, content);
+                firebaseService.sendMessage(deviceToken, topic, title, content);
 
                 Alert alert = Alert.builder()
                         .userCode(userCode)
@@ -123,7 +123,7 @@ public class ScheduledTasks {
                 String alertType = "알림";
 
                 // Firebase 푸시 알림 보내기
-                pushNotificationService.sendPushNotification(deviceToken, topic, title, content);
+                firebaseService.sendMessage(deviceToken, topic, title, content);
 
                 Alert alert = Alert.builder()
                         .userCode(userCode)
@@ -181,7 +181,7 @@ public class ScheduledTasks {
                 String alertType = "알림";
 
                 // Firebase 푸시 알림 보내기
-                pushNotificationService.sendPushNotification(deviceToken, topic, title, content);
+                firebaseService.sendMessage(deviceToken, topic, title, content);
 
                 Alert alert = Alert.builder()
                         .userCode(userCode)
@@ -238,7 +238,7 @@ public class ScheduledTasks {
                 String alertType = "알림";
 
                 // Firebase 푸시 알림 보내기
-                pushNotificationService.sendPushNotification(deviceToken, topic, title, content);
+                firebaseService.sendMessage(deviceToken, topic, title, content);
 
                 Alert alert = Alert.builder()
                         .userCode(userCode)

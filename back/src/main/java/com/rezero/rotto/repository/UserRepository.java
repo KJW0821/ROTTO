@@ -22,4 +22,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     Boolean existsByDeviceTokenAndUserCode(String deviceToken, int userCode);
 
+    Boolean existsByDeviceToken(String deviceToken);
+
 }
