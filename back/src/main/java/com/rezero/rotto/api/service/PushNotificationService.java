@@ -25,7 +25,7 @@ public class PushNotificationService {
      */
     public void sendPushNotificationToAllUsers(List<String> tokens, String title, String body) {
         for (String token : tokens) {
-            sendPushNotificationToAllUsers(tokens, title, body);
+            sendPushNotification(token, title, body);
         }
     }
 
