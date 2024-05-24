@@ -23,9 +23,9 @@ public class PushNotificationService {
      * @param title  알림 제목
      * @param body   알림 내용
      */
-    public void sendPushNotificationToAllUsers(List<String> tokens, String title, String body) {
+    public void sendPushNotificationToAllUsers(List<String> tokens, String topic, String title, String body) {
         for (String token : tokens) {
-            sendPushNotification(token, title, body);
+            sendPushNotification(token, topic, title, body);
         }
     }
 
@@ -37,7 +37,7 @@ public class PushNotificationService {
      * @param title 알림 제목
      * @param body  알림 내용
      */
-    public void sendPushNotification(String token, String title, String body) {
+    public void sendPushNotification(String token, String topic, String title, String body) {
         Notification notification = Notification.builder()
                 .setTitle(title)
                 .setBody(body)
@@ -45,6 +45,7 @@ public class PushNotificationService {
 
         Message message = Message.builder()
                 .setToken(token)
+                .setTopic(topic)
                 .setNotification(notification)
                 .build();
 
