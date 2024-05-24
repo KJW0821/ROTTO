@@ -87,6 +87,9 @@ export default function App() {
   const statusBarColor = Colors.bgOrg;
 
   const getFcmToken = async () => {
+    // register 코드 입력 이후 background message가 받아짐
+    await messaging().registerDeviceForRemoteMessages();
+    // FCM Token 받아오기
     const fcmToken = await messaging().getToken();
     console.log('[FCM Token] ', fcmToken);
   };

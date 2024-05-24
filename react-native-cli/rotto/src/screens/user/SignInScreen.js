@@ -1,35 +1,54 @@
-import { View, TextInput, Text, StyleSheet } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import {View, TextInput, Text, StyleSheet} from 'react-native';
+import {MaterialIcons} from '@expo/vector-icons';
 import Title from '../../components/user/Title';
 import CustomButton from '../../components/common/CustomButton';
 import Colors from '../../constants/Colors';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import UserTopBar from '../../components/user/UserTopBar';
-import { getUserInfo, signIn } from '../../utils/userApi';
+import {getUserInfo, signIn} from '../../utils/userApi';
 import TokenService from '../../utils/token';
-
+import messaging from '@react-native-firebase/messaging';
+import {useDispatch} from 'react-redux';
+import {setFcmToken} from '../../stores/alertSlice';
 // 나중에 회원가입 진행사항 progress bar로 보여주기
 
 const SignInScreen = ({navigation}) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [errMsg, setErrMsg] = useState('');
+  const [deviceToken, setDeviceToken] = useState('');
+  const dispatch = useDispatch();
 
-  const phoneNumberInputHandler = (enteredText) => {
-    setPhoneNumber(enteredText
-      .replace(/[^0-9]/g, '')
-      .replace(/^(\d{0,4})(\d{0,4})$/g, "$1-$2").replace(/(\-{1})$/g, "")
+  const getFcmToken = async () => {
+    const fcmToken = await messaging().getToken();
+    // console.log('[FCM Token] ', fcmToken);
+    dispatch(setFcmToken(fcmToken));
+    setDeviceToken(fcmToken);
+  };
+
+  useEffect(() => {
+    getFcmToken();
+  }, []);
+
+  const phoneNumberInputHandler = enteredText => {
+    setPhoneNumber(
+      enteredText
+        .replace(/[^0-9]/g, '')
+        .replace(/^(\d{0,4})(\d{0,4})$/g, '$1-$2')
+        .replace(/(\-{1})$/g, ''),
     );
   };
 
-  const passwordInputHandler = (enteredText) => {
+  const passwordInputHandler = enteredText => {
     setPassword(enteredText);
   };
 
   const signInHandler = async () => {
+    // console.log(deviceToken)
     const res = await signIn({
       phoneNum: '010' + phoneNumber.replace(/-/g, ''),
-      password
+      password,
+      deviceToken,
     });
     if (res.status === 200) {
       await TokenService.setToken(res.data.accessToken, res.data.refreshToken);
@@ -37,7 +56,7 @@ const SignInScreen = ({navigation}) => {
       await TokenService.setUserCode(userInfoRes.data.userCode.toString());
       navigation.reset({
         index: 1,
-        routes: [{ name: 'Routers' }]
+        routes: [{name: 'Routers'}],
       });
       setErrMsg('');
     } else {
@@ -53,11 +72,11 @@ const SignInScreen = ({navigation}) => {
         <View style={styles.inputsContainer}>
           <View>
             <Text style={styles.title}>전화번호</Text>
-            <View style={[styles.inputContainer , { marginBottom: 8 }]}>
+            <View style={[styles.inputContainer, {marginBottom: 8}]}>
               <Text style={styles.inputText}>010-</Text>
-              <TextInput 
-                // style={[styles.inputText, {flex: 1}]} 
-                style={[styles.inputText, {flex: 1, padding: 0}]} 
+              <TextInput
+                // style={[styles.inputText, {flex: 1}]}
+                style={[styles.inputText, {flex: 1, padding: 0}]}
                 autoCorrect={false}
                 autoCapitalize="none"
                 underlineColorAndroid="transparent"
@@ -66,15 +85,21 @@ const SignInScreen = ({navigation}) => {
                 value={phoneNumber}
                 maxLength={9}
               />
-              {
-                phoneNumber.length ?
-                <MaterialIcons name="cancel" size={18} color={Colors.iconGray} onPress={() => setPhoneNumber('')} /> : <></>
-              }
+              {phoneNumber.length ? (
+                <MaterialIcons
+                  name="cancel"
+                  size={18}
+                  color={Colors.iconGray}
+                  onPress={() => setPhoneNumber('')}
+                />
+              ) : (
+                <></>
+              )}
             </View>
-            <Text style={[styles.title, { marginTop: 8 }]}>비밀번호</Text>
-            <View style={[styles.inputContainer, { marginBottom: 16 }]}>
-              <TextInput 
-                style={[styles.inputText, {flex: 1, padding:0}]} 
+            <Text style={[styles.title, {marginTop: 8}]}>비밀번호</Text>
+            <View style={[styles.inputContainer, {marginBottom: 16}]}>
+              <TextInput
+                style={[styles.inputText, {flex: 1, padding: 0}]}
                 autoCorrect={false}
                 autoCapitalize="none"
                 underlineColorAndroid="transparent"
@@ -83,19 +108,29 @@ const SignInScreen = ({navigation}) => {
                 secureTextEntry={true}
                 maxLength={20}
               />
-              {
-                password.length ?
-                <MaterialIcons name="cancel" size={18} color={Colors.iconGray} onPress={() => setPassword('')} /> : <></>
-              }
+              {password.length ? (
+                <MaterialIcons
+                  name="cancel"
+                  size={18}
+                  color={Colors.iconGray}
+                  onPress={() => setPassword('')}
+                />
+              ) : (
+                <></>
+              )}
             </View>
-            { errMsg && <Text style={styles.warnText}>{errMsg}</Text>}
+            {errMsg && <Text style={styles.warnText}>{errMsg}</Text>}
           </View>
         </View>
-        <CustomButton onPress={signInHandler} disabled={!phoneNumber || !password}>로그인</CustomButton>
+        <CustomButton
+          onPress={signInHandler}
+          disabled={!phoneNumber || !password}>
+          로그인
+        </CustomButton>
       </View>
     </View>
-  )
-}
+  );
+};
 
 export default SignInScreen;
 
@@ -103,25 +138,25 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   dataContainer: {
-    width: '80%'
+    width: '80%',
   },
   inputsContainer: {
     gap: 40,
     marginBottom: 44,
-    marginTop: 32
+    marginTop: 32,
   },
   inputText: {
     fontFamily: 'pretendard-regular',
-    fontSize: 14
+    fontSize: 14,
   },
   title: {
     fontFamily: 'pretendard-regular',
     fontSize: 12,
     color: Colors.fontGray,
-    marginBottom: 8
+    marginBottom: 8,
   },
   inputContainer: {
     width: '100%',
@@ -129,10 +164,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     alignItems: 'center',
     flexDirection: 'row',
-    height: 28
+    height: 28,
   },
   warnText: {
     color: 'red',
-    fontSize: 12
-  }
+    fontSize: 12,
+  },
 });

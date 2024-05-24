@@ -49,3 +49,15 @@ export const deleteAllAlert = async () => {
       //console.error(err);
     }
   };
+
+  export const sendSomebdoyAlert = async (data) => {
+    try {
+      const res = await API.post("/firebase/user", data);
+      //console.log(res.data);
+      return res.data;
+    } catch (err) {
+      //console.error(err);
+    }
+  };
+
+

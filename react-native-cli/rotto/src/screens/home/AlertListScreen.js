@@ -1,34 +1,43 @@
 import {
   Animated,
+  Button,
   FlatList,
   Pressable,
   StyleSheet,
   Text,
   View,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { useDebugValue, useEffect, useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {useDebugValue, useEffect, useState} from 'react';
+import {Ionicons} from '@expo/vector-icons';
 import {
   getAlertList,
   readAllAlert,
   deleteAlert,
   deleteAllAlert,
-} from "../../utils/AlertApi";
+  sendSomebdoyAlert,
+} from '../../utils/AlertApi';
 
-import StackHeader from "../../components/common/StackHeader";
-import Colors from "../../constants/Colors";
-import {
-  GestureHandlerRootView,
-  Swipeable,
-} from "react-native-gesture-handler";
-import { useDispatch } from "react-redux";
-import { setIsAlert } from "../../stores/alertSlice";
+import StackHeader from '../../components/common/StackHeader';
+import Colors from '../../constants/Colors';
+import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
+import {useDispatch} from 'react-redux';
+import {setIsAlert} from '../../stores/alertSlice';
 
 const AlertListScreen = () => {
   const Navigation = useNavigation();
   const [alerts, setalerts] = useState([]);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
+  const sendAlert = async () => {
+    console.log("메시지보냄")
+    const res = await sendSomebdoyAlert({
+      userCode: 91,
+      title: '메시지',
+      body: '파이어베이스 프론트테스트',
+    });
+    console.log(res)
+  };
 
   const getList = async () => {
     const res = await getAlertList();
@@ -47,16 +56,14 @@ const AlertListScreen = () => {
         onPress={() => {
           deleteAlert(code);
           getList();
-        }}
-      >
+        }}>
         <Animated.Text
           style={[
             styles.delete,
             // {
             //   transform: [{ translateX: trans }],
             // },
-          ]}
-        >
+          ]}>
           삭제
         </Animated.Text>
       </Pressable>
@@ -67,28 +74,26 @@ const AlertListScreen = () => {
     getList();
   }, []);
 
-  const renderAlertList = (itemData) => {
-    const date = itemData.item.createTime.split("T")[0];
+  const renderAlertList = itemData => {
+    const date = itemData.item.createTime.split('T')[0];
 
     return (
       <GestureHandlerRootView>
         <Swipeable
-          renderRightActions={(dragX) =>
+          renderRightActions={dragX =>
             renderRightActions(dragX, itemData.item.alertCode)
-          }
-        >
+          }>
           <View style={styles.container}>
             <View>
               <Text
                 style={
                   itemData.item.isRead == 0 ? styles.title : styles.readTitle
-                }
-              >
+                }>
                 {itemData.item.title}
               </Text>
               <Text style={styles.date}>
-                {date.split("-")[0]}년 {date.split("-")[1]}월{" "}
-                {date.split("-")[2]}일
+                {date.split('-')[0]}년 {date.split('-')[1]}월{' '}
+                {date.split('-')[2]}일
               </Text>
             </View>
             <View>
@@ -97,13 +102,13 @@ const AlertListScreen = () => {
                 size={24}
                 color="black"
                 onPress={() => {
-                  Navigation.navigate("alert", {
+                  Navigation.navigate('alert', {
                     alertCode: itemData.item.alertCode,
                   });
-                  const readCheck = alerts.map((item) => {
+                  const readCheck = alerts.map(item => {
                     //console.log;
                     if (item.alertCode === itemData.item.alertCode) {
-                      return { ...item, isRead: true };
+                      return {...item, isRead: true};
                     }
                     return item;
                   });
@@ -128,9 +133,8 @@ const AlertListScreen = () => {
               onPress={() => {
                 readAllAlert();
                 getList();
-                dispatch(setIsAlert(false))
-              }}
-            >
+                dispatch(setIsAlert(false));
+              }}>
               모두 읽음
             </Text>
             <Text
@@ -138,8 +142,7 @@ const AlertListScreen = () => {
                 deleteAllAlert();
                 getList();
               }}
-              style={{ marginLeft: 15 }}
-            >
+              style={{marginLeft: 15}}>
               모두 삭제
             </Text>
           </View>
@@ -150,6 +153,9 @@ const AlertListScreen = () => {
           renderItem={renderAlertList}
         />
       </View>
+      <Pressable onPress={sendAlert}>
+        <Text>특정 유저한테 알림 보내기</Text>
+      </Pressable>
     </>
   );
 };
@@ -159,11 +165,11 @@ export default AlertListScreen;
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     paddingHorizontal: 25,
   },
   header: {
-    fontFamily: "pretendard-extraBold",
+    fontFamily: 'pretendard-extraBold',
     fontSize: 23,
     paddingHorizontal: 10,
     paddingBottom: 20,
@@ -171,38 +177,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginVertical: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   title: {
-    fontFamily: "pretendard-bold",
+    fontFamily: 'pretendard-bold',
     fontSize: 15,
   },
   readTitle: {
-    fontFamily: "pretendard-regular",
+    fontFamily: 'pretendard-regular',
     fontSize: 15,
   },
   date: {
-    fontFamily: "pretendard-regular",
+    fontFamily: 'pretendard-regular',
     fontSize: 13,
     color: Colors.fontGray,
   },
   delete: {
-    color: "white",
+    color: 'white',
   },
   swiped: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     width: 70,
-    backgroundColor: "red",
+    backgroundColor: 'red',
   },
   headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   buttonsContainer: {
     marginRight: 10,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
 });
