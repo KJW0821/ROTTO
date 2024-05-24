@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 
 
 // Firebase 설정을 관리하는 Config
@@ -18,16 +19,13 @@ public class FirebaseConfig {
 
     // Firebase 를 초기화하는 메서드
     @Bean
-    public void initialize() {
-        try {
-            FileInputStream serviceAccount = new FileInputStream("src/main/resources/serviceAccountKey.json");
-            FirebaseOptions.Builder optionBuilder = FirebaseOptions.builder();
-            FirebaseOptions options = optionBuilder
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
-            FirebaseApp.initializeApp(options);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public FirebaseApp initializeFirebase() throws IOException {
+        FileInputStream serviceAccount = new FileInputStream(FIREBASE_CONFIG_PATH);
+
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .build();
+
+        return FirebaseApp.initializeApp(options);
     }
 }
