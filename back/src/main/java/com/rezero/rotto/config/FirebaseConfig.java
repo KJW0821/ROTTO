@@ -3,9 +3,9 @@ package com.rezero.rotto.config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
 import java.io.FileInputStream;
 
 
@@ -17,7 +17,7 @@ public class FirebaseConfig {
     public static final String FIREBASE_CONFIG_PATH = "src/main/resources/serviceAccountKey.json";
 
     // Firebase 를 초기화하는 메서드
-    @PostConstruct
+    @Bean
     public void initialize() {
         try {
             FileInputStream serviceAccount = new FileInputStream("src/main/resources/serviceAccountKey.json");
