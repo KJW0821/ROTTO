@@ -37,6 +37,7 @@ public class FirebaseServiceImpl implements FirebaseService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("기기 정보가 존재하지 않습니다.");
         }
 
+        // 전송 오류에 대한 예외 처리
         boolean check = sendMessage(deviceToken, request.getTitle(), request.getBody());
         if (!check) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 문제로 푸시 알림 전송에 실패하였습니다.");
@@ -52,12 +53,20 @@ public class FirebaseServiceImpl implements FirebaseService {
 
      */
     public ResponseEntity<?> sendMessageToAllUsers(SendMessageToAllUsersRequest request) {
+        // 모든 유저를 가져오기
         List<User> users = userRepository.findAll();
+        // 성공과 실패를 카운팅하기 위해 정수 변수 정의
+        int successCount = 0;
+        int failureCount = 0;
+
+        // 순회하며 알림 전송
         for (User user : users) {
+            // 토큰을 가져오고 없으면 continue
             String deviceToken = user.getDeviceToken();
             if (deviceToken == null) {
                 continue;
             }
+            // 알림 생성
             Notification notification = Notification.builder()
                     .setTitle(request.getTitle())
                     .setBody(request.getBody())
@@ -67,16 +76,20 @@ public class FirebaseServiceImpl implements FirebaseService {
                     .setNotification(notification)
                     .build();
 
+            // 알림 전송
             try {
                 String response = FirebaseMessaging.getInstance().send(message);
-                System.out.println("Successfully sent message: " + response);
+                log.info("Successfully sent message to user {}: {}", user.getName(), response);
+                successCount++;
             } catch (FirebaseMessagingException e) {
-                System.err.println("Error sending message: " + e.getMessage());
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Firebase 알림 전송 중 서버 오류 발생: " + e.getMessage());
+                log.error("Error sending message to user {}: {}", user.getName(), e.getMessage());
+                failureCount++;
             }
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body("모든 유저에게 푸시 알림 전송 성공");
+        // 성공, 실패 개수를 전달
+        String resultMessage = String.format("Successfully sent notifications to %d users, failed to send to %d users.", successCount, failureCount);
+        return ResponseEntity.status(HttpStatus.OK).body(resultMessage);
     }
 
 
@@ -87,6 +100,7 @@ public class FirebaseServiceImpl implements FirebaseService {
         }
 
         try {
+            // 알림 생성
             Notification notification = Notification.builder()
                     .setTitle(title)
                     .setBody(body)
@@ -98,6 +112,7 @@ public class FirebaseServiceImpl implements FirebaseService {
                     .build();
 
             try {
+                // 알림 전송
                 FirebaseMessaging.getInstance().send(message);
             } catch (FirebaseMessagingException e) {
                 e.printStackTrace();

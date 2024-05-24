@@ -51,9 +51,18 @@ public class ScheduledTasks {
             List<ApplyHistory> applyHistories = applyHistoriesOptional.get();
             // 청약 내역 순회하면서 userCode 찾기
             for (ApplyHistory applyHistory : applyHistories) {
+                // null 에 대한 예외 처리
                 int userCode = applyHistory.getUserCode();
                 User user = userRepository.findByUserCode(userCode);
+                if (user == null) {
+                    log.info("userCode: " + userCode + "를 가진 유저가 존재하지 않습니다.");
+                    continue;
+                }
                 String deviceToken = user.getDeviceToken();
+                if (deviceToken == null) {
+                    log.info("userCode: " + userCode + "인 유저의 deviceToken 이 존재하지 않습니다.");
+                    continue;
+                }
 
                 // 해당 유저에게 알림 보내기
                 sseService.sendToClient(userCode, "subscription", "청약이 시작되었습니다. 청약 코드: " + subscriptionCode);
@@ -67,6 +76,14 @@ public class ScheduledTasks {
                 // Firebase 푸시 알림 보내기
                 firebaseService.sendMessage(deviceToken, title, content);
 
+                // Firebase 푸시 알림 보내기
+                boolean check = firebaseService.sendMessage(deviceToken, title, content);
+                // 푸시 알림 전송 실패시 continue
+                if (!check) {
+                    continue;
+                }
+
+                // DB에 알림 저장
                 Alert alert = Alert.builder()
                         .userCode(userCode)
                         .title(title)
@@ -107,9 +124,18 @@ public class ScheduledTasks {
             List<ApplyHistory> applyHistories = applyHistoriesOptional.get();
             // 청약 내역 순회하면서 userCode 찾기
             for (ApplyHistory applyHistory : applyHistories) {
+                // null 에 대한 예외 처리
                 int userCode = applyHistory.getUserCode();
                 User user = userRepository.findByUserCode(userCode);
+                if (user == null) {
+                    log.info("userCode: " + userCode + "를 가진 유저가 존재하지 않습니다.");
+                    continue;
+                }
                 String deviceToken = user.getDeviceToken();
+                if (deviceToken == null) {
+                    log.info("userCode: " + userCode + "인 유저의 deviceToken 이 존재하지 않습니다.");
+                    continue;
+                }
 
                 // 해당 유저에게 알림 보내기
                 sseService.sendToClient(userCode, "subscription-1", "청약 시작 하루전입니다. 청약 코드: " + subscriptionCode);
@@ -121,8 +147,13 @@ public class ScheduledTasks {
                 String alertType = "알림";
 
                 // Firebase 푸시 알림 보내기
-                firebaseService.sendMessage(deviceToken, title, content);
+                boolean check = firebaseService.sendMessage(deviceToken, title, content);
+                // 푸시 알림 전송 실패시 continue
+                if (!check) {
+                    continue;
+                }
 
+                // DB에 알림 저장
                 Alert alert = Alert.builder()
                         .userCode(userCode)
                         .title(title)
@@ -163,9 +194,18 @@ public class ScheduledTasks {
             List<ApplyHistory> applyHistories = applyHistoriesOptional.get();
             // 청약 내역 순회하면서 userCode 찾기
             for (ApplyHistory applyHistory : applyHistories) {
+                // null 에 대한 예외 처리
                 int userCode = applyHistory.getUserCode();
                 User user = userRepository.findByUserCode(userCode);
+                if (user == null) {
+                    log.info("userCode: " + userCode + "를 가진 유저가 존재하지 않습니다.");
+                    continue;
+                }
                 String deviceToken = user.getDeviceToken();
+                if (deviceToken == null) {
+                    log.info("userCode: " + userCode + "인 유저의 deviceToken 이 존재하지 않습니다.");
+                    continue;
+                }
 
                 // 해당 유저에게 알림 보내기
                 sseService.sendToClient(userCode, "subscription-3", "청약 시작 3일 전입니다. 청약 코드: " + subscriptionCode);
@@ -179,6 +219,13 @@ public class ScheduledTasks {
 
                 // Firebase 푸시 알림 보내기
                 firebaseService.sendMessage(deviceToken, title, content);
+
+                // Firebase 푸시 알림 보내기
+                boolean check = firebaseService.sendMessage(deviceToken, title, content);
+                // 푸시 알림 전송 실패시 continue
+                if (!check) {
+                    continue;
+                }
 
                 Alert alert = Alert.builder()
                         .userCode(userCode)
@@ -198,8 +245,7 @@ public class ScheduledTasks {
     /** 청약 시작 일주일 전 오전 9시에 SSE 알림 보내기
      청약 시작일을 항상 09:00:00 으로 정의한다.
      **/
-//    @Scheduled(cron = "0 0 9 * * *")
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(cron = "0 0 9 * * *")
     public void sendSubscriptionAlertOneWeekBefore() {
         log.info("Send a alert a Week Before the subscription starts");
         // 일주일 후 날짜 구하기
@@ -220,9 +266,18 @@ public class ScheduledTasks {
             List<ApplyHistory> applyHistories = applyHistoriesOptional.get();
             // 청약 내역 순회하면서 userCode 찾기
             for (ApplyHistory applyHistory : applyHistories) {
+                // null 에 대한 예외 처리
                 int userCode = applyHistory.getUserCode();
                 User user = userRepository.findByUserCode(userCode);
+                if (user == null) {
+                    log.info("userCode: " + userCode + "를 가진 유저가 존재하지 않습니다.");
+                    continue;
+                }
                 String deviceToken = user.getDeviceToken();
+                if (deviceToken == null) {
+                    log.info("userCode: " + userCode + "인 유저의 deviceToken 이 존재하지 않습니다.");
+                    continue;
+                }
 
                 // 해당 유저에게 알림 보내기
                 sseService.sendToClient(userCode, "subscription-7", "청약 시작 일주일 전입니다. 청약 코드: " + subscriptionCode);
@@ -235,6 +290,13 @@ public class ScheduledTasks {
 
                 // Firebase 푸시 알림 보내기
                 firebaseService.sendMessage(deviceToken, title, content);
+
+                // Firebase 푸시 알림 보내기
+                boolean check = firebaseService.sendMessage(deviceToken, title, content);
+                // 푸시 알림 전송 실패시 continue
+                if (!check) {
+                    continue;
+                }
 
                 Alert alert = Alert.builder()
                         .userCode(userCode)
