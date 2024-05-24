@@ -5,6 +5,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,6 +18,7 @@ public class FirebaseConfig {
 
     public static final String FIREBASE_ALARM_SEND_API_URI = "https://fcm.googleapis.com/v1/projects/rotto-4aa74/messages:send";
     public static final String FIREBASE_CONFIG_PATH = "serviceAccountKey.json";
+    private final ClassPathResource resource = new ClassPathResource("serviceAccountKey.json");
 
     /**
      * resources/serviceAccountKey.json
@@ -29,7 +31,7 @@ public class FirebaseConfig {
         InputStream serviceAccount = null;
         try {
             // 클래스패스로부터 리소스를 가져옴
-            serviceAccount = getClass().getResourceAsStream(FIREBASE_CONFIG_PATH);
+            serviceAccount = resource.getInputStream();
         } catch (Exception e) {
             e.printStackTrace();
         }
