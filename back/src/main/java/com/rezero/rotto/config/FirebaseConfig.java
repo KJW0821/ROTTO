@@ -15,7 +15,7 @@ import java.io.IOException;
 public class FirebaseConfig {
 
     public static final String FIREBASE_ALARM_SEND_API_URI = "https://fcm.googleapis.com/v1/projects/rotto-4aa74/messages:send";
-    public static final String FIREBASE_CONFIG_PATH = "classpath:serviceAccountKey.json";
+    public static final String FIREBASE_CONFIG_PATH = "../../../../resources/serviceAccountKey.json";
 
     // Firebase 를 초기화하는 메서드
     @Bean
