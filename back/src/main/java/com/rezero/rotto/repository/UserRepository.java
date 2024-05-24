@@ -20,4 +20,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByBcAddress(String address);
 
+    Boolean existsByDeviceTokenAndUserCode(String deviceToken, int userCode);
+
+    Boolean existsByDeviceToken(String deviceToken);
+
 }
