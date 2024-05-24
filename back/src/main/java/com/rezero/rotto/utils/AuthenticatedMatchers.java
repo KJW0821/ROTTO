@@ -15,6 +15,7 @@ public class AuthenticatedMatchers {
             "/auth/decrypt",
             "/sse/**",
             "/alert/send",
+            "/firebase/**",
             "/api-docs",
             "/api-docs/json",
             "/api-docs/**",
