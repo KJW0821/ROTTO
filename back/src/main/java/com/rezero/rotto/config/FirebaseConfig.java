@@ -25,20 +25,20 @@ public class FirebaseConfig {
 
     // Firebase 를 초기화하는 메서드
     @Bean
-    public FirebaseApp initializeFirebase() {
+    public FirebaseApp initializeFirebase() throws IOException {
+        InputStream serviceAccount = null;
         try {
             // 클래스패스로부터 리소스를 가져옴
-            InputStream serviceAccount = getClass().getResourceAsStream(FIREBASE_CONFIG_PATH);
+            serviceAccount = getClass().getResourceAsStream(FIREBASE_CONFIG_PATH);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            assert serviceAccount != null;
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
             return FirebaseApp.initializeApp(options);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
         }
     }
 
