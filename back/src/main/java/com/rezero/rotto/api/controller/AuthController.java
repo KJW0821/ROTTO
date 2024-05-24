@@ -71,8 +71,16 @@ public class AuthController {
                 throw new RuntimeException("존재하지 않는 사용자입니다.");
             }
 
+            // 디바이스 정보가 없으면 DB에 저장
+            String deviceToken = request.getDeviceToken();
+            int userCode = user.getUserCode();
+            if (!userRepository.existsByDeviceTokenAndUserCode(deviceToken, userCode)) {
+                user.setDeviceToken(deviceToken);
+                userRepository.save(user);
+            }
+
             // 유저 코드로 레디스에서 리프레쉬 토큰 가져오기
-            RefreshToken refreshToken = refreshTokenRepository.findByUserCode(user.getUserCode());
+            RefreshToken refreshToken = refreshTokenRepository.findByUserCode(userCode);
 
             // 리프레쉬 토큰이 이미 존재하는 상황이면 만료시키고 삭제
             if (refreshToken != null) {
@@ -84,10 +92,10 @@ public class AuthController {
             }
 
             // 액세스 토큰, 리프레시 토큰 발급
-            String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getUserCode()));
+            String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(userCode));
             String newRefreshToken = jwtTokenProvider.createRefreshToken();
 
-            RefreshToken ref = new RefreshToken(user.getUserCode(), newRefreshToken);
+            RefreshToken ref = new RefreshToken(userCode, newRefreshToken);
             refreshTokenRepository.save(ref);
 
             TokenResponse tokenResponse = TokenResponse.builder()
