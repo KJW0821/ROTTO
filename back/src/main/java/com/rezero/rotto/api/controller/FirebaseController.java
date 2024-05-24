@@ -23,7 +23,8 @@ public class FirebaseController {
     @Operation(summary = "특정 유저에게 푸시 알림 전송", description = "해당 요청이 들어올 때 알림 전송")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 기기에 대한 요청")
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 기기에 대한 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러로 전송 실패")
     })
     @PostMapping("/user")
     public ResponseEntity<?> sendMessageTo(@RequestBody SendMessageToRequest request) {
@@ -33,8 +34,7 @@ public class FirebaseController {
 
     @Operation(summary = "모든 유저에게 푸시 알림 전송", description = "해당 요청이 들어올 때 알림 전송")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
+            @ApiResponse(responseCode = "200", description = "성공")
     })
     @PostMapping("/all")
     public ResponseEntity<?> sendMessageToAllUsers(@RequestBody SendMessageToAllUsersRequest request) {
