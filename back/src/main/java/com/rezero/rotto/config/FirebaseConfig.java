@@ -25,7 +25,7 @@ public class FirebaseConfig {
     @Bean
     public FirebaseApp initializeFirebase() {
         try (InputStream serviceAccount = resource.getInputStream()) {
-            FirebaseOptions options = new FirebaseOptions.Builder()
+            FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
             return FirebaseApp.initializeApp(options);

@@ -10,6 +10,6 @@ public interface FirebaseService {
 
     ResponseEntity<?> sendMessageToAllUsers(SendMessageToAllUsersRequest request);
 
-    boolean sendMessage(String token, String topic, String title, String body);
+    boolean sendMessage(String token, String title, String body);
 
 }

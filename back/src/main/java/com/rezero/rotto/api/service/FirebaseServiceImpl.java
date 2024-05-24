@@ -37,7 +37,7 @@ public class FirebaseServiceImpl implements FirebaseService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("기기 정보가 존재하지 않습니다.");
         }
 
-        boolean check = sendMessage(deviceToken, request.getTopic(), request.getTitle(), request.getBody());
+        boolean check = sendMessage(deviceToken, request.getTitle(), request.getBody());
         if (!check) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 문제로 푸시 알림 전송에 실패하였습니다.");
         }
@@ -48,7 +48,7 @@ public class FirebaseServiceImpl implements FirebaseService {
 
     /**
      * FCM 토큰을 가진 모든 유저에게 푸시 알림을 전송하는 메서드
-     * @param request topic : 알림 주제, title : 알림 제목, body : 알림 내용
+     * @param request title : 알림 제목, body : 알림 내용
 
      */
     public ResponseEntity<?> sendMessageToAllUsers(SendMessageToAllUsersRequest request) {
@@ -65,7 +65,6 @@ public class FirebaseServiceImpl implements FirebaseService {
             Message message = Message.builder()
                     .setToken(deviceToken)
                     .setNotification(notification)
-                    .setTopic(request.getTopic())
                     .build();
 
             try {
@@ -81,7 +80,7 @@ public class FirebaseServiceImpl implements FirebaseService {
     }
 
 
-    public boolean sendMessage(String token, String topic, String title, String body) {
+    public boolean sendMessage(String token, String title, String body) {
         //알림 요청 받는 사람의 FCM Token 이 존재하는지 확인
         if (!userRepository.existsByDeviceToken(token)) {
             return false;
@@ -95,7 +94,6 @@ public class FirebaseServiceImpl implements FirebaseService {
 
             Message message = Message.builder()
                     .setToken(token)
-                    .setTopic(topic)
                     .setNotification(notification)
                     .build();
 
