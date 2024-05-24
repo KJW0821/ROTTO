@@ -7,5 +7,6 @@ public class LoginRequest {
 
     private String phoneNum;
     private String password;
+    private String deviceToken;
 
 }
