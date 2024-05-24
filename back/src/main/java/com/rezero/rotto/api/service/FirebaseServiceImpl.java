@@ -4,6 +4,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import com.rezero.rotto.dto.request.FirebaseNotificationRequest;
 import com.rezero.rotto.entity.InterestFarm;
 import com.rezero.rotto.entity.Subscription;
 import com.rezero.rotto.entity.User;
@@ -12,6 +13,10 @@ import com.rezero.rotto.repository.InterestFarmRepository;
 import com.rezero.rotto.repository.SubscriptionRepository;
 import com.rezero.rotto.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +35,7 @@ public class FirebaseServiceImpl implements FirebaseService {
     private final FarmRepository farmRepository;
     private final InterestFarmRepository interestFarmRepository;
     private final UserRepository userRepository;
+    private final PushNotificationService pushNotificationService;
 
     @Scheduled(cron = "0 0 9 * * ?")
     public void sendScheduledNotification() {
@@ -86,34 +92,22 @@ public class FirebaseServiceImpl implements FirebaseService {
     }
 
 
-//    public void sendMessageTo(final Long receiverId, final Notification notification) {
-//
-//        //알림 요청 받는 사람의 FCM Token이 존재하는지 확인
-//        final FcmToken fcmToken = fcmTokenRepository.findByMemberId(receiverId)
-//                .orElseThrow(() -> new NotificationException(NOT_FOUND_FCM_TOKEN));
-//
-//        //메시지 만들기
-//        final String message = makeMessage(fcmToken.getToken(), notification);
-//
-//        final HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-//        //OAuth 2.0 사용
-//        httpHeaders.add(HttpHeaders.AUTHORIZATION, PREFIX_ACCESS_TOKEN + getAccessToken());
-//
-//        final HttpEntity<String> httpEntity = new HttpEntity<>(message, httpHeaders);
-//
-//        final String fcmRequestUrl = PREFIX_FCM_REQUEST_URL + projectId + POSTFIX_FCM_REQUEST_URL;
-//
-//        final ResponseEntity<String> exchange = restTemplate.exchange(
-//                fcmRequestUrl,
-//                HttpMethod.POST,
-//                httpEntity,
-//                String.class
-//        );
-//
-//        if (exchange.getStatusCode().isError()) {
-//            log.error("firebase 접속 에러 = {}", exchange.getBody());
-//        }
-//    }
+    public ResponseEntity<?> sendMessageTo(int userCode, FirebaseNotificationRequest request) {
+
+        //알림 요청 받는 사람의 FCM Token이 존재하는지 확인
+        User user = userRepository.findByUserCode(userCode);
+        String deviceToken = user.getDeviceToken();
+        if (deviceToken == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("기기 정보가 존재하지 않습니다.");
+        }
+
+        try {
+            pushNotificationService.sendPushNotification(deviceToken, request.getTopic(), request.getTitle(), request.getBody());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 문제로 푸시 알림 전송에 실패하였습니다.");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("푸시 알림 전송 완료");
+    }
 
 }
