@@ -76,6 +76,7 @@ public class AuthController {
             int userCode = user.getUserCode();
             if (!userRepository.existsByDeviceTokenAndUserCode(deviceToken, userCode)) {
                 user.setDeviceToken(deviceToken);
+                userRepository.save(user);
             }
 
             // 유저 코드로 레디스에서 리프레쉬 토큰 가져오기
